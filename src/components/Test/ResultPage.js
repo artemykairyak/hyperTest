@@ -1,14 +1,15 @@
 import React from "react";
-import {Card} from "@material-ui/core";
+import {Card, Button} from "@material-ui/core";
 import Typography from "@material-ui/core/Typography";
 
-const ResultPage = ({result}) => {
+const ResultPage = ({result, back}) => {
     return (
         <Card style={styles.container} elevation={2}>
-            <Card style={styles.testCard}>
-                <img style={styles.questionImg} src={result.resPic} alt=''/>
+            <Card style={styles.testCard} elevation={0}>
+                <img style={styles.resImg} src={result.resPic} alt=''/>
             </Card>
             <Typography>{result.resText}</Typography>
+            <Button style={styles.backBtn} onClick={() => back()} variant="contained" color="primary">Назад</Button>
         </Card>
     )
 };
@@ -25,17 +26,20 @@ const styles = {
         flexDirection: 'column'
     },
     testCard: {
-        width: '85%',
         height: 350,
         margin: '15px auto 15px',
     },
-    questionImg: {
+    resImg: {
         display: 'inline-block',
         width: '100%',
-        height: 'auto',
+        height: '100%',
         objectFit: 'contain',
-        objectPosition: 'center'
     },
-}
+    backBtn: {
+        width: 150,
+        marginTop: 40,
+        marginBottom: 20
+    }
+};
 
 export default ResultPage;

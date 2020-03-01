@@ -5,6 +5,7 @@ import Card from "@material-ui/core/Card";
 import CardActionArea from "@material-ui/core/CardActionArea";
 import CardContent from "@material-ui/core/CardContent";
 import Grid from "@material-ui/core/Grid";
+import CreatingTestContainer from "../CreatingTest/CreatingTestContainer";
 
 const Tests = ({tests, activeTab, handleTestClick}) => {
     if (activeTab === 0) {
@@ -43,7 +44,7 @@ const Tests = ({tests, activeTab, handleTestClick}) => {
     if (activeTab === 2) {
         return (
             <Box component="div" m={1}>
-                <Typography>Создать тест</Typography>
+                <CreatingTestContainer/>
             </Box>
         )
     }

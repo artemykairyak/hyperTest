@@ -5,10 +5,9 @@ import {connect, Provider} from "react-redux";
 import {compose} from "redux";
 import store from "./redux/store";
 import MainScreenContainer from "./components/MainScreen/MainScreenContainer";
-import TestContainer from "./components/Test/TestContainer";
-import TestsContainer from "./components/Tests/TestsContainer";
 import {Box} from "@material-ui/core";
 import HeaderTabsContainer from "./components/Common/Header/HeaderTabsContainer";
+import CreatingTestContainer from './components/CreatingTest/CreatingTestContainer';
 
 const App = () => {
     useEffect(() => {
@@ -26,6 +25,9 @@ const App = () => {
                     {/*<Route path="/test/:testID?">*/}
                     {/*    <TestContainer/>*/}
                     {/*</Route>*/}
+                    {/* <Route exact path="/createTest">
+                        <CreatingTestContainer/>
+                    </Route> */}
                 </Switch>
             </Box>
 

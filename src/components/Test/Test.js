@@ -50,7 +50,7 @@ const Test = ({
             {!complete ?
             <Box>
                 <Card style={styles.container} elevation={2}>
-                    <Card style={styles.testCard}>
+                    <Card style={styles.testCard} elevation={0}>
                         <img style={styles.questionImg} src={test.questions[currentQuestion - 1].qPic} alt=''/>
                     </Card>
                     <Typography style={styles.question}>{test.questions[currentQuestion - 1].qText}</Typography>
@@ -99,20 +99,18 @@ const styles = {
         flexDirection: 'column'
     },
     testCard: {
-        width: '85%',
-        height: 350,
+        height: 370,
         margin: '15px auto 15px',
     },
     questionImg: {
         display: 'inline-block',
         width: '100%',
-        height: 'auto',
+        height: '100%',
         objectFit: 'contain',
-        objectPosition: 'center'
     },
     question: {
-        margin: '10px 0 15px',
-        width: '100%',
+        margin: '10px 0 25px',
+        width: '90%',
         paddingBottom: 5,
         borderBottom: '1px solid gray'
     },
