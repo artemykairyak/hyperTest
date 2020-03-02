@@ -1,6 +1,7 @@
 const SET_TEST = 'SET_TEST';
 const ADD_RESULT = 'ADD_RESULT';
 const ADD_QUESTION = 'ADD_QUESTION';
+const DELETE_QUESTION = 'DELETE_QUESTION';
 const ADD_ANSWER = 'ADD_ANSWER';
 const ADD_PICTURE = 'ADD_PICTURE';
 const SET_CURRENT_QUESTION = 'SET_CURRENT_QUESTION';
@@ -9,14 +10,19 @@ const PUSH_ANSWER = 'PUSH_ANSWER';
 const SET_COMPLETE = 'SET_COMPLETE';
 const ADD_GENDER = 'SET_GENDER';
 const ADD_TITLE = 'SET_TITLE';
+const SET_POPUP_DISPLAYED = 'SET_POPUP_DISPLAYED';
 
 let initialState = {
+    popupDisplayed: 0,
     currentQuestion: 1,
     complete: false,
     isAnswered: false,
     answers: [],
     test: {
         id: 0,
+        description: 'описание',
+        vip: false,
+        price: 0,
         creator: {
             creatorName: 'Шрек',
             creatorLink: 'https://2ch.hk',
@@ -63,7 +69,9 @@ let initialState = {
                 vars: [
                     { varText: 'Петушара', res: 0 },
                     { varText: 'Четкий', res: 1 },
-                    { varText: 'Блатной', res: 0 }
+                    { varText: 'Блатной', res: 0 },
+                    { varText: 'Буби', res: 0 },
+                    { varText: 'Че', res: 0 }
                 ]
             }
         ],
@@ -90,6 +98,13 @@ const testReducer = (state = initialState, action) => {
                 ...state,
                 ...state.test,
                 questions: [...state.test.questions, action.question]
+            };
+        case DELETE_QUESTION:
+            console.log('actionIndex', action.qIndex)
+            return {
+                ...state,
+                test: { ...state.test, questions: [...state.test.questions.filter((item, index) => index !== action.qIndex)] },
+
             };
         case ADD_GENDER:
             return {
@@ -126,6 +141,12 @@ const testReducer = (state = initialState, action) => {
                 ...state,
                 test: { ...state.test, picture: action.picture },
             };
+        case SET_POPUP_DISPLAYED:
+            console.log(action.popupId);
+            return {
+                ...state,
+                popupDisplayed: action.popupId,
+            };
         default:
             return state;
     }
@@ -134,6 +155,7 @@ const testReducer = (state = initialState, action) => {
 export const setTest = (test) => ({ type: SET_TEST, test });
 export const addResult = (result) => ({ type: ADD_RESULT, result });
 export const addQuestion = (question) => ({ type: ADD_QUESTION, question });
+export const deleteQuestion = (qIndex) => ({ type: DELETE_QUESTION, qIndex });
 export const addAnswer = (answer) => ({ type: ADD_ANSWER, answer });
 export const setIsAnswered = (isAnswered) => ({ type: SET_ANSWERED, isAnswered });
 export const setCurrentQuestion = (currentQuestion) => ({ type: SET_CURRENT_QUESTION, currentQuestion });
@@ -142,6 +164,7 @@ export const setComplete = (complete) => ({ type: SET_COMPLETE, complete });
 export const addGender = (gender) => ({ type: ADD_GENDER, gender });
 export const addTitle = (title) => ({ type: ADD_TITLE, title });
 export const addPicture = (picture) => ({ type: ADD_PICTURE, picture });
+export const setPopupDisplayed = (popupId) => ({ type: SET_POPUP_DISPLAYED, popupId });
 
 export const setTestTC = (id) => async (dispatch) => {
     //здесь будет запрос

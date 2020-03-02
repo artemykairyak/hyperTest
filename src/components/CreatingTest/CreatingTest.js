@@ -1,36 +1,70 @@
-import React, { useState } from 'react';
-import { Box, Card, Container, Typography, Radio, Button, Input } from '@material-ui/core';
+import React, {useEffect, useState} from 'react';
+import {
+    Box,
+    Card,
+    Container,
+    Typography,
+    Radio,
+    Button,
+    Input,
+    IconButton,
+    Divider,
+    ListItemText,
+    ListItem,
+    List
+} from '@material-ui/core';
+import DeleteIcon from '@material-ui/icons/Delete';
+import AddQuestion from "./AddQuestion";
 
-const CreatingTest = ({ addGender, test, addTitle, addPicture }) => {
+const CreatingTest = ({addGender, test, addTitle, addPicture, deleteVar}) => {
     let [gender, setLocaltGender] = useState(0);
+    let [addQuestionPopupState, setAddQuestionPopupState] = useState(false);
+    console.log(test);
 
     const setGender = (val) => {
         setLocaltGender(val);
         addGender(gender)
-    }
+    };
 
-    const getFile = (event) => {
+    const getFile = (event, mode) => {
         let fileList = event.target.files;
         console.log(fileList)
+
         convertToBase64(fileList[0], (result) => {
-            addPicture(result);
-       })
-    }
+            if(mode === 'testPic') {
+                addPicture(result);
+            }
+
+            if(mode === 'questiontPic') {
+                addPicture(result);
+            }
+
+        })
+    };
 
     const convertToBase64 = (file, cb) => {
-            let reader = new FileReader();
-            reader.readAsDataURL(file);
-            reader.onload = function () {
-                cb(reader.result)
-            };
-            reader.onerror = function (error) {
-                console.log('Error: ', error);
-            };
-        
-    }
+        let reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = function () {
+            cb(reader.result)
+        };
+        reader.onerror = function (error) {
+            console.log('Error: ', error);
+        };
+
+    };
+
+    const setQuestionPic = event => {
+        getFile(event, 'questionPic');
+    };
+
+    const setTestPic = event => {
+        getFile(event, 'testPic');
+    };
 
     return (
         <Box>
+            {addQuestionPopupState && <AddQuestion setQuestionPic={setQuestionPic} />}
             <Card style={styles.container} elevation={2}>
                 <Container style={styles.row}>
                     <Container style={styles.left}>
@@ -40,7 +74,7 @@ const CreatingTest = ({ addGender, test, addTitle, addPicture }) => {
                     <Container style={styles.right} style={styles.gender}>
                         <Container style={styles.radioCardContainer}>
                             <Button style={styles.radioCard} onClick={() => {
-                               setGender(0)
+                                setGender(0)
                             }}>
                                 <Radio
                                     checked={gender === 0}
@@ -66,7 +100,7 @@ const CreatingTest = ({ addGender, test, addTitle, addPicture }) => {
                         </Container>
                         <Container style={styles.radioCardContainer}>
                             <Button style={styles.radioCard} onClick={() => {
-                               setGender(2)
+                                setGender(2)
                             }}>
                                 <Radio
                                     checked={gender === 2}
@@ -102,7 +136,7 @@ const CreatingTest = ({ addGender, test, addTitle, addPicture }) => {
                             multiple
                             type="file"
                             id="testCover"
-                            onChange={getFile}
+                            onChange={setTestPic}
                         />
                         <label htmlFor="testCover">
                             <Button variant="contained" component="span" style={styles.addCoverBtn}>
@@ -112,18 +146,54 @@ const CreatingTest = ({ addGender, test, addTitle, addPicture }) => {
                     </Container>
                 </Container>
                 <Container style={styles.row}>
-                    <Container style={styles.left} >
-                    <Typography> </Typography>
+                    <Container style={styles.left}>
+                        <Typography> </Typography>
                     </Container>
-                   
                     <Container style={styles.coverImgContainer}>
-                        <img style={styles.coverImg}src={test.picture} alt={test.title}/>
+                        <img style={styles.coverImg} src={test.picture} alt={test.title}/>
                     </Container>
                 </Container>
+                <Container style={styles.questionsTitle}>
+                    <Typography>Список вопросов</Typography>
+                </Container>
+                <Container style={styles.questions}>
+                    {test.questions.map((item, index) => {
+                        return <Card key={index} style={styles.row}>
+                            <IconButton aria-label="delete" onClick={() => {
+                                deleteVar(index)
+                            }} style={styles.deleteIcon}>
+                                <DeleteIcon/>
+                            </IconButton>
+                            <Container style={styles.left}>
+                                <Container style={styles.questionImgContainer}>
+                                    <img style={styles.questionImg} src={item.qPic} alt=''/>
+                                </Container>
+                            </Container>
+                            <Container style={styles.varInfo}>
+                                <Typography style={styles.qTitle}>{item.qText}</Typography>
+                                <List style={styles.vars}>
+                                    {item.vars.map((variant, index) => {
+                                        return <React.Fragment key={index}><ListItem>
+                                            <ListItemText primary={variant.varText}/>
+                                        </ListItem>{index !== (item.vars.length - 1) && <Divider/>}
+                                        </React.Fragment>
+                                    })}
+                                </List>
+                            </Container>
+
+                        </Card>
+                    })}
+                </Container>
+                <Container style={styles.questionsTitle}>
+                    <Button variant="contained" component="span" style={styles.addQuestionBtn}
+                    onClick={() => setAddQuestionPopupState(true)}>
+                        Добавить вопрос
+                    </Button>
+                </Container>
             </Card>
-        </Box >
+        </Box>
     )
-}
+};
 
 const styles = {
     container: {
@@ -134,10 +204,12 @@ const styles = {
     },
     row: {
         display: 'flex',
-        margin: '20px auto'
+        margin: '20px auto',
+        position: 'relative',
+        overflow: 'visible'
     },
     left: {
-        background: 'red',
+
         display: 'flex',
         width: 350,
         justifyContent: 'flex-end',
@@ -169,17 +241,49 @@ const styles = {
     addCoverInput: {
         display: 'none'
     },
+    cover: {
+        padding: 0
+    },
     coverImgContainer: {
         height: 200,
-        width: '100%'
-        
+        width: '100%',
+        padding: 0
     },
     coverImg: {
         display: 'inline-block',
         width: '100%',
         height: '100%',
         objectFit: 'contain',
+    },
+    questionImgContainer: {
+        height: 200,
+        width: '100%',
+    },
+    questionImg: {
+        display: 'inline-block',
+        width: '100%',
+        height: '100%',
+        objectFit: 'contain',
+    },
+    varInfo: {
+        textAlign: 'left',
+        padding: 0
+    },
+    qTitle: {
+        borderBottom: '1px solid gray',
+        paddingBottom: 5,
+        marginBottom: 10
+    },
+    vars: {
+        padding: 0
+    },
+    deleteIcon: {
+        position: 'absolute',
+        right: 0,
+        top: 0,
+        transform: 'translate(50%, -40%)',
+        zIndex: 5
     }
-}
+};
 
 export default CreatingTest;

@@ -30,7 +30,7 @@ const ResultPageContainer = ({test, answers, setTestMode, setTest, setComplete})
         setTestMode(false);
         setTest(null);
         setComplete(false);
-    }
+    };
 
     return (
         <ResultPage result={result} back={back}/>

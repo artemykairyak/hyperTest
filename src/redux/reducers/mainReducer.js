@@ -11,16 +11,18 @@ let initialState = {
             testTitle: 'Тест1',
             testPic: 'пикча',
             vip: false,
+            description: 'описание',
             price: 0
         },
         {
             testId: 1,
             testTitle: 'Тест2',
             testPic: 'пикча2',
+            description: 'описание2',
             vip: false,
             price: 0
         },
-        {testId: 2, testTitle: 'Тест3', testPic: 'Пикча3', vip: false, price: 0}
+        {testId: 2, testTitle: 'Тест3', description: 'описание3', testPic: 'Пикча3', vip: false, price: 0}
     ]
 };
 
