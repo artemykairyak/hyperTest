@@ -15,6 +15,7 @@ import {
 } from '@material-ui/core';
 import DeleteIcon from '@material-ui/icons/Delete';
 import AddQuestion from "./AddQuestion";
+import {convertToBase64} from '../helpers/helpers';
 
 const CreatingTest = ({addGender, test, addTitle, addPicture, deleteVar}) => {
     let [gender, setLocaltGender] = useState(0);
@@ -28,7 +29,6 @@ const CreatingTest = ({addGender, test, addTitle, addPicture, deleteVar}) => {
 
     const getFile = (event, mode) => {
         let fileList = event.target.files;
-        console.log(fileList)
 
         convertToBase64(fileList[0], (result) => {
             if(mode === 'testPic') {
@@ -38,20 +38,7 @@ const CreatingTest = ({addGender, test, addTitle, addPicture, deleteVar}) => {
             if(mode === 'questiontPic') {
                 addPicture(result);
             }
-
         })
-    };
-
-    const convertToBase64 = (file, cb) => {
-        let reader = new FileReader();
-        reader.readAsDataURL(file);
-        reader.onload = function () {
-            cb(reader.result)
-        };
-        reader.onerror = function (error) {
-            console.log('Error: ', error);
-        };
-
     };
 
     const setQuestionPic = event => {
