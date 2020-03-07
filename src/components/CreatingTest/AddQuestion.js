@@ -2,43 +2,47 @@ import React, {useEffect, useState} from "react";
 import {Button, Container, Input, Typography} from "@material-ui/core";
 import Card from "@material-ui/core/Card";
 import {convertToBase64} from "../helpers/helpers";
-import { HighlightOff } from '@material-ui/icons';
+import {HighlightOff} from '@material-ui/icons';
 import {makeStyles} from "@material-ui/styles";
+import CloseIcon from '@material-ui/icons/Close';
+import PhotoCameraIcon from '@material-ui/icons/PhotoCamera';
+import TextField from "@material-ui/core/TextField";
 
-const AddQuestion = ({setQuestionPic}) => {
+const AddQuestion = ({test, setAddQuestionPopupState, addQuestion}) => {
 
     let [qObj, setQObj] = useState({
+        qId: test.questions.length + 1,
         qText: '',
         qPic: null,
         vars: []
     });
     let [qVarsCount, setQVarsCount] = useState([]);
+
     const setQPic = event => {
-        getFile(event)
+        getFile(event);
     };
 
     const addVar = () => {
-        if(qVarsCount.length < 5) {
+        if (qVarsCount.length < 5) {
             setQVarsCount([...qVarsCount, qVarsCount.length + 1]);
-            setQObj({...qObj, vars: [...qObj.vars, {varText: '', res: null }]});
+            setQObj({...qObj, vars: [...qObj.vars, {varId: qVarsCount.length, varText: '', res: null}]});
         }
     };
 
     const getFile = (event) => {
-        console.log('getF', event)
         let fileList = event.target.files;
 
         convertToBase64(fileList[0], (result) => {
             updateQObj('qPic', result);
-        })
+        });
     };
 
     const updateVarToQObj = (val, index) => {
-        let newVarText = {varText: val, res: null };
+        let newVarText = {varId: index, varText: val, res: null};
         let qObjVarsCopy = [...qObj.vars];
 
-        for(let i = 0; i< qObjVarsCopy.length; i++){
-            if(i !== index) continue;
+        for (let i = 0; i < qObjVarsCopy.length; i++) {
+            if (i !== index) continue;
             qObjVarsCopy[i] = newVarText;
         }
 
@@ -61,8 +65,8 @@ const AddQuestion = ({setQuestionPic}) => {
         let newQbjVars = [];
         let newQbjVarsCount = [];
 
-        for(let i = 0; i< qObjVarsCopy.length; i++){
-            if(i !== index) {
+        for (let i = 0; i < qObjVarsCopy.length; i++) {
+            if (i !== index) {
                 newQbjVars.push(qObjVarsCopy[i]);
                 newQbjVarsCount.push(qVarsCountCopy[i]);
             }
@@ -70,15 +74,28 @@ const AddQuestion = ({setQuestionPic}) => {
 
         setQVarsCount(newQbjVarsCount);
         setQObj({...qObj, vars: newQbjVars});
-    }
+    };
+
+    const validate = () => {
+        let correctedInfo = (!!qObj.qText && !!qObj.qPic);
+        let correctedVars = qObj.vars.every((item) => {
+            return item.varText !== '';
+        });
+
+        return (correctedInfo && correctedVars);
+    };
 
     useEffect(() => {
         console.log(qObj)
     }, [qObj]);
+
     const styles = useStyles();
 
     return (
         <Card className={styles.popup} raised>
+            <CloseIcon className={styles.close}
+                       fontSize="large"
+                       onClick={() => setAddQuestionPopupState(false)}/>
             <Container className={styles.row}>
                 <Container className={styles.left}>
                     <Typography>Картинка:</Typography>
@@ -90,7 +107,7 @@ const AddQuestion = ({setQuestionPic}) => {
                         multiple
                         type="file"
                         id="varPic"
-                        onChange={setQPic}
+                        onChange={(event) => setQPic(event)}
                     />
                     <label htmlFor="varPic">
                         <Button variant="contained" component="span" className={styles.btn}>
@@ -104,6 +121,7 @@ const AddQuestion = ({setQuestionPic}) => {
                     <Typography> </Typography>
                 </Container>
                 <Container className={styles.coverImgContainer}>
+                    <PhotoCameraIcon fontSize='large' className={styles.photoIcon}/>
                     <img className={styles.coverImg} src={qObj.qPic} alt={qObj.qText}/>
                 </Container>
             </Container>
@@ -112,7 +130,8 @@ const AddQuestion = ({setQuestionPic}) => {
                     <Typography>Вопрос:</Typography>
                 </Container>
                 <Container className={[styles.inputContainer]}>
-                    <Input
+                    <TextField
+                        placeholder="Текст вопроса"
                         onChange={(event) => updateQObj('qText', event.target.value)}
                         value={qObj.qText}
                         className={styles.input}
@@ -124,29 +143,50 @@ const AddQuestion = ({setQuestionPic}) => {
                     <Typography>Варианты ответа:</Typography>
                 </Container>
                 <Container className={[styles.rightBtn, styles.cover]}>
-                        <Button variant="contained" disabled={qVarsCount.length === 5} component="span" className={styles.btn}
-                        onClick={() => addVar()}>
-                            Добавить
-                        </Button>
+                    <Button variant="contained" disabled={qVarsCount.length === 5} component="span"
+                            className={styles.btn}
+                            onClick={() => addVar()}>
+                        Добавить
+                    </Button>
                 </Container>
             </Container>
             <Container className={styles.row}>
-                <Container className={styles.left} >
-                <Typography> </Typography>
+                <Container className={styles.left}>
+                    <Typography> </Typography>
                 </Container>
                 <Container className={styles.vars}>
                     {qVarsCount.map((count, index) => {
                         return <Container className={[styles.inputContainer, styles.varInputContainer]} key={index}>
                             <Input
-                            onChange={(event) => updateVarToQObj(event.target.value, index)}
-                            value={qObj.vars[index].varText}
-                            placeholder="Введите вариант ответа"
-                            className={[styles.input]}
-                        /><HighlightOff className={styles.deleteIcon}
-                        onClick={() => deleteVar(index)}/>
+                                onChange={(event) => updateVarToQObj(event.target.value, index)}
+                                value={qObj.vars[index].varText}
+                                placeholder="Введите вариант ответа"
+                                className={[styles.input]}
+                            /><HighlightOff className={styles.deleteIcon}
+                                            onClick={() => deleteVar(index)}/>
                         </Container>
                     })}
-
+                </Container>
+            </Container>
+            <Container className={styles.row}>
+                <Container className={styles.left}>
+                    <Typography> </Typography>
+                </Container>
+                <Container className={[styles.rightBtn]}>
+                    <Button variant="contained"
+                            disabled={qVarsCount.length === 0}
+                            component="span"
+                            color={validate() ? 'primary' : 'secondary'}
+                            className={styles.btn}
+                            onClick={() => {
+                                if (validate()) {
+                                    addQuestion(qObj);
+                                    setAddQuestionPopupState(false);
+                                }
+                            }
+                            }>
+                        {validate() ? 'Готово' : 'Не все поля заполнены'}
+                    </Button>
                 </Container>
             </Container>
         </Card>
@@ -186,7 +226,7 @@ var useStyles = makeStyles({
         display: 'none'
     },
     btn: {
-        width: 150
+        width: 300
     },
     cover: {
         padding: 0,
@@ -200,14 +240,23 @@ var useStyles = makeStyles({
         height: 200,
         width: '100%',
         padding: 0,
-        marginLeft: 15
+        marginLeft: 15,
+        position: 'relative'
+    },
+    photoIcon: {
+        color: 'gray',
+        position: 'absolute',
+        top: '50%',
+        left: '50%',
+        transform: 'translate(-50%, -50%)',
+        zIndex: -1
     },
     coverImg: {
         display: 'inline-block',
         width: '100%',
         height: '100%',
         objectFit: 'cover',
-        objectPosition: 'center'
+        objectPosition: 'center',
     },
     vars: {
         display: 'flex',
@@ -229,6 +278,13 @@ var useStyles = makeStyles({
     varInputContainer: {
         marginTop: 15
     },
+    close: {
+        position: 'absolute',
+        top: 10,
+        right: 10,
+        cursor: 'pointer',
+
+    }
 });
 
 export default AddQuestion;

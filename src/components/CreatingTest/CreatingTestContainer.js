@@ -1,10 +1,19 @@
-import React, { useEffect } from 'react';
-import { connect } from 'react-redux';
+import React, {useEffect} from 'react';
+import {connect} from 'react-redux';
 import CreatingTest from './CreatingTest';
-import { addGender, addTitle, addPicture } from './../../redux/reducers/testReducer';
-import {deleteQuestion, setPopupDisplayed} from "../../redux/reducers/testReducer";
+import {addGender, addTitle, addPicture} from './../../redux/reducers/testReducer';
+import {addQuestion, addResultToVar, deleteQuestion, setPopupDisplayed} from "../../redux/reducers/testReducer";
 
-const CreatingTestContainer = ({ addGender, addTitle, addPicture, test, deleteQuestion, setPopupDisplayed , popupDisplayed}) => {
+const CreatingTestContainer = ({
+                                   addGender,
+                                   addTitle,
+                                   addResultToVar,
+                                   addQuestion,
+                                   addPicture,
+                                   test,
+                                   deleteQuestion,
+                                   setPopupDisplayed,
+                               }) => {
     useEffect(() => {
         console.log(test);
     }, [test]);
@@ -14,14 +23,15 @@ const CreatingTestContainer = ({ addGender, addTitle, addPicture, test, deleteQu
         deleteQuestion(qIndex)
     };
 
-
     return <CreatingTest
         test={test}
         addGender={addGender}
         addTitle={addTitle}
         addPicture={addPicture}
         deleteVar={deleteVar}
-        setPopupDisplayed={setPopupDisplayed}/>
+        addQuestion={addQuestion}
+        setPopupDisplayed={setPopupDisplayed}
+        addResultToVar={addResultToVar}/>
 }
 
 
@@ -32,4 +42,12 @@ const mapStateToProps = (state) => {
     }
 };
 
-export default connect(mapStateToProps, { addGender, addTitle, addPicture, deleteQuestion, setPopupDisplayed })(CreatingTestContainer);
+export default connect(mapStateToProps, {
+    addGender,
+    addTitle,
+    addPicture,
+    deleteQuestion,
+    setPopupDisplayed,
+    addQuestion,
+    addResultToVar
+})(CreatingTestContainer);

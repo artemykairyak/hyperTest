@@ -16,11 +16,13 @@ import {
 import DeleteIcon from '@material-ui/icons/Delete';
 import AddQuestion from "./AddQuestion";
 import {convertToBase64} from '../helpers/helpers';
+import AddResult from "./AddResult";
+import {addResultToVar} from "../../redux/reducers/testReducer";
 
-const CreatingTest = ({addGender, test, addTitle, addPicture, deleteVar}) => {
+const CreatingTest = ({addGender, test, addTitle, addPicture, deleteVar, addQuestion, addResultToVar}) => {
     let [gender, setLocaltGender] = useState(0);
     let [addQuestionPopupState, setAddQuestionPopupState] = useState(false);
-    console.log(test);
+    let [addResultPopupState, setAddResultPopupState] = useState(true);
 
     const setGender = (val) => {
         setLocaltGender(val);
@@ -31,27 +33,37 @@ const CreatingTest = ({addGender, test, addTitle, addPicture, deleteVar}) => {
         let fileList = event.target.files;
 
         convertToBase64(fileList[0], (result) => {
-            if(mode === 'testPic') {
+            if (mode === 'testPic') {
                 addPicture(result);
             }
 
-            if(mode === 'questiontPic') {
+            if (mode === 'questiontPic') {
                 addPicture(result);
             }
         })
-    };
-
-    const setQuestionPic = event => {
-        getFile(event, 'questionPic');
     };
 
     const setTestPic = event => {
         getFile(event, 'testPic');
     };
 
+    const _addQuestion = (qObj) => {
+        addQuestion(qObj);
+    };
+
+    useEffect(() => {
+        console.log(test);
+    }, [test])
+
     return (
         <Box>
-            {addQuestionPopupState && <AddQuestion setQuestionPic={setQuestionPic} />}
+            {addQuestionPopupState && <AddQuestion setAddQuestionPopupState={setAddQuestionPopupState}
+                                                   addQuestion={_addQuestion}
+                                                   test={test}/>}
+            {addResultPopupState && <AddResult setAddResultPopupState={setAddResultPopupState}
+                                               addResult={_addQuestion}
+                                               test={test}
+                                               addResultToVar={addResultToVar}/>}
             <Card style={styles.container} elevation={2}>
                 <Container style={styles.row}>
                     <Container style={styles.left}>
@@ -167,14 +179,41 @@ const CreatingTest = ({addGender, test, addTitle, addPicture, deleteVar}) => {
                                     })}
                                 </List>
                             </Container>
-
                         </Card>
                     })}
                 </Container>
-                <Container style={styles.questionsTitle}>
+                <Container>
                     <Button variant="contained" component="span" style={styles.addQuestionBtn}
-                    onClick={() => setAddQuestionPopupState(true)}>
+                            onClick={() => setAddQuestionPopupState(true)}>
                         Добавить вопрос
+                    </Button>
+                </Container>
+                <Container>
+                    <Typography>Список результатов</Typography>
+                </Container>
+                <Container style={styles.results}>
+                    {test.results.map((item, index) => {
+                        return <Card key={index} style={styles.row}>
+                            <IconButton aria-label="delete" onClick={() => {
+                                deleteVar(index)
+                            }} style={styles.deleteIcon}>
+                                <DeleteIcon/>
+                            </IconButton>
+                            <Container style={styles.resLeft}>
+                                <Container style={styles.resultImgContainer}>
+                                    <img style={styles.resultImg} src={item.resPic} alt=''/>
+                                </Container>
+                            </Container>
+                            <Container style={styles.resInfo}>
+                                <Typography>{item.resText}</Typography>
+                            </Container>
+                        </Card>
+                    })}
+                </Container>
+                <Container>
+                    <Button variant="contained" component="span" style={styles.addQuestionBtn}
+                            onClick={() => setAddResultPopupState(true)}>
+                        Добавить результат
                     </Button>
                 </Container>
             </Card>
@@ -193,12 +232,18 @@ const styles = {
         display: 'flex',
         margin: '20px auto',
         position: 'relative',
-        overflow: 'visible'
+        overflow: 'visible',
+        paddingTop: 15,
+        paddingBottom: 15,
     },
     left: {
-
         display: 'flex',
         width: 350,
+        justifyContent: 'flex-end',
+        padding: 0
+    },
+    resLeft: {
+        display: 'flex',
         justifyContent: 'flex-end',
         padding: 0
     },
@@ -246,13 +291,30 @@ const styles = {
         height: 200,
         width: '100%',
     },
+    resultImgContainer: {
+        height: 200,
+        width: '100%',
+    },
     questionImg: {
         display: 'inline-block',
         width: '100%',
         height: '100%',
         objectFit: 'contain',
     },
+    resultImg: {
+        display: 'inline-block',
+        width: '100%',
+        height: '100%',
+        objectFit: 'cover',
+    },
     varInfo: {
+        textAlign: 'left',
+        padding: 0
+    },
+    addQuestionBtn: {
+        marginBottom: 20
+    },
+    resInfo: {
         textAlign: 'left',
         padding: 0
     },
@@ -270,7 +332,9 @@ const styles = {
         top: 0,
         transform: 'translate(50%, -40%)',
         zIndex: 5
-    }
+    },
+    resultsTitle: {}
+
 };
 
 export default CreatingTest;

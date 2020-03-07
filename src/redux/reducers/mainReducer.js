@@ -22,7 +22,14 @@ let initialState = {
             vip: false,
             price: 0
         },
-        {testId: 2, testTitle: 'Тест3', description: 'описание3', testPic: 'Пикча3', vip: false, price: 0}
+        {
+            testId: 2,
+            testTitle: 'Тест3',
+            description: 'описание3',
+            testPic: 'Пикча3',
+            vip: false,
+            price: 0
+        }
     ]
 };
 

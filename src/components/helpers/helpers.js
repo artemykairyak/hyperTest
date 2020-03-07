@@ -9,3 +9,4 @@ export const convertToBase64 = (file, cb) => {
     };
 
 };
+
