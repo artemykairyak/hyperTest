@@ -17,12 +17,11 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import AddQuestion from "./AddQuestion";
 import {convertToBase64} from '../helpers/helpers';
 import AddResult from "./AddResult";
-import {addResultToVar} from "../../redux/reducers/testReducer";
 
 const CreatingTest = ({addGender, test, addTitle, addPicture, deleteVar, addQuestion, addResultToVar}) => {
     let [gender, setLocaltGender] = useState(0);
-    let [addQuestionPopupState, setAddQuestionPopupState] = useState(false);
-    let [addResultPopupState, setAddResultPopupState] = useState(true);
+    let [addQuestionPopupState, setAddQuestionPopupState] = useState(true);
+    let [addResultPopupState, setAddResultPopupState] = useState(false);
 
     const setGender = (val) => {
         setLocaltGender(val);
@@ -47,10 +46,6 @@ const CreatingTest = ({addGender, test, addTitle, addPicture, deleteVar, addQues
         getFile(event, 'testPic');
     };
 
-    const _addQuestion = (qObj) => {
-        addQuestion(qObj);
-    };
-
     useEffect(() => {
         console.log(test);
     }, [test])
@@ -58,10 +53,11 @@ const CreatingTest = ({addGender, test, addTitle, addPicture, deleteVar, addQues
     return (
         <Box>
             {addQuestionPopupState && <AddQuestion setAddQuestionPopupState={setAddQuestionPopupState}
-                                                   addQuestion={_addQuestion}
-                                                   test={test}/>}
+                                                   addQuestion={addQuestion}
+                                                   test={test}
+                                                   addResultToVar={addResultToVar}/>}
             {addResultPopupState && <AddResult setAddResultPopupState={setAddResultPopupState}
-                                               addResult={_addQuestion}
+                                               addResult={addQuestion}
                                                test={test}
                                                addResultToVar={addResultToVar}/>}
             <Card style={styles.container} elevation={2}>
@@ -152,6 +148,34 @@ const CreatingTest = ({addGender, test, addTitle, addPicture, deleteVar, addQues
                         <img style={styles.coverImg} src={test.picture} alt={test.title}/>
                     </Container>
                 </Container>
+                <Container>
+                    <Typography>Список результатов</Typography>
+                </Container>
+                <Container style={styles.results}>
+                    {test.results.map((item, index) => {
+                        return <Card key={index} style={styles.row}>
+                            <IconButton aria-label="delete" onClick={() => {
+                                deleteVar(index)
+                            }} style={styles.deleteIcon}>
+                                <DeleteIcon/>
+                            </IconButton>
+                            <Container style={styles.resLeft}>
+                                <Container style={styles.resultImgContainer}>
+                                    <img style={styles.resultImg} src={item.resPic} alt=''/>
+                                </Container>
+                            </Container>
+                            <Container style={styles.resInfo}>
+                                <Typography>{item.resText}</Typography>
+                            </Container>
+                        </Card>
+                    })}
+                </Container>
+                <Container>
+                    <Button variant="contained" component="span" style={styles.addQuestionBtn}
+                            onClick={() => setAddResultPopupState(true)}>
+                        Добавить результат
+                    </Button>
+                </Container>
                 <Container style={styles.questionsTitle}>
                     <Typography>Список вопросов</Typography>
                 </Container>
@@ -188,34 +212,7 @@ const CreatingTest = ({addGender, test, addTitle, addPicture, deleteVar, addQues
                         Добавить вопрос
                     </Button>
                 </Container>
-                <Container>
-                    <Typography>Список результатов</Typography>
-                </Container>
-                <Container style={styles.results}>
-                    {test.results.map((item, index) => {
-                        return <Card key={index} style={styles.row}>
-                            <IconButton aria-label="delete" onClick={() => {
-                                deleteVar(index)
-                            }} style={styles.deleteIcon}>
-                                <DeleteIcon/>
-                            </IconButton>
-                            <Container style={styles.resLeft}>
-                                <Container style={styles.resultImgContainer}>
-                                    <img style={styles.resultImg} src={item.resPic} alt=''/>
-                                </Container>
-                            </Container>
-                            <Container style={styles.resInfo}>
-                                <Typography>{item.resText}</Typography>
-                            </Container>
-                        </Card>
-                    })}
-                </Container>
-                <Container>
-                    <Button variant="contained" component="span" style={styles.addQuestionBtn}
-                            onClick={() => setAddResultPopupState(true)}>
-                        Добавить результат
-                    </Button>
-                </Container>
+
             </Card>
         </Box>
     )

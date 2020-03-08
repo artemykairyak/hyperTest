@@ -7,6 +7,7 @@ import CloseIcon from '@material-ui/icons/Close';
 import PhotoCameraIcon from '@material-ui/icons/PhotoCamera';
 import TextField from "@material-ui/core/TextField";
 import {addResultToVar} from "../../redux/reducers/testReducer";
+import Radio from "@material-ui/core/Radio";
 
 const AddResult = ({test, setAddQuestionPopupState, addResultToVar}) => {
 
@@ -22,13 +23,28 @@ const AddResult = ({test, setAddQuestionPopupState, addResultToVar}) => {
     };
 
     const addRes = (qId, varId) => {
+        // test.questions[qId].vars.map((item, index) => {
+        //     if (index === varId) {
+        //         item.res = resObj.resId;
+        //         console.log(item)
+        //     }
         // console.log(qId, varId)
-        // console.log(test.questions[qId].vars[varId].res);
-        if (test.questions[qId].vars[varId].res !== '') {
-            addResultToVar(qId, varId, resObj.resId);
-        } else {
-            addResultToVar(qId, varId, '');
-        }
+        //console.log(test.questions[qId].vars[varId].res);
+        // for (let i = 0; i < test.questions[qId].vars.length; i++) {
+            // console.log(test.questions[qId].vars[i].res)
+
+            if(test.questions[qId].vars.some((item) => {
+                return item.res !== resObj.resId;
+            })) {
+                addResultToVar(qId, varId, resObj.resId)
+            }
+            // if (test.questions[qId].vars[i].res === resObj.resId) {
+            //     console.log('if')
+            //     break;
+            // } else {
+            //     addResultToVar(qId, varId, resObj.resId);
+            // }
+        // }
     };
 
     const getFile = (event) => {
@@ -152,12 +168,17 @@ const AddResult = ({test, setAddQuestionPopupState, addResultToVar}) => {
                             <Typography>{item.qText}</Typography>
                             <Container>
                                 {item.vars.map((v, i) => {
-                                    return  <Checkbox
-                                        checked={resObj.resId === v.res}
-                                        onChange={() => addRes(item.qId, v.varId)}
-                                        value={v.varText}
-                                        indeterminate
-                                    />
+                                    return <Button style={styles.radioCard} onClick={() => {
+                                            addRes(item.qId, v.varId)
+                                    }}>
+                                        <Radio
+                                            checked={resObj.resId === v.res}
+
+                                            // value={v.varId}
+                                            name=""
+                                        />
+                                        <Typography>{v.varText}</Typography>
+                                    </Button>
                                 })}
                             </Container>
 
@@ -227,11 +248,13 @@ var useStyles = makeStyles({
         top: '50%',
         left: '50%',
         transform: 'translate(-50%, -50%)',
-        width: '60%',
+        width: '70%',
         margin: '30px auto 15px',
         padding: 15,
         textAlign: 'center',
-        zIndex: 10
+        zIndex: 10,
+        overflow: 'auto',
+        maxHeight: '100vh'
     },
     row: {
         display: 'flex',

@@ -7,8 +7,19 @@ import {makeStyles} from "@material-ui/styles";
 import CloseIcon from '@material-ui/icons/Close';
 import PhotoCameraIcon from '@material-ui/icons/PhotoCamera';
 import TextField from "@material-ui/core/TextField";
+import Select from "@material-ui/core/Select";
+import MenuItem from "@material-ui/core/MenuItem";
+import FormControl from "@material-ui/core/FormControl";
+import InputLabel from "@material-ui/core/InputLabel";
+import DialogActions from "@material-ui/core/DialogActions";
+import DialogContent from "@material-ui/core/DialogContent";
+import DialogTitle from "@material-ui/core/DialogTitle";
+import Dialog from "@material-ui/core/Dialog";
+import {addResultToVar} from "../../redux/reducers/testReducer";
+import Radio from "@material-ui/core/Radio";
+import FormControlLabel from "@material-ui/core/FormControlLabel";
 
-const AddQuestion = ({test, setAddQuestionPopupState, addQuestion}) => {
+const AddQuestion = ({test, setAddQuestionPopupState, addQuestion, addResultToVar}) => {
 
     let [qObj, setQObj] = useState({
         qId: test.questions.length + 1,
@@ -17,6 +28,32 @@ const AddQuestion = ({test, setAddQuestionPopupState, addQuestion}) => {
         vars: []
     });
     let [qVarsCount, setQVarsCount] = useState([]);
+    const [open, setOpen] = React.useState(false);
+    const [selectVar, setSelectVar] = React.useState(0);
+
+    const addRes = (qId, varId, resIndex) => {
+        console.log('ID', qId, varId, resIndex)
+        let newVars = qObj.vars.map(v => {
+            if (v.varId === varId) {
+                v.res = resIndex;
+                return v;
+            } else {
+                return v;
+            }
+        });
+
+        setQObj({...qObj, vars: newVars});
+
+    };
+
+    const handleClickOpen = () => {
+        setOpen(true);
+    };
+
+    const handleClose = () => {
+        setOpen(false);
+        setSelectVar(0);
+    };
 
     const setQPic = event => {
         getFile(event);
@@ -38,7 +75,7 @@ const AddQuestion = ({test, setAddQuestionPopupState, addQuestion}) => {
     };
 
     const updateVarToQObj = (val, index) => {
-        let newVarText = {varId: index, varText: val, res: null};
+        let newVarText = {varId: qObj.vars[index].varId, varText: val, res: qObj.vars[index].res};
         let qObjVarsCopy = [...qObj.vars];
 
         for (let i = 0; i < qObjVarsCopy.length; i++) {
@@ -71,7 +108,7 @@ const AddQuestion = ({test, setAddQuestionPopupState, addQuestion}) => {
                 newQbjVarsCount.push(qVarsCountCopy[i]);
             }
         }
-
+        console.log(newQbjVars);
         setQVarsCount(newQbjVarsCount);
         setQObj({...qObj, vars: newQbjVars});
     };
@@ -85,9 +122,28 @@ const AddQuestion = ({test, setAddQuestionPopupState, addQuestion}) => {
         return (correctedInfo && correctedVars);
     };
 
+    const getResText = (index) => {
+        let resText = '';
+        test.results.forEach(res => {
+            if (res.resId === qObj.vars[index].res) {
+                resText = res.resText;
+            }
+        });
+
+        return resText;
+    };
+
     useEffect(() => {
-        console.log(qObj)
+        console.log(qObj.vars)
     }, [qObj]);
+
+    useEffect(() => {
+        console.log('SELECT VAR', selectVar)
+    }, [selectVar]);
+
+    useEffect(() => {
+        console.log('VARCOUNTS', qVarsCount)
+    }, [qVarsCount]);
 
     const styles = useStyles();
 
@@ -100,7 +156,7 @@ const AddQuestion = ({test, setAddQuestionPopupState, addQuestion}) => {
                 <Container className={styles.left}>
                     <Typography>Картинка:</Typography>
                 </Container>
-                <Container className={[styles.rightBtn, styles.cover]}>
+                <Container className={styles.rightBtn}>
                     <input
                         accept="image/*"
                         className={styles.addCoverInput}
@@ -129,7 +185,7 @@ const AddQuestion = ({test, setAddQuestionPopupState, addQuestion}) => {
                 <Container className={styles.left}>
                     <Typography>Вопрос:</Typography>
                 </Container>
-                <Container className={[styles.inputContainer]}>
+                <Container className={styles.inputContainer}>
                     <TextField
                         placeholder="Текст вопроса"
                         onChange={(event) => updateQObj('qText', event.target.value)}
@@ -164,6 +220,87 @@ const AddQuestion = ({test, setAddQuestionPopupState, addQuestion}) => {
                                 className={[styles.input]}
                             /><HighlightOff className={styles.deleteIcon}
                                             onClick={() => deleteVar(index)}/>
+                            <div className={styles.varResContainer}>
+                                <Button className={styles.addResBtn} onClick={() => {
+                                    setSelectVar(qObj.vars[index].varId);
+                                    handleClickOpen();
+                                }}>
+                                    {qObj.vars[index].res !== null
+                                        ? getResText(index)
+                                        : 'Выбрать результат для этого варианта'
+                                    }
+                                </Button>
+                                <Dialog
+                                        disableEscapeKeyDown
+                                        open={open}
+                                        onClose={handleClose}
+                                        fullWidth={true}
+                                        // style={{width: '50%'}}
+                                >
+                                    <DialogTitle>Выбор результата</DialogTitle>
+                                    <DialogContent>
+                                        <form className={styles.container}>
+                                            <FormControl className={styles.formControl}>
+                                                {/*<MenuItem value={null}>*/}
+                                                {/*    <em>Не учитывать этот вопрос</em>*/}
+                                                {/*</MenuItem>*/}
+                                                {/*{console.log('BLYAAAAAAA', selectVar, qObj.vars[index].varId)}*/}
+                                                <FormControlLabel
+                                                    control={<Radio
+                                                        checked={qObj.vars[index].res === null}
+                                                        onChange={() => addRes(qObj.qId, selectVar, null)}
+                                                        value=''
+                                                        name="res"
+                                                    />}
+                                                    label='Не учитывать этот вопрос'
+                                                />
+                                                {test.results.map((item, resIndex) => {
+                                                    {console.log('AAA', qObj.vars[index].res)}
+                                                    return  <FormControlLabel
+                                                        control={<Radio
+                                                            checked={qObj.vars[index].res === item.resId}
+                                                            onChange={() => addRes(qObj.qId, selectVar, resIndex)}
+                                                            value={item.varId}
+                                                            name="res"
+                                                        />}
+                                                        label={item.resText}
+                                                    />
+
+
+                                                        // <Typography>{item.resText}</Typography>
+
+                                                    // return
+                                                    // <MenuItem value={item.resId}>{item.resText}</MenuItem>
+                                                })}
+                                                {/*<Select*/}
+                                                {/*    labelId="resultDialogLabel"*/}
+                                                {/*    id="dialogSelect"*/}
+                                                {/*    value=''*/}
+                                                {/*    onChange={(event) => {*/}
+                                                {/*        addRes(qObj.qId, selectVar, event)*/}
+                                                {/*    }}*/}
+                                                {/*    input={<Input/>}*/}
+                                                {/*>*/}
+                                                {/*    <MenuItem value={null}>*/}
+                                                {/*        <em>Не учитывать этот вопрос</em>*/}
+                                                {/*    </MenuItem>*/}
+                                                {/*    {test.results.map(item => {*/}
+                                                {/*        return <MenuItem value={item.resId}>{item.resText}</MenuItem>*/}
+                                                {/*    })}*/}
+                                                {/*</Select>*/}
+                                            </FormControl>
+                                        </form>
+                                    </DialogContent>
+                                    <DialogActions>
+                                        <Button onClick={handleClose} color="primary">
+                                            Закрыть
+                                        </Button>
+                                        <Button onClick={handleClose} color="primary">
+                                            Готово
+                                        </Button>
+                                    </DialogActions>
+                                </Dialog>
+                            </div>
                         </Container>
                     })}
                 </Container>
@@ -266,12 +403,12 @@ var useStyles = makeStyles({
     input: {
         width: '100%',
         padding: 0,
+        paddingRight: 25,
     },
     deleteIcon: {
         position: 'absolute',
         right: 0,
-        top: '50%',
-        transform: 'translateY(-50%)',
+        top: 5,
         color: '#c62828',
         cursor: 'pointer'
     },
@@ -283,7 +420,13 @@ var useStyles = makeStyles({
         top: 10,
         right: 10,
         cursor: 'pointer',
-
+    },
+    varResContainer: {
+        textAlign: 'left'
+    },
+    addResBtn: {
+        padding: 0,
+        marginTop: 5
     }
 });
 
