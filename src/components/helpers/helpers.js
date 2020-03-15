@@ -10,3 +10,12 @@ export const convertToBase64 = (file, cb) => {
 
 };
 
+export const generateNewIndex = (iteratedArr, idField) => {
+    console.log('ITER', iteratedArr)
+    let sortedIds = [];
+    iteratedArr.forEach(item => {
+        sortedIds.push(item[idField]);
+    });
+
+    return sortedIds.sort()[sortedIds.length - 1] + 1;
+};

@@ -1,50 +1,22 @@
 import React, {useEffect, useState} from "react";
-import {Button, Checkbox, Container, Typography} from "@material-ui/core";
+import {Button, Container, Typography} from "@material-ui/core";
 import Card from "@material-ui/core/Card";
-import {convertToBase64} from "../helpers/helpers";
+import {convertToBase64, generateNewIndex} from "../helpers/helpers";
 import {makeStyles} from "@material-ui/styles";
 import CloseIcon from '@material-ui/icons/Close';
 import PhotoCameraIcon from '@material-ui/icons/PhotoCamera';
 import TextField from "@material-ui/core/TextField";
-import {addResultToVar} from "../../redux/reducers/testReducer";
-import Radio from "@material-ui/core/Radio";
 
-const AddResult = ({test, setAddQuestionPopupState, addResultToVar}) => {
-
+const AddResult = ({test, setAddResultPopupState, addResult}) => {
     let [resObj, setResObj] = useState({
-        resId: test.results.length + 1,
+        resId: generateNewIndex(test.results, 'resId'),
         resText: '',
+        resDesc: '',
         resPic: null
     });
-    // let [qVarsCount, setQVarsCount] = useState([]);
 
     const setResPic = event => {
         getFile(event);
-    };
-
-    const addRes = (qId, varId) => {
-        // test.questions[qId].vars.map((item, index) => {
-        //     if (index === varId) {
-        //         item.res = resObj.resId;
-        //         console.log(item)
-        //     }
-        // console.log(qId, varId)
-        //console.log(test.questions[qId].vars[varId].res);
-        // for (let i = 0; i < test.questions[qId].vars.length; i++) {
-            // console.log(test.questions[qId].vars[i].res)
-
-            if(test.questions[qId].vars.some((item) => {
-                return item.res !== resObj.resId;
-            })) {
-                addResultToVar(qId, varId, resObj.resId)
-            }
-            // if (test.questions[qId].vars[i].res === resObj.resId) {
-            //     console.log('if')
-            //     break;
-            // } else {
-            //     addResultToVar(qId, varId, resObj.resId);
-            // }
-        // }
     };
 
     const getFile = (event) => {
@@ -55,21 +27,13 @@ const AddResult = ({test, setAddQuestionPopupState, addResultToVar}) => {
         });
     };
 
-    // const updateVarToQObj = (val, index) => {
-    //     let newVarText = {varId: index, varText: val, res: null};
-    //     let qObjVarsCopy = [...qObj.vars];
-    //
-    //     for (let i = 0; i < qObjVarsCopy.length; i++) {
-    //         if (i !== index) continue;
-    //         qObjVarsCopy[i] = newVarText;
-    //     }
-    //
-    //     setQObj({...qObj, vars: qObjVarsCopy});
-    // };
-
     const updateResObj = (field, val) => {
         if (field === 'resText') {
             setResObj({...resObj, resText: val});
+        }
+
+        if (field === 'resDesc') {
+            setResObj({...resObj, resDesc: val});
         }
 
         if (field === 'resPic') {
@@ -77,31 +41,9 @@ const AddResult = ({test, setAddQuestionPopupState, addResultToVar}) => {
         }
     };
 
-    // const deleteVar = (index) => {
-    //     let qObjVarsCopy = [...qObj.vars];
-    //     let qVarsCountCopy = [...qVarsCount]
-    //     let newQbjVars = [];
-    //     let newQbjVarsCount = [];
-    //
-    //     for (let i = 0; i < qObjVarsCopy.length; i++) {
-    //         if (i !== index) {
-    //             newQbjVars.push(qObjVarsCopy[i]);
-    //             newQbjVarsCount.push(qVarsCountCopy[i]);
-    //         }
-    //     }
-    //
-    //     setQVarsCount(newQbjVarsCount);
-    //     setQObj({...qObj, vars: newQbjVars});
-    // };
-    //
-    // const validate = () => {
-    //     let correctedInfo = (!!qObj.qText && !!qObj.qPic);
-    //     let correctedVars = qObj.vars.every((item) => {
-    //         return item.varText !== '';
-    //     });
-    //
-    //     return (correctedInfo && correctedVars);
-    // };
+    const validate = () => {
+        return (!!resObj.resText && !!resObj.resPic);
+    };
 
     useEffect(() => {
         console.log(resObj)
@@ -113,7 +55,7 @@ const AddResult = ({test, setAddQuestionPopupState, addResultToVar}) => {
         <Card className={styles.popup} raised>
             <CloseIcon className={styles.close}
                        fontSize="large"
-                       onClick={() => setAddQuestionPopupState(false)}/>
+                       onClick={() => setAddResultPopupState(false)}/>
             <Container className={styles.row}>
                 <Container className={styles.left}>
                     <Typography>Картинка:</Typography>
@@ -145,14 +87,27 @@ const AddResult = ({test, setAddQuestionPopupState, addResultToVar}) => {
             </Container>
             <Container className={styles.row}>
                 <Container className={styles.left}>
-                    <Typography>Текст:</Typography>
+                    <Typography>Текст результата:</Typography>
+                </Container>
+                <Container className={styles.inputContainer}>
+                    <TextField
+                        placeholder="Текст результата"
+                        onChange={(event) => updateResObj('resText', event.target.value)}
+                        value={resObj.resText}
+                        className={styles.input}
+                    />
+                </Container>
+            </Container>
+            <Container className={styles.row}>
+                <Container className={styles.left}>
+                    <Typography>Описание результата:</Typography>
                 </Container>
                 <Container className={[styles.inputContainer]}>
                     <TextField
                         multiline={true}
                         placeholder="Описание результата"
-                        onChange={(event) => updateResObj('resText', event.target.value)}
-                        value={resObj.qText}
+                        onChange={(event) => updateResObj('resDesc', event.target.value)}
+                        value={resObj.resDesc}
                         className={styles.input}
                         rows={5}
                     />
@@ -160,87 +115,28 @@ const AddResult = ({test, setAddQuestionPopupState, addResultToVar}) => {
             </Container>
             <Container className={styles.row}>
                 <Container className={styles.left}>
-                    <Typography>Выбор ответов:</Typography>
+                    <Typography> </Typography>
                 </Container>
-                <Container className={[styles.inputContainer]}>
-                    {test.questions.map((item, index) => {
-                        return <Container>
-                            <Typography>{item.qText}</Typography>
-                            <Container>
-                                {item.vars.map((v, i) => {
-                                    return <Button style={styles.radioCard} onClick={() => {
-                                            addRes(item.qId, v.varId)
-                                    }}>
-                                        <Radio
-                                            checked={resObj.resId === v.res}
-
-                                            // value={v.varId}
-                                            name=""
-                                        />
-                                        <Typography>{v.varText}</Typography>
-                                    </Button>
-                                })}
-                            </Container>
-
-                        </Container>
-                    })}
-
+                <Container className={[styles.rightBtn]}>
+                    <Button variant="contained"
+                            disabled={!validate()}
+                            component="span"
+                            color={validate() ? 'primary' : 'secondary'}
+                            className={styles.btn}
+                            onClick={() => {
+                                if (validate()) {
+                                    addResult(resObj);
+                                    setAddResultPopupState(false);
+                                }
+                            }
+                            }>
+                        {validate() ? 'Готово' : 'Не все поля заполнены'}
+                    </Button>
                 </Container>
             </Container>
-            {/*<Container className={styles.row}>*/}
-            {/*    <Container className={styles.left}>*/}
-            {/*        <Typography>Варианты ответа:</Typography>*/}
-            {/*    </Container>*/}
-            {/*    <Container className={[styles.rightBtn, styles.cover]}>*/}
-            {/*        <Button variant="contained" disabled={qVarsCount.length === 5} component="span"*/}
-            {/*                className={styles.btn}*/}
-            {/*                onClick={() => addVar()}>*/}
-            {/*            Добавить*/}
-            {/*        </Button>*/}
-            {/*    </Container>*/}
-            {/*</Container>*/}
-            {/*<Container className={styles.row}>*/}
-            {/*    <Container className={styles.left}>*/}
-            {/*        <Typography> </Typography>*/}
-            {/*    </Container>*/}
-            {/*    <Container className={styles.vars}>*/}
-            {/*        {qVarsCount.map((count, index) => {*/}
-            {/*            return <Container className={[styles.inputContainer, styles.varInputContainer]} key={index}>*/}
-            {/*                <Input*/}
-            {/*                    onChange={(event) => updateVarToQObj(event.target.value, index)}*/}
-            {/*                    value={qObj.vars[index].varText}*/}
-            {/*                    placeholder="Введите вариант ответа"*/}
-            {/*                    className={[styles.input]}*/}
-            {/*                /><HighlightOff className={styles.deleteIcon}*/}
-            {/*                                onClick={() => deleteVar(index)}/>*/}
-            {/*            </Container>*/}
-            {/*        })}*/}
-            {/*    </Container>*/}
-            {/*</Container>*/}
-            {/*<Container className={styles.row}>*/}
-            {/*    <Container className={styles.left}>*/}
-            {/*        <Typography> </Typography>*/}
-            {/*    </Container>*/}
-            {/*    <Container className={[styles.rightBtn]}>*/}
-            {/*        <Button variant="contained"*/}
-            {/*                disabled={qVarsCount.length === 0}*/}
-            {/*                component="span"*/}
-            {/*                color={validate() ? 'primary' : 'secondary'}*/}
-            {/*                className={styles.btn}*/}
-            {/*                onClick={() => {*/}
-            {/*                    if (validate()) {*/}
-            {/*                        addQuestion(qObj);*/}
-            {/*                        setAddQuestionPopupState(false);*/}
-            {/*                    }*/}
-            {/*                }*/}
-            {/*                }>*/}
-            {/*            {validate() ? 'Готово' : 'Не все поля заполнены'}*/}
-            {/*        </Button>*/}
-            {/*    </Container>*/}
-            {/*</Container>*/}
         </Card>
     )
-}
+};
 
 var useStyles = makeStyles({
     popup: {

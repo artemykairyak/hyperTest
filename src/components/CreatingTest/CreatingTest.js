@@ -17,14 +17,17 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import AddQuestion from "./AddQuestion";
 import {convertToBase64} from '../helpers/helpers';
 import AddResult from "./AddResult";
+import DeleteResultPopup from "./DeleteResultPopup";
 
-const CreatingTest = ({addGender, test, addTitle, addPicture, deleteVar, addQuestion, addResultToVar}) => {
-    let [gender, setLocaltGender] = useState(0);
-    let [addQuestionPopupState, setAddQuestionPopupState] = useState(true);
+const CreatingTest = ({addGender, test, addTitle, addPicture, deleteQuestion, deleteResult, addQuestion, addResult}) => {
+    let [gender, setLocalGender] = useState(0);
+    let [addQuestionPopupState, setAddQuestionPopupState] = useState(false);
     let [addResultPopupState, setAddResultPopupState] = useState(false);
+    let [deleteResultPopup, setDeleteResultPopup] = useState(false);
+    let [selectedResult, setSelectedResult] = useState(null);
 
     const setGender = (val) => {
-        setLocaltGender(val);
+        setLocalGender(val);
         addGender(gender)
     };
 
@@ -55,11 +58,17 @@ const CreatingTest = ({addGender, test, addTitle, addPicture, deleteVar, addQues
             {addQuestionPopupState && <AddQuestion setAddQuestionPopupState={setAddQuestionPopupState}
                                                    addQuestion={addQuestion}
                                                    test={test}
-                                                   addResultToVar={addResultToVar}/>}
+            />
+            }
             {addResultPopupState && <AddResult setAddResultPopupState={setAddResultPopupState}
-                                               addResult={addQuestion}
+                                               addResult={addResult}
                                                test={test}
-                                               addResultToVar={addResultToVar}/>}
+            />
+            }
+            {deleteResultPopup && <DeleteResultPopup setDeleteResultPopup={setDeleteResultPopup}
+                                                     deleteResult={deleteResult}
+                                                     selectedResult={selectedResult}/>}
+
             <Card style={styles.container} elevation={2}>
                 <Container style={styles.row}>
                     <Container style={styles.left}>
@@ -73,7 +82,6 @@ const CreatingTest = ({addGender, test, addTitle, addPicture, deleteVar, addQues
                             }}>
                                 <Radio
                                     checked={gender === 0}
-
                                     value={0}
                                     name="gender"
                                 />
@@ -155,7 +163,9 @@ const CreatingTest = ({addGender, test, addTitle, addPicture, deleteVar, addQues
                     {test.results.map((item, index) => {
                         return <Card key={index} style={styles.row}>
                             <IconButton aria-label="delete" onClick={() => {
-                                deleteVar(index)
+                                setSelectedResult(item.resId);
+                                setDeleteResultPopup(true);
+                                // deleteResult(index)
                             }} style={styles.deleteIcon}>
                                 <DeleteIcon/>
                             </IconButton>
@@ -183,7 +193,7 @@ const CreatingTest = ({addGender, test, addTitle, addPicture, deleteVar, addQues
                     {test.questions.map((item, index) => {
                         return <Card key={index} style={styles.row}>
                             <IconButton aria-label="delete" onClick={() => {
-                                deleteVar(index)
+                                deleteQuestion(index)
                             }} style={styles.deleteIcon}>
                                 <DeleteIcon/>
                             </IconButton>
@@ -195,6 +205,7 @@ const CreatingTest = ({addGender, test, addTitle, addPicture, deleteVar, addQues
                             <Container style={styles.varInfo}>
                                 <Typography style={styles.qTitle}>{item.qText}</Typography>
                                 <List style={styles.vars}>
+
                                     {item.vars.map((variant, index) => {
                                         return <React.Fragment key={index}><ListItem>
                                             <ListItemText primary={variant.varText}/>

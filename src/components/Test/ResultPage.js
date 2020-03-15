@@ -9,6 +9,7 @@ const ResultPage = ({result, back}) => {
                 <img style={styles.resImg} src={result.resPic} alt=''/>
             </Card>
             <Typography>{result.resText}</Typography>
+            <Typography style={{marginTop: 15}}>{result.resDesc}</Typography>
             <Button style={styles.backBtn} onClick={() => back()} variant="contained" color="primary">Назад</Button>
         </Card>
     )

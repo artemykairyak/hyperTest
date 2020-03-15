@@ -1,41 +1,37 @@
 import React, {useEffect, useState} from "react";
 import {Button, Container, Input, Typography} from "@material-ui/core";
 import Card from "@material-ui/core/Card";
-import {convertToBase64} from "../helpers/helpers";
+import {convertToBase64, generateNewIndex} from "../helpers/helpers";
 import {HighlightOff} from '@material-ui/icons';
 import {makeStyles} from "@material-ui/styles";
 import CloseIcon from '@material-ui/icons/Close';
 import PhotoCameraIcon from '@material-ui/icons/PhotoCamera';
 import TextField from "@material-ui/core/TextField";
-import Select from "@material-ui/core/Select";
-import MenuItem from "@material-ui/core/MenuItem";
 import FormControl from "@material-ui/core/FormControl";
-import InputLabel from "@material-ui/core/InputLabel";
 import DialogActions from "@material-ui/core/DialogActions";
 import DialogContent from "@material-ui/core/DialogContent";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import Dialog from "@material-ui/core/Dialog";
-import {addResultToVar} from "../../redux/reducers/testReducer";
 import Radio from "@material-ui/core/Radio";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 
-const AddQuestion = ({test, setAddQuestionPopupState, addQuestion, addResultToVar}) => {
-
+const AddQuestion = ({test, setAddQuestionPopupState, addQuestion}) => {
     let [qObj, setQObj] = useState({
-        qId: test.questions.length + 1,
+        qId: generateNewIndex(test.questions, 'qId'),
         qText: '',
         qPic: null,
         vars: []
     });
+
     let [qVarsCount, setQVarsCount] = useState([]);
-    const [open, setOpen] = React.useState(false);
-    const [selectVar, setSelectVar] = React.useState(0);
+    let [open, setOpen] = React.useState(false);
+    let [selectVar, setSelectVar] = React.useState(0);
 
     const addRes = (qId, varId, resIndex) => {
         console.log('ID', qId, varId, resIndex)
         let newVars = qObj.vars.map(v => {
             if (v.varId === varId) {
-                v.res = resIndex;
+                v.res = test.results[resIndex].resId;
                 return v;
             } else {
                 return v;
@@ -108,9 +104,9 @@ const AddQuestion = ({test, setAddQuestionPopupState, addQuestion, addResultToVa
                 newQbjVarsCount.push(qVarsCountCopy[i]);
             }
         }
-        console.log(newQbjVars);
         setQVarsCount(newQbjVarsCount);
         setQObj({...qObj, vars: newQbjVars});
+        setSelectVar(0);
     };
 
     const validate = () => {
@@ -131,6 +127,18 @@ const AddQuestion = ({test, setAddQuestionPopupState, addQuestion, addResultToVa
         });
 
         return resText;
+    };
+
+    const returnChecked = (resIndex) => {
+        let checked = false;
+
+        for (let i = 0; i < qObj.vars.length; i++) {
+            if (qObj.vars[i].varId === selectVar && qObj.vars[i].res === test.results[resIndex].resId) {
+                checked = true;
+                break;
+            }
+        }
+        return checked;
     };
 
     useEffect(() => {
@@ -235,59 +243,23 @@ const AddQuestion = ({test, setAddQuestionPopupState, addQuestion, addResultToVa
                                         open={open}
                                         onClose={handleClose}
                                         fullWidth={true}
-                                        // style={{width: '50%'}}
                                 >
                                     <DialogTitle>Выбор результата</DialogTitle>
                                     <DialogContent>
                                         <form className={styles.container}>
                                             <FormControl className={styles.formControl}>
-                                                {/*<MenuItem value={null}>*/}
-                                                {/*    <em>Не учитывать этот вопрос</em>*/}
-                                                {/*</MenuItem>*/}
-                                                {/*{console.log('BLYAAAAAAA', selectVar, qObj.vars[index].varId)}*/}
-                                                <FormControlLabel
-                                                    control={<Radio
-                                                        checked={qObj.vars[index].res === null}
-                                                        onChange={() => addRes(qObj.qId, selectVar, null)}
-                                                        value=''
-                                                        name="res"
-                                                    />}
-                                                    label='Не учитывать этот вопрос'
-                                                />
                                                 {test.results.map((item, resIndex) => {
-                                                    {console.log('AAA', qObj.vars[index].res)}
                                                     return  <FormControlLabel
                                                         control={<Radio
-                                                            checked={qObj.vars[index].res === item.resId}
+                                                            checked={returnChecked(resIndex)}
                                                             onChange={() => addRes(qObj.qId, selectVar, resIndex)}
                                                             value={item.varId}
                                                             name="res"
                                                         />}
                                                         label={item.resText}
                                                     />
-
-
-                                                        // <Typography>{item.resText}</Typography>
-
-                                                    // return
-                                                    // <MenuItem value={item.resId}>{item.resText}</MenuItem>
                                                 })}
-                                                {/*<Select*/}
-                                                {/*    labelId="resultDialogLabel"*/}
-                                                {/*    id="dialogSelect"*/}
-                                                {/*    value=''*/}
-                                                {/*    onChange={(event) => {*/}
-                                                {/*        addRes(qObj.qId, selectVar, event)*/}
-                                                {/*    }}*/}
-                                                {/*    input={<Input/>}*/}
-                                                {/*>*/}
-                                                {/*    <MenuItem value={null}>*/}
-                                                {/*        <em>Не учитывать этот вопрос</em>*/}
-                                                {/*    </MenuItem>*/}
-                                                {/*    {test.results.map(item => {*/}
-                                                {/*        return <MenuItem value={item.resId}>{item.resText}</MenuItem>*/}
-                                                {/*    })}*/}
-                                                {/*</Select>*/}
+                                                <Typography className={styles.dialogText}>Если не выбрано ничего — ответ на этот вопрос не влияет на результат.</Typography>
                                             </FormControl>
                                         </form>
                                     </DialogContent>
@@ -427,6 +399,9 @@ var useStyles = makeStyles({
     addResBtn: {
         padding: 0,
         marginTop: 5
+    },
+    dialogText: {
+        marginTop: 15
     }
 });
 
