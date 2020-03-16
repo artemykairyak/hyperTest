@@ -4,11 +4,10 @@ import CreatingTest from './CreatingTest';
 import {addGender, addTitle, addPicture} from './../../redux/reducers/testReducer';
 import {
     addQuestion,
-    addResult,
-    deleteQuestion, deleteResult,
+    addResult, createTestTC,
+    deleteQuestion, deleteResult, setEmptyTest,
     setPopupDisplayed, setQuestions
 } from "../../redux/reducers/testReducer";
-import * as axios from "axios";
 
 const CreatingTestContainer = ({
                                    addGender,
@@ -20,14 +19,29 @@ const CreatingTestContainer = ({
                                    deleteQuestion,
                                    deleteResult,
                                    setPopupDisplayed,
-                                   setQuestions
+                                   setQuestions,
+                                   setEmptyTest,
+                                   createTestTC
                                }) => {
     useEffect(() => {
         console.log(test);
     }, [test]);
 
+    useEffect(() => {
+        console.log('setempty')
+        setEmptyTest();
+    }, []);
+
+    const validation = () => {
+        console.log('title', !!test.title);
+        console.log('picture', !!test.picture);
+        console.log('results', test.results.length > 0);
+        console.log('questions', test.questions > 0);
+
+            return (test.title && test.picture && test.results.length > 0 && test.questions.length > 0);
+    };
+
     const _deleteQuestion = (qIndex) => {
-        console.log(test.questions[qIndex])
         deleteQuestion(qIndex)
     };
 
@@ -35,7 +49,6 @@ const CreatingTestContainer = ({
         let questionsCopy = test.questions;
         for (let i = 0; i < questionsCopy.length; i++) {
             for (let j = 0; j < questionsCopy[i].vars.length; j++) {
-                console.log(j)
                 if (questionsCopy[i].vars[j].res === resId) {
                     questionsCopy[i].vars[j].res = null;
                 }
@@ -43,24 +56,10 @@ const CreatingTestContainer = ({
         }
         deleteResult(resId);
         setQuestions(questionsCopy);
-
     };
 
-    // const testA = () => {
-    //     let data = test;
-    //     console.log(data);
-    //     axios.post('https://cors-anywhere.herokuapp.com/http://37.230.114.75:8000/api/tests', data)
-    //         .then(function (response) {
-    //             console.log(response);
-    //         })
-    //         .catch(function (error) {
-    //             console.log(error);
-    //         });
-    // }
-    //
-    // testA();
-
     return <CreatingTest
+        validation={validation}
         test={test}
         addGender={addGender}
         addTitle={addTitle}
@@ -70,6 +69,7 @@ const CreatingTestContainer = ({
         addQuestion={addQuestion}
         setPopupDisplayed={setPopupDisplayed}
         addResult={addResult}
+        createTest={createTestTC}
     />
 };
 
@@ -91,5 +91,7 @@ export default connect(mapStateToProps, {
     setPopupDisplayed,
     addQuestion,
     addResult,
-    setQuestions
+    setQuestions,
+    setEmptyTest,
+    createTestTC
 })(CreatingTestContainer);

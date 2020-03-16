@@ -1,4 +1,9 @@
+import {testsAPI} from "../../api/api";
+import {setMode, setTestMode} from "./mainReducer";
+
 const SET_TEST = 'SET_TEST';
+const SET_EMPTY_TEST = 'SET_EMPTY_TEST';
+const CLEAR_ANSWERS = 'CLEAR_ANSWERS';
 const ADD_RESULT = 'ADD_RESULT';
 const ADD_QUESTION = 'ADD_QUESTION';
 const SET_QUESTIONS = 'SET_QUESTIONS';
@@ -13,6 +18,19 @@ const SET_COMPLETE = 'SET_COMPLETE';
 const ADD_GENDER = 'SET_GENDER';
 const ADD_TITLE = 'SET_TITLE';
 const SET_POPUP_DISPLAYED = 'SET_POPUP_DISPLAYED';
+
+let template = {
+    id: 0,
+    isPublished: false,
+    description: '',
+    vip: false,
+    price: 0,
+    gender: 0,
+    title: '',
+    picture: null,
+    results: [],
+    questions: []
+};
 
 let initialState = {
     popupDisplayed: 0,
@@ -94,6 +112,11 @@ const testReducer = (state = initialState, action) => {
                 ...state,
                 test: action.test
             };
+        case SET_EMPTY_TEST:
+            return {
+                ...state,
+                test: template
+            };
         case ADD_RESULT:
             console.log('RERER', action.result)
             return {
@@ -162,8 +185,12 @@ const testReducer = (state = initialState, action) => {
                 ...state,
                 test: {...state.test, picture: action.picture},
             };
+        case CLEAR_ANSWERS:
+            return {
+                ...state,
+                answers: [],
+            };
         case SET_POPUP_DISPLAYED:
-            console.log(action.popupId);
             return {
                 ...state,
                 popupDisplayed: action.popupId,
@@ -174,6 +201,7 @@ const testReducer = (state = initialState, action) => {
 };
 
 export const setTest = (test) => ({type: SET_TEST, test});
+export const setEmptyTest = () => ({type: SET_EMPTY_TEST});
 export const addResult = (result) => ({type: ADD_RESULT, result});
 export const addQuestion = (question) => ({type: ADD_QUESTION, question});
 export const deleteQuestion = (qIndex) => ({type: DELETE_QUESTION, qIndex});
@@ -188,12 +216,22 @@ export const addTitle = (title) => ({type: ADD_TITLE, title});
 export const addPicture = (picture) => ({type: ADD_PICTURE, picture});
 export const setPopupDisplayed = (popupId) => ({type: SET_POPUP_DISPLAYED, popupId});
 export const setQuestions = (questions) => ({type: SET_QUESTIONS, questions});
+export const clearAnswers = () => ({type: CLEAR_ANSWERS});
 
 export const setTestTC = (id) => async (dispatch) => {
-    //здесь будет запрос
-    // let response = await
-    // dispatch(setTest(response.test));
+    let response = await testsAPI.getTest(id);
 
+    console.log(response);
+    dispatch(setTest(response));
+    dispatch(setTestMode(true))
+};
+
+export const createTestTC = (test) => async (dispatch) => {
+    let response = await testsAPI.createTest(test);
+
+    console.log(response);
+    dispatch(setEmptyTest());
+    dispatch(setMode(0));
 };
 
 export default testReducer;

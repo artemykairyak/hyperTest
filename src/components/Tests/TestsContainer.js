@@ -1,16 +1,25 @@
-import React from "react";
+import React, {useEffect} from "react";
 import {connect} from "react-redux";
 import Tests from "./Tests";
-import {setTestMode} from "../../redux/reducers/mainReducer";
+import {getTests, setTestMode} from "../../redux/reducers/mainReducer";
+import {setTestTC} from "../../redux/reducers/testReducer";
+import Preloader from "../Common/Preloader";
 
-const TestsContainer = ({tests, setTestMode, mode}) => {
+const TestsContainer = ({tests, setTestTC, getTests, mode, isLoaded}) => {
     const handleTestClick = (id) => {
-        setTestMode(true);
+        setTestTC(id);
     };
 
-    return (
-        <Tests tests={tests} activeTab={mode} handleTestClick={handleTestClick}/>
-    )
+    useEffect(() => {
+        console.log('gettests')
+        getTests();
+    },[]);
+
+    if(isLoaded) {
+        return  <Tests tests={tests} activeTab={mode} handleTestClick={handleTestClick}/>
+    } else {
+        return <Preloader/>
+    }
 };
 
 const mapStateToProps = (state) => {
@@ -18,7 +27,8 @@ const mapStateToProps = (state) => {
         tests: state.mainScreen.tests,
         testMode: state.mainScreen.testMode,
         mode: state.mainScreen.mode,
+        isLoaded: state.mainScreen.isLoaded
     }
 };
 
-export default connect(mapStateToProps, {setTestMode})(TestsContainer);
+export default connect(mapStateToProps, {setTestMode, getTests, setTestTC})(TestsContainer);

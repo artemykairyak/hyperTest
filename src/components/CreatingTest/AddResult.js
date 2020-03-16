@@ -19,6 +19,10 @@ const AddResult = ({test, setAddResultPopupState, addResult}) => {
         getFile(event);
     };
 
+    useEffect(() => {
+        console.log(test);
+    },[test]);
+
     const getFile = (event) => {
         let fileList = event.target.files;
 
@@ -46,7 +50,7 @@ const AddResult = ({test, setAddResultPopupState, addResult}) => {
     };
 
     useEffect(() => {
-        console.log(resObj)
+        console.log('resObj', resObj)
     }, [resObj]);
 
     const styles = useStyles();

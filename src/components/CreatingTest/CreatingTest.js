@@ -19,7 +19,7 @@ import {convertToBase64} from '../helpers/helpers';
 import AddResult from "./AddResult";
 import DeleteResultPopup from "./DeleteResultPopup";
 
-const CreatingTest = ({addGender, test, addTitle, addPicture, deleteQuestion, deleteResult, addQuestion, addResult}) => {
+const CreatingTest = ({addGender, test, addTitle, addPicture, deleteQuestion, deleteResult, addQuestion, addResult, validation, createTest}) => {
     let [gender, setLocalGender] = useState(0);
     let [addQuestionPopupState, setAddQuestionPopupState] = useState(false);
     let [addResultPopupState, setAddResultPopupState] = useState(false);
@@ -153,7 +153,7 @@ const CreatingTest = ({addGender, test, addTitle, addPicture, deleteQuestion, de
                         <Typography> </Typography>
                     </Container>
                     <Container style={styles.coverImgContainer}>
-                        <img style={styles.coverImg} src={test.picture} alt={test.title}/>
+                        <img style={styles.coverImg} src={test.picture} alt=""/>
                     </Container>
                 </Container>
                 <Container>
@@ -221,6 +221,22 @@ const CreatingTest = ({addGender, test, addTitle, addPicture, deleteQuestion, de
                     <Button variant="contained" component="span" style={styles.addQuestionBtn}
                             onClick={() => setAddQuestionPopupState(true)}>
                         Добавить вопрос
+                    </Button>
+                </Container>
+                <Container>
+                    <Button variant="contained"
+                            color="primary"
+                            component="span"
+                            disabled={!validation()}
+                            style={styles.addQuestionBtn}
+                            onClick={() => {
+                                if(validation()) {
+                                    createTest(test);
+
+                                }
+
+                            }}>
+                       Создать тест
                     </Button>
                 </Container>
 

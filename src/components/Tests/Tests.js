@@ -17,14 +17,14 @@ const Tests = ({tests, activeTab, handleTestClick}) => {
             >
                 {tests.map((item) => {
                     return <Card style={styles.testCard}
-                                 key={item.testId}
-                                 onClick={() => handleTestClick()}
+                                 key={item.id}
+                                 onClick={() => handleTestClick(item.id)}
                               >
                             <CardActionArea style={styles.testArea}>
-                                <img src={item.testPic} alt="" style={styles.testPic}/>
+                                <img src={item.picture} alt="" style={styles.testPic}/>
                                 <CardContent>
                                     <Typography gutterBottom variant="h5" component="h2">
-                                        {item.testTitle}
+                                        {item.title}
                                     </Typography>
                                 </CardContent>
                             </CardActionArea>
