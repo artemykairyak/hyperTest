@@ -18,13 +18,29 @@ import AddQuestion from "./AddQuestion";
 import {convertToBase64} from '../helpers/helpers';
 import AddResult from "./AddResult";
 import DeleteResultPopup from "./DeleteResultPopup";
+import EditIcon from '@material-ui/icons/Edit';
 
-const CreatingTest = ({addGender, test, addTitle, addPicture, deleteQuestion, deleteResult, addQuestion, addResult, validation, createTest}) => {
+const CreatingTest = ({
+                          addGender,
+                          test,
+                          addTitle,
+                          addPicture,
+                          deleteQuestion,
+                          editQuestion,
+                          deleteResult,
+                          addQuestion,
+                          addResult,
+                          validation,
+                          editResult,
+                          createTest
+                      }) => {
     let [gender, setLocalGender] = useState(0);
     let [addQuestionPopupState, setAddQuestionPopupState] = useState(false);
     let [addResultPopupState, setAddResultPopupState] = useState(false);
     let [deleteResultPopup, setDeleteResultPopup] = useState(false);
     let [selectedResult, setSelectedResult] = useState(null);
+    let [editedQuestion, setEditedQuestion] = useState(null);
+    let [editedResult, setEditedResult] = useState(null);
 
     const setGender = (val) => {
         setLocalGender(val);
@@ -45,6 +61,14 @@ const CreatingTest = ({addGender, test, addTitle, addPicture, deleteQuestion, de
         })
     };
 
+    const cropText = (text) => {
+        console.log('length', text.length);
+        if(text.length > 255) {
+            return text.slice(0, 255) + '...';
+        }
+        return text;
+    };
+
     const setTestPic = event => {
         getFile(event, 'testPic');
     };
@@ -53,16 +77,30 @@ const CreatingTest = ({addGender, test, addTitle, addPicture, deleteQuestion, de
         console.log(test);
     }, [test])
 
+    useEffect(() => {
+        console.log('editedQ', editedQuestion);
+    }, [editedQuestion]);
+
+    useEffect(() => {
+        console.log('editedRES', editedResult);
+    }, [editedResult])
+
     return (
         <Box>
             {addQuestionPopupState && <AddQuestion setAddQuestionPopupState={setAddQuestionPopupState}
                                                    addQuestion={addQuestion}
+                                                   editedQuestion={editedQuestion}
+                                                   setEditedQuestion={setEditedQuestion}
+                                                   editQuestion={editQuestion}
                                                    test={test}
             />
             }
             {addResultPopupState && <AddResult setAddResultPopupState={setAddResultPopupState}
                                                addResult={addResult}
+                                               editedResult={editedResult}
+                                               setEditedResult={setEditedResult}
                                                test={test}
+                                               editResult={editResult}
             />
             }
             {deleteResultPopup && <DeleteResultPopup setDeleteResultPopup={setDeleteResultPopup}
@@ -162,10 +200,15 @@ const CreatingTest = ({addGender, test, addTitle, addPicture, deleteQuestion, de
                 <Container style={styles.results}>
                     {test.results.map((item, index) => {
                         return <Card key={index} style={styles.row}>
+                            <IconButton aria-label="edit" onClick={() => {
+                                setEditedResult(item);
+                                setAddResultPopupState(true);
+                            }} style={styles.editIcon}>
+                                <EditIcon/>
+                            </IconButton>
                             <IconButton aria-label="delete" onClick={() => {
                                 setSelectedResult(item.resId);
                                 setDeleteResultPopup(true);
-                                // deleteResult(index)
                             }} style={styles.deleteIcon}>
                                 <DeleteIcon/>
                             </IconButton>
@@ -175,23 +218,30 @@ const CreatingTest = ({addGender, test, addTitle, addPicture, deleteQuestion, de
                                 </Container>
                             </Container>
                             <Container style={styles.resInfo}>
-                                <Typography>{item.resText}</Typography>
+                                <Typography style={styles.resultText}>{item.resText}</Typography>
+                                <Typography>{cropText(item.resDesc)}</Typography>
                             </Container>
                         </Card>
                     })}
                 </Container>
                 <Container>
-                    <Button variant="contained" component="span" style={styles.addQuestionBtn}
+                    <Button variant="contained" color="primary" component="span" style={styles.addQuestionBtn}
                             onClick={() => setAddResultPopupState(true)}>
                         Добавить результат
                     </Button>
                 </Container>
                 <Container style={styles.questionsTitle}>
-                    <Typography>Список вопросов</Typography>
+                    <Typography style={styles.questionsText}>Список вопросов</Typography>
                 </Container>
                 <Container style={styles.questions}>
                     {test.questions.map((item, index) => {
                         return <Card key={index} style={styles.row}>
+                            <IconButton aria-label="edit" onClick={() => {
+                                setEditedQuestion(item);
+                                setAddQuestionPopupState(true);
+                            }} style={styles.editIcon}>
+                                <EditIcon/>
+                            </IconButton>
                             <IconButton aria-label="delete" onClick={() => {
                                 deleteQuestion(index)
                             }} style={styles.deleteIcon}>
@@ -205,7 +255,6 @@ const CreatingTest = ({addGender, test, addTitle, addPicture, deleteQuestion, de
                             <Container style={styles.varInfo}>
                                 <Typography style={styles.qTitle}>{item.qText}</Typography>
                                 <List style={styles.vars}>
-
                                     {item.vars.map((variant, index) => {
                                         return <React.Fragment key={index}><ListItem>
                                             <ListItemText primary={variant.varText}/>
@@ -218,7 +267,7 @@ const CreatingTest = ({addGender, test, addTitle, addPicture, deleteQuestion, de
                     })}
                 </Container>
                 <Container>
-                    <Button variant="contained" component="span" style={styles.addQuestionBtn}
+                    <Button variant="contained" color="primary" component="span" style={styles.addQuestionBtn}
                             onClick={() => setAddQuestionPopupState(true)}>
                         Добавить вопрос
                     </Button>
@@ -230,13 +279,13 @@ const CreatingTest = ({addGender, test, addTitle, addPicture, deleteQuestion, de
                             disabled={!validation()}
                             style={styles.addQuestionBtn}
                             onClick={() => {
-                                if(validation()) {
+                                if (validation()) {
                                     createTest(test);
 
                                 }
 
                             }}>
-                       Создать тест
+                        Создать тест
                     </Button>
                 </Container>
 
@@ -319,6 +368,11 @@ const styles = {
         height: 200,
         width: '100%',
     },
+    questionsText: {
+        fontWeight: 'bold',
+        marginBottom: 15,
+        fontSize: 18
+    },
     questionImg: {
         display: 'inline-block',
         width: '100%',
@@ -330,6 +384,11 @@ const styles = {
         width: '100%',
         height: '100%',
         objectFit: 'cover',
+    },
+    resultText: {
+      fontWeight: 'bold',
+      marginBottom: 15,
+        fontSize: 18
     },
     varInfo: {
         textAlign: 'left',
@@ -345,10 +404,19 @@ const styles = {
     qTitle: {
         borderBottom: '1px solid gray',
         paddingBottom: 5,
-        marginBottom: 10
+        marginBottom: 10,
+        fontWeight: 'bold',
+        paddingLeft: 15
     },
     vars: {
         padding: 0
+    },
+    editIcon: {
+        position: 'absolute',
+        right: 40,
+        top: 0,
+        transform: 'translate(50%, -40%)',
+        zIndex: 5
     },
     deleteIcon: {
         position: 'absolute',

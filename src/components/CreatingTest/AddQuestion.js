@@ -15,7 +15,7 @@ import Dialog from "@material-ui/core/Dialog";
 import Radio from "@material-ui/core/Radio";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 
-const AddQuestion = ({test, setAddQuestionPopupState, addQuestion}) => {
+const AddQuestion = ({test, setAddQuestionPopupState, editedQuestion, editQuestion, setEditedQuestion, addQuestion}) => {
     let [qObj, setQObj] = useState({
         qId: generateNewIndex(test.questions, 'qId'),
         qText: '',
@@ -142,7 +142,18 @@ const AddQuestion = ({test, setAddQuestionPopupState, addQuestion}) => {
     };
 
     useEffect(() => {
-        console.log(qObj.vars)
+        if(editedQuestion) {
+            setQObj(editedQuestion);
+            let varsCountArr = [];
+            editedQuestion.vars.forEach(item => {
+                varsCountArr.push(item.varId);
+            });
+            setQVarsCount(varsCountArr);
+        }
+    },[]);
+
+    useEffect(() => {
+        console.log(qObj)
     }, [qObj]);
 
     useEffect(() => {
@@ -289,7 +300,12 @@ const AddQuestion = ({test, setAddQuestionPopupState, addQuestion}) => {
                             className={styles.btn}
                             onClick={() => {
                                 if (validate()) {
-                                    addQuestion(qObj);
+                                    if(editedQuestion) {
+                                        editQuestion(qObj);
+                                        setEditedQuestion(null);
+                                    } else {
+                                        addQuestion(qObj);
+                                    }
                                     setAddQuestionPopupState(false);
                                 }
                             }

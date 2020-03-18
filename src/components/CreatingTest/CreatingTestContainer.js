@@ -5,7 +5,7 @@ import {addGender, addTitle, addPicture} from './../../redux/reducers/testReduce
 import {
     addQuestion,
     addResult, createTestTC,
-    deleteQuestion, deleteResult, setEmptyTest,
+    deleteQuestion, deleteResult, editQuestion, editResult, setEmptyTest,
     setPopupDisplayed, setQuestions
 } from "../../redux/reducers/testReducer";
 
@@ -17,6 +17,8 @@ const CreatingTestContainer = ({
                                    addPicture,
                                    test,
                                    deleteQuestion,
+                                   editQuestion,
+                                   editResult,
                                    deleteResult,
                                    setPopupDisplayed,
                                    setQuestions,
@@ -29,7 +31,7 @@ const CreatingTestContainer = ({
 
     useEffect(() => {
         console.log('setempty')
-        setEmptyTest();
+        // setEmptyTest();
     }, []);
 
     const validation = () => {
@@ -43,6 +45,15 @@ const CreatingTestContainer = ({
 
     const _deleteQuestion = (qIndex) => {
         deleteQuestion(qIndex)
+    };
+
+
+    const _editQuestion = (newQuestion) => {
+        editQuestion(newQuestion)
+    };
+
+    const _editResult = (newResult) => {
+        editResult(newResult)
     };
 
     const _deleteResult = (resId) => {
@@ -66,10 +77,12 @@ const CreatingTestContainer = ({
         addPicture={addPicture}
         deleteQuestion={_deleteQuestion}
         deleteResult={_deleteResult}
+        editQuestion={_editQuestion}
         addQuestion={addQuestion}
         setPopupDisplayed={setPopupDisplayed}
         addResult={addResult}
         createTest={createTestTC}
+        editResult={_editResult}
     />
 };
 
@@ -87,6 +100,8 @@ export default connect(mapStateToProps, {
     addTitle,
     addPicture,
     deleteQuestion,
+    editQuestion,
+    editResult,
     deleteResult,
     setPopupDisplayed,
     addQuestion,

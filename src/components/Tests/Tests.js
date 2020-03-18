@@ -6,16 +6,15 @@ import CardActionArea from "@material-ui/core/CardActionArea";
 import CardContent from "@material-ui/core/CardContent";
 import Grid from "@material-ui/core/Grid";
 import CreatingTestContainer from "../CreatingTest/CreatingTestContainer";
+import Container from "@material-ui/core/Container";
 
 const Tests = ({tests, activeTab, handleTestClick}) => {
     if (activeTab === 0) {
         return (
-            <Grid
-                container
-                direction="row"
-                justify="space-between"
+            <Container
+               style={styles.grid}
             >
-                {tests.map((item) => {
+                {tests.map((item, index) => {
                     return <Card style={styles.testCard}
                                  key={item.id}
                                  onClick={() => handleTestClick(item.id)}
@@ -31,7 +30,7 @@ const Tests = ({tests, activeTab, handleTestClick}) => {
                         </Card>
 
                 })}
-            </Grid>
+            </Container>
         )
     }
     if (activeTab === 1) {
@@ -51,9 +50,13 @@ const Tests = ({tests, activeTab, handleTestClick}) => {
 };
 
 const styles = {
+    grid: {
+      display: 'flex',
+        flexWrap: 'wrap'
+    },
     testCard: {
         width: '30%',
-        height: ''
+        margin: 15
     },
     testArea: {
         padding: 20,

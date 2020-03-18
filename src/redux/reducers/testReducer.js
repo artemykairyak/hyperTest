@@ -5,7 +5,9 @@ const SET_TEST = 'SET_TEST';
 const SET_EMPTY_TEST = 'SET_EMPTY_TEST';
 const CLEAR_ANSWERS = 'CLEAR_ANSWERS';
 const ADD_RESULT = 'ADD_RESULT';
+const EDIT_RESULT = 'EDIT_RESULT';
 const ADD_QUESTION = 'ADD_QUESTION';
+const EDIT_QUESTION = 'EDIT_QUESTION';
 const SET_QUESTIONS = 'SET_QUESTIONS';
 const DELETE_QUESTION = 'DELETE_QUESTION';
 const DELETE_RESULT = 'DELETE_RESULT';
@@ -136,12 +138,48 @@ const testReducer = (state = initialState, action) => {
                     questions: [...state.test.questions.filter((item, index) => index !== action.qIndex)]
                 },
             };
+        case EDIT_QUESTION:
+            let updatedQuestions = [];
+            for(let i = 0; i < state.test.questions.length; i++) {
+                if(state.test.questions[i].qId === action.newQuestion.qId) {
+                    updatedQuestions.push(action.newQuestion)
+                } else {
+                    updatedQuestions.push(state.test.questions[i]);
+                }
+            }
+
+            console.log('UPD', updatedQuestions);
+            return {
+                ...state,
+                test: {
+                    ...state.test,
+                    questions: updatedQuestions
+                },
+            };
         case DELETE_RESULT:
             return {
                 ...state,
                 test: {
                     ...state.test,
                     results: [...state.test.results.filter((item) => item.resId !== action.resId)]
+                },
+            };
+        case EDIT_RESULT:
+            let updatedResults = [];
+            for(let i = 0; i < state.test.results.length; i++) {
+                if(state.test.results[i].resId === action.newResult.resId) {
+                    updatedResults.push(action.newResult)
+                } else {
+                    updatedResults.push(state.test.results[i]);
+                }
+            }
+
+            console.log('UPDRES', updatedResults);
+            return {
+                ...state,
+                test: {
+                    ...state.test,
+                    results: updatedResults
                 },
             };
         case ADD_GENDER:
@@ -205,6 +243,8 @@ export const setEmptyTest = () => ({type: SET_EMPTY_TEST});
 export const addResult = (result) => ({type: ADD_RESULT, result});
 export const addQuestion = (question) => ({type: ADD_QUESTION, question});
 export const deleteQuestion = (qIndex) => ({type: DELETE_QUESTION, qIndex});
+export const editQuestion = (newQuestion) => ({type: EDIT_QUESTION, newQuestion});
+export const editResult = (newResult) => ({type: EDIT_RESULT, newResult});
 export const deleteResult = (resId) => ({type: DELETE_RESULT, resId});
 export const addAnswer = (answer) => ({type: ADD_ANSWER, answer});
 export const setIsAnswered = (isAnswered) => ({type: SET_ANSWERED, isAnswered});
@@ -219,18 +259,19 @@ export const setQuestions = (questions) => ({type: SET_QUESTIONS, questions});
 export const clearAnswers = () => ({type: CLEAR_ANSWERS});
 
 export const setTestTC = (id) => async (dispatch) => {
-    let response = await testsAPI.getTest(id);
+    // let response = await testsAPI.getTest(id);
 
-    console.log(response);
-    dispatch(setTest(response));
+    // console.log(response);
+    // dispatch(setTest(response));
     dispatch(setTestMode(true))
 };
 
 export const createTestTC = (test) => async (dispatch) => {
-    let response = await testsAPI.createTest(test);
+    // let response = await testsAPI.createTest(test);
 
-    console.log(response);
-    dispatch(setEmptyTest());
+    // console.log(response);
+    // dispatch(setEmptyTest());
+
     dispatch(setMode(0));
 };
 

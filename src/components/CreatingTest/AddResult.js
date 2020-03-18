@@ -7,7 +7,7 @@ import CloseIcon from '@material-ui/icons/Close';
 import PhotoCameraIcon from '@material-ui/icons/PhotoCamera';
 import TextField from "@material-ui/core/TextField";
 
-const AddResult = ({test, setAddResultPopupState, addResult}) => {
+const AddResult = ({test, setAddResultPopupState, addResult, editedResult, editResult, setEditedResult}) => {
     let [resObj, setResObj] = useState({
         resId: generateNewIndex(test.results, 'resId'),
         resText: '',
@@ -48,6 +48,12 @@ const AddResult = ({test, setAddResultPopupState, addResult}) => {
     const validate = () => {
         return (!!resObj.resText && !!resObj.resPic);
     };
+
+    useEffect(() => {
+        if(editedResult) {
+            setResObj(editedResult);
+        }
+    },[]);
 
     useEffect(() => {
         console.log('resObj', resObj)
@@ -129,7 +135,12 @@ const AddResult = ({test, setAddResultPopupState, addResult}) => {
                             className={styles.btn}
                             onClick={() => {
                                 if (validate()) {
-                                    addResult(resObj);
+                                    if(editedResult) {
+                                        editResult(resObj);
+                                        setEditedResult(null);
+                                    } else {
+                                        addResult(resObj);
+                                    }
                                     setAddResultPopupState(false);
                                 }
                             }

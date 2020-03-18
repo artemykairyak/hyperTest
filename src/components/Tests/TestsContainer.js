@@ -12,7 +12,7 @@ const TestsContainer = ({tests, setTestTC, getTests, mode, isLoaded}) => {
 
     useEffect(() => {
         console.log('gettests')
-        getTests();
+            //getTests(); //ВКЛЮЧИТЬ
     },[]);
 
     if(isLoaded) {
