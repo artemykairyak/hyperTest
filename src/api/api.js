@@ -1,7 +1,8 @@
 import * as axios from "axios";
+import {baseUrl} from "../constants";
 
 const instance = axios.create({
-    baseURL: 'https://cors-anywhere.herokuapp.com/http://37.230.114.75:8000/api',
+    baseURL: baseUrl,
     // withCredentials: true,
     // headers: {"API-KEY": 'c5c7df60-607d-46ff-82fa-93b7998d3eff'}
 });

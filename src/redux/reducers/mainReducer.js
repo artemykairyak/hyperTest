@@ -6,8 +6,8 @@ const SET_TEST_MODE = 'SET_TEST_MODE';
 const SET_MODE = 'SET_MODE';
 
 let initialState = {
-    isLoaded: true, // вернуть фолс
-    mode: 2, // вернуть 0
+    isLoaded: false, // вернуть фолс
+    mode: 0, // вернуть 0
     testMode: false, //вернуть фолс
     tests: [
         {

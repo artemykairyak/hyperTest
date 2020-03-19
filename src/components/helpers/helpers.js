@@ -1,3 +1,5 @@
+import imageCompression from 'browser-image-compression';
+
 export const convertToBase64 = (file, cb) => {
     let reader = new FileReader();
     reader.readAsDataURL(file);
@@ -8,6 +10,16 @@ export const convertToBase64 = (file, cb) => {
         console.log('Error: ', error);
     };
 
+};
+
+export const compressFile = (file, callback) =>  {
+    imageCompression(file, {
+        maxSizeMB: 0.3,
+        maxWidthOrHeight: 700,
+    }).then(compressedFile => {
+        console.log('compressedFile', compressedFile);
+        convertToBase64(file, callback)
+    })
 };
 
 export const generateNewIndex = (iteratedArr, idField) => {

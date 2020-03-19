@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from "react";
 import {Button, Container, Input, Typography} from "@material-ui/core";
 import Card from "@material-ui/core/Card";
-import {convertToBase64, generateNewIndex} from "../helpers/helpers";
+import {compressFile, convertToBase64, generateNewIndex} from "../helpers/helpers";
 import {HighlightOff} from '@material-ui/icons';
 import {makeStyles} from "@material-ui/styles";
 import CloseIcon from '@material-ui/icons/Close';
@@ -14,8 +14,12 @@ import DialogTitle from "@material-ui/core/DialogTitle";
 import Dialog from "@material-ui/core/Dialog";
 import Radio from "@material-ui/core/Radio";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
+import {maxVarsLength} from "../../constants";
 
-const AddQuestion = ({test, setAddQuestionPopupState, editedQuestion, editQuestion, setEditedQuestion, addQuestion}) => {
+const AddQuestion = ({
+                         test, setAddQuestionPopupState, editedQuestion, editQuestion, setEditedQuestion,
+                         addQuestion, questionsWithDeletedResults, setQuestionsWithDeletedResults
+                     }) => {
     let [qObj, setQObj] = useState({
         qId: generateNewIndex(test.questions, 'qId'),
         qText: '',
@@ -56,7 +60,7 @@ const AddQuestion = ({test, setAddQuestionPopupState, editedQuestion, editQuesti
     };
 
     const addVar = () => {
-        if (qVarsCount.length < 5) {
+        if (qVarsCount.length < maxVarsLength) {
             setQVarsCount([...qVarsCount, qVarsCount.length + 1]);
             setQObj({...qObj, vars: [...qObj.vars, {varId: qVarsCount.length, varText: '', res: null}]});
         }
@@ -65,9 +69,18 @@ const AddQuestion = ({test, setAddQuestionPopupState, editedQuestion, editQuesti
     const getFile = (event) => {
         let fileList = event.target.files;
 
-        convertToBase64(fileList[0], (result) => {
+        compressFile(fileList[0], (result) => {
             updateQObj('qPic', result);
         });
+    };
+
+    const deleteQuestionFromSet = (qId) => {
+        let newSet = new Set(questionsWithDeletedResults);
+        if (questionsWithDeletedResults.has(qId)) {
+            newSet.delete(qId);
+        }
+
+        setQuestionsWithDeletedResults(newSet);
     };
 
     const updateVarToQObj = (val, index) => {
@@ -142,7 +155,7 @@ const AddQuestion = ({test, setAddQuestionPopupState, editedQuestion, editQuesti
     };
 
     useEffect(() => {
-        if(editedQuestion) {
+        if (editedQuestion) {
             setQObj(editedQuestion);
             let varsCountArr = [];
             editedQuestion.vars.forEach(item => {
@@ -150,7 +163,7 @@ const AddQuestion = ({test, setAddQuestionPopupState, editedQuestion, editQuesti
             });
             setQVarsCount(varsCountArr);
         }
-    },[]);
+    }, []);
 
     useEffect(() => {
         console.log(qObj)
@@ -218,7 +231,7 @@ const AddQuestion = ({test, setAddQuestionPopupState, editedQuestion, editQuesti
                     <Typography>Варианты ответа:</Typography>
                 </Container>
                 <Container className={[styles.rightBtn, styles.cover]}>
-                    <Button variant="contained" disabled={qVarsCount.length === 5} component="span"
+                    <Button variant="contained" disabled={qVarsCount.length === maxVarsLength} component="span"
                             className={styles.btn}
                             onClick={() => addVar()}>
                         Добавить
@@ -250,17 +263,17 @@ const AddQuestion = ({test, setAddQuestionPopupState, editedQuestion, editQuesti
                                     }
                                 </Button>
                                 <Dialog
-                                        disableEscapeKeyDown
-                                        open={open}
-                                        onClose={handleClose}
-                                        fullWidth={true}
+                                    disableEscapeKeyDown
+                                    open={open}
+                                    onClose={handleClose}
+                                    fullWidth={true}
                                 >
                                     <DialogTitle>Выбор результата</DialogTitle>
                                     <DialogContent>
                                         <form className={styles.container}>
                                             <FormControl className={styles.formControl}>
                                                 {test.results.map((item, resIndex) => {
-                                                    return  <FormControlLabel
+                                                    return <FormControlLabel
                                                         control={<Radio
                                                             checked={returnChecked(resIndex)}
                                                             onChange={() => addRes(qObj.qId, selectVar, resIndex)}
@@ -270,7 +283,8 @@ const AddQuestion = ({test, setAddQuestionPopupState, editedQuestion, editQuesti
                                                         label={item.resText}
                                                     />
                                                 })}
-                                                <Typography className={styles.dialogText}>Если не выбрано ничего — ответ на этот вопрос не влияет на результат.</Typography>
+                                                <Typography className={styles.dialogText}>Если не выбрано ничего — ответ
+                                                    на этот вопрос не влияет на результат.</Typography>
                                             </FormControl>
                                         </form>
                                     </DialogContent>
@@ -300,11 +314,14 @@ const AddQuestion = ({test, setAddQuestionPopupState, editedQuestion, editQuesti
                             className={styles.btn}
                             onClick={() => {
                                 if (validate()) {
-                                    if(editedQuestion) {
+                                    if (editedQuestion) {
                                         editQuestion(qObj);
                                         setEditedQuestion(null);
                                     } else {
                                         addQuestion(qObj);
+                                    }
+                                    if (questionsWithDeletedResults) {
+                                        deleteQuestionFromSet(qObj.qId);
                                     }
                                     setAddQuestionPopupState(false);
                                 }
@@ -414,7 +431,9 @@ var useStyles = makeStyles({
     },
     addResBtn: {
         padding: 0,
-        marginTop: 5
+        marginTop: 5,
+        textAlign: 'left',
+        justifyContent: 'flex-start'
     },
     dialogText: {
         marginTop: 15

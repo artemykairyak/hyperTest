@@ -25,6 +25,9 @@ const Tests = ({tests, activeTab, handleTestClick}) => {
                                     <Typography gutterBottom variant="h5" component="h2">
                                         {item.title}
                                     </Typography>
+                                    <Typography gutterBottom component="p">
+                                        {item.description}
+                                    </Typography>
                                 </CardContent>
                             </CardActionArea>
                         </Card>

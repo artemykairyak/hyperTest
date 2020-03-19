@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import {connect} from 'react-redux';
 import CreatingTest from './CreatingTest';
 import {addGender, addTitle, addPicture} from './../../redux/reducers/testReducer';
@@ -25,21 +25,23 @@ const CreatingTestContainer = ({
                                    setEmptyTest,
                                    createTestTC
                                }) => {
+
+    let [questionsWithDeletedResults, setQuestionsWithDeletedResults] = useState(null);
+
     useEffect(() => {
         console.log(test);
     }, [test]);
 
     useEffect(() => {
+        console.log('deletedResQ', questionsWithDeletedResults)
+    },[questionsWithDeletedResults])
+
+    useEffect(() => {
         console.log('setempty')
-        // setEmptyTest();
+        setEmptyTest();
     }, []);
 
     const validation = () => {
-        console.log('title', !!test.title);
-        console.log('picture', !!test.picture);
-        console.log('results', test.results.length > 0);
-        console.log('questions', test.questions > 0);
-
             return (test.title && test.picture && test.results.length > 0 && test.questions.length > 0);
     };
 
@@ -58,15 +60,18 @@ const CreatingTestContainer = ({
 
     const _deleteResult = (resId) => {
         let questionsCopy = test.questions;
+        let questionsWithDeletedResultsIds = new Set();
         for (let i = 0; i < questionsCopy.length; i++) {
             for (let j = 0; j < questionsCopy[i].vars.length; j++) {
                 if (questionsCopy[i].vars[j].res === resId) {
                     questionsCopy[i].vars[j].res = null;
+                    questionsWithDeletedResultsIds.add(questionsCopy[i].qId)
                 }
             }
         }
         deleteResult(resId);
         setQuestions(questionsCopy);
+        setQuestionsWithDeletedResults(questionsWithDeletedResultsIds);
     };
 
     return <CreatingTest
@@ -83,6 +88,8 @@ const CreatingTestContainer = ({
         addResult={addResult}
         createTest={createTestTC}
         editResult={_editResult}
+        questionsWithDeletedResults={questionsWithDeletedResults}
+        setQuestionsWithDeletedResults={setQuestionsWithDeletedResults}
     />
 };
 

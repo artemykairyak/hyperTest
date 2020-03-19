@@ -15,10 +15,14 @@ import {
 } from '@material-ui/core';
 import DeleteIcon from '@material-ui/icons/Delete';
 import AddQuestion from "./AddQuestion";
-import {convertToBase64} from '../helpers/helpers';
+import {compressFile, convertToBase64} from '../helpers/helpers';
 import AddResult from "./AddResult";
 import DeleteResultPopup from "./DeleteResultPopup";
 import EditIcon from '@material-ui/icons/Edit';
+import ErrorIcon from '@material-ui/icons/Error';
+import Tooltip from "@material-ui/core/Tooltip";
+import makeStyles from "@material-ui/core/styles/makeStyles";
+import {maxQuestionsLength} from "../../constants";
 
 const CreatingTest = ({
                           addGender,
@@ -32,7 +36,9 @@ const CreatingTest = ({
                           addResult,
                           validation,
                           editResult,
-                          createTest
+                          createTest,
+                          questionsWithDeletedResults,
+                          setQuestionsWithDeletedResults
                       }) => {
     let [gender, setLocalGender] = useState(0);
     let [addQuestionPopupState, setAddQuestionPopupState] = useState(false);
@@ -50,7 +56,7 @@ const CreatingTest = ({
     const getFile = (event, mode) => {
         let fileList = event.target.files;
 
-        convertToBase64(fileList[0], (result) => {
+        compressFile(fileList[0], (result) => {
             if (mode === 'testPic') {
                 addPicture(result);
             }
@@ -63,7 +69,7 @@ const CreatingTest = ({
 
     const cropText = (text) => {
         console.log('length', text.length);
-        if(text.length > 255) {
+        if (text.length > 255) {
             return text.slice(0, 255) + '...';
         }
         return text;
@@ -85,6 +91,32 @@ const CreatingTest = ({
         console.log('editedRES', editedResult);
     }, [editedResult])
 
+
+    const useStyles = makeStyles({
+        tooltip: {
+            fontSize: 16
+        },
+    });
+
+    const readyButton = makeStyles({
+        root: {
+            backgroundColor: '#2E7D32',
+            color: '#ffffff',
+            '&:hover': {
+                backgroundColor: '#1B5E20',
+                borderColor: '#0062cc',
+            },
+            '&:active': {
+                boxShadow: 'none',
+                backgroundColor: '#1B5E20',
+                borderColor: '#1B5E20',
+            },
+        },
+    });
+
+    const toolTipClasses = useStyles();
+    const buttonClasses = readyButton();
+
     return (
         <Box>
             {addQuestionPopupState && <AddQuestion setAddQuestionPopupState={setAddQuestionPopupState}
@@ -93,6 +125,8 @@ const CreatingTest = ({
                                                    setEditedQuestion={setEditedQuestion}
                                                    editQuestion={editQuestion}
                                                    test={test}
+                                                   questionsWithDeletedResults={questionsWithDeletedResults}
+                                                   setQuestionsWithDeletedResults={setQuestionsWithDeletedResults}
             />
             }
             {addResultPopupState && <AddResult setAddResultPopupState={setAddResultPopupState}
@@ -113,7 +147,7 @@ const CreatingTest = ({
                         <Typography>Кто может пройти тест:</Typography>
                     </Container>
 
-                    <Container style={styles.right} style={styles.gender}>
+                    <Container style={styles.gender}>
                         <Container style={styles.radioCardContainer}>
                             <Button style={styles.radioCard} onClick={() => {
                                 setGender(0)
@@ -132,7 +166,6 @@ const CreatingTest = ({
                             }}>
                                 <Radio
                                     checked={gender === 1}
-
                                     value={1}
                                     name="gender"
                                 />
@@ -145,7 +178,6 @@ const CreatingTest = ({
                             }}>
                                 <Radio
                                     checked={gender === 2}
-
                                     value={2}
                                     name="gender"
                                 />
@@ -195,7 +227,7 @@ const CreatingTest = ({
                     </Container>
                 </Container>
                 <Container>
-                    <Typography>Список результатов</Typography>
+                    <Typography style={styles.resultsTitle}>Список результатов</Typography>
                 </Container>
                 <Container style={styles.results}>
                     {test.results.map((item, index) => {
@@ -263,27 +295,39 @@ const CreatingTest = ({
                                     })}
                                 </List>
                             </Container>
+                            {questionsWithDeletedResults && questionsWithDeletedResults.has(item.qId) &&
+                            <Tooltip title="Есть обнулённые результаты"
+                                     classes={toolTipClasses}
+                                     style={styles.isDeletedIcon}>
+                                <ErrorIcon aria-label="error">
+                                    <DeleteIcon/>
+                                </ErrorIcon>
+                            </Tooltip>
+                            }
                         </Card>
                     })}
                 </Container>
                 <Container>
-                    <Button variant="contained" color="primary" component="span" style={styles.addQuestionBtn}
+                    <Button variant="contained"
+                            color="primary"
+                            component="span"
+                            style={styles.addQuestionBtn}
+                            disabled={test.questions.length >= maxQuestionsLength}
                             onClick={() => setAddQuestionPopupState(true)}>
-                        Добавить вопрос
+                        {test.questions.length >= maxQuestionsLength ? 'Вы добавили максимальное количество вопросов' : 'Добавить вопрос'}
                     </Button>
                 </Container>
                 <Container>
                     <Button variant="contained"
-                            color="primary"
+                            classes={buttonClasses}
+                            size='large'
                             component="span"
                             disabled={!validation()}
                             style={styles.addQuestionBtn}
                             onClick={() => {
                                 if (validation()) {
                                     createTest(test);
-
                                 }
-
                             }}>
                         Создать тест
                     </Button>
@@ -368,6 +412,11 @@ const styles = {
         height: 200,
         width: '100%',
     },
+    resultsTitle: {
+        fontWeight: 'bold',
+        marginBottom: 15,
+        fontSize: 18
+    },
     questionsText: {
         fontWeight: 'bold',
         marginBottom: 15,
@@ -386,8 +435,8 @@ const styles = {
         objectFit: 'cover',
     },
     resultText: {
-      fontWeight: 'bold',
-      marginBottom: 15,
+        fontWeight: 'bold',
+        marginBottom: 15,
         fontSize: 18
     },
     varInfo: {
@@ -425,7 +474,19 @@ const styles = {
         transform: 'translate(50%, -40%)',
         zIndex: 5
     },
-    resultsTitle: {}
+    isDeletedIcon: {
+        color: '#d32f2f',
+        position: 'absolute',
+        bottom: 5,
+        right: 5,
+    },
+    isDeletedMessage: {
+        position: 'absolute',
+        bottom: 0,
+        right: 0,
+        color: 'red',
+        fontWeight: 'bold'
+    }
 
 };
 
