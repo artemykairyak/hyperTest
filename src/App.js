@@ -1,13 +1,12 @@
 import React, {useEffect} from 'react';
 import './App.css';
-import {Switch, Route, BrowserRouter as Router, withRouter} from 'react-router-dom';
+import {Switch, Route, BrowserRouter as Router} from 'react-router-dom';
 import {connect, Provider} from "react-redux";
 import {compose} from "redux";
 import store from "./redux/store";
 import MainScreenContainer from "./components/MainScreen/MainScreenContainer";
 import {Box} from "@material-ui/core";
 import HeaderTabsContainer from "./components/Common/Header/HeaderTabsContainer";
-import CreatingTestContainer from './components/CreatingTest/CreatingTestContainer';
 
 const App = () => {
     useEffect(() => {

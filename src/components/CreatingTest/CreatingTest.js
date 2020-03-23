@@ -15,7 +15,7 @@ import {
 } from '@material-ui/core';
 import DeleteIcon from '@material-ui/icons/Delete';
 import AddQuestion from "./AddQuestion";
-import {compressFile, convertToBase64} from '../helpers/helpers';
+import {compressFile} from '../helpers/helpers';
 import AddResult from "./AddResult";
 import DeleteResultPopup from "./DeleteResultPopup";
 import EditIcon from '@material-ui/icons/Edit';

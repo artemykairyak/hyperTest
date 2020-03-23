@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from "react";
 import {Button, Container, Input, Typography} from "@material-ui/core";
 import Card from "@material-ui/core/Card";
-import {compressFile, convertToBase64, generateNewIndex} from "../helpers/helpers";
+import {compressFile, generateNewIndex} from "../helpers/helpers";
 import {HighlightOff} from '@material-ui/icons';
 import {makeStyles} from "@material-ui/styles";
 import CloseIcon from '@material-ui/icons/Close';
