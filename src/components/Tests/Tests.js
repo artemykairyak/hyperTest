@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useState} from "react";
 import Box from "@material-ui/core/Box";
 import Typography from "@material-ui/core/Typography";
 import Card from "@material-ui/core/Card";
@@ -6,18 +6,33 @@ import CardActionArea from "@material-ui/core/CardActionArea";
 import CardContent from "@material-ui/core/CardContent";
 import CreatingTestContainer from "../CreatingTest/CreatingTestContainer";
 import Container from "@material-ui/core/Container";
-import {cropText} from "../helpers/helpers";
+import BeginTestPopup from "../Common/Popups/BeginTestPopup/BeginTestPopup";
 
-const Tests = ({tests, activeTab, handleTestClick}) => {
+const Tests = ({tests, activeTab, setTestTC}) => {
+    let [beginPopupState, setBeginPopupState] = useState(false);
+    let [propsObj, setPropsObj] = useState(null);
+
+    const handleTestClick = (id, picture, title, description, price, creator) => {
+        setPropsObj({picture, title, description, price, creator, beginTestFunc: () => {setTestTC(id)}, setBeginPopupState});
+        setBeginPopupState(true);
+        // setTestTC(id);
+    };
+
     if (activeTab === 0) {
         return (
+            <>
             <Container
                style={styles.grid}
             >
                 {tests.map((item, index) => {
                     return <Card style={styles.testCard}
                                  key={item.id}
-                                 onClick={() => handleTestClick(item.id)}
+                                 onClick={() => handleTestClick(item.id,
+                                     item.picture,
+                                     item.title,
+                                     item.description,
+                                     item.price,
+                                     item.creator)}
                               >
                             <CardActionArea style={styles.testArea}>
                                 <img src={item.picture} alt="" style={styles.testPic}/>
@@ -31,6 +46,8 @@ const Tests = ({tests, activeTab, handleTestClick}) => {
 
                 })}
             </Container>
+                {beginPopupState && <BeginTestPopup propsObj={propsObj}/>}
+            </>
         )
     }
     if (activeTab === 1) {

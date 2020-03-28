@@ -25,7 +25,7 @@ import makeStyles from "@material-ui/core/styles/makeStyles";
 import {maxQuestionsLength} from "../../constants";
 import TextField from "@material-ui/core/TextField";
 import PhotoCameraIcon from '@material-ui/icons/PhotoCamera';
-import LoadingPopup from "../Common/LoadingPopup/LoadingPopup";
+import LoadingPopup from "../Common/Popups/LoadingPopup/LoadingPopup";
 
 const CreatingTest = ({
                           addGender,

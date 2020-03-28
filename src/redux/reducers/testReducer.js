@@ -271,19 +271,62 @@ export const clearAnswers = () => ({type: CLEAR_ANSWERS});
 
 export const setTestTC = (id) => async (dispatch) => {
     let response = await testsAPI.getTest(id);
-
+    dispatch(clearAnswers());
+    dispatch(setCurrentQuestion(1));
     console.log(response);
     dispatch(setTest(response));
     dispatch(setTestMode(true))
 };
 
-export const createTestTC = (test) => async (dispatch) => {
-    let response = await testsAPI.createTest(test);
+const errorsObjConstructor = (errors) => {
+    let errorsObj = {};
 
+    for (let key in errors) {
+        console.log('key', key);
+        if(Array.isArray(key)) {
+
+        } else {
+            for (let innerKey in key) {
+                console.log('innerKey', innerKey)
+                // errorsObj[ky] =
+            }
+        }
+    }
+    if(errors.picture) {
+        errorsObj['picture'] = errors.picture;
+    }
+
+    if(errors.results) {
+        errorsObj['results'] = [];
+        errors.results.forEach((item, index) => {
+            errorsObj['results'].push({index: index, message: item});
+        });
+    }
+
+    if(errors.questions) {
+        errorsObj['questions'] = [];
+        errors.questions.forEach((item, index) => {
+            errorsObj['questions'].push({index: index, message: item});
+        });
+    }
+
+    console.log('ERRORS', errorsObj);
+}
+
+export const createTestTC = (test) => async (dispatch) => {
+
+    let response = await testsAPI.createTest(test);
+    if(response.errors) {
+        // errorsObjConstructor(response.errors.fields)
+    } else {
+        dispatch(setEmptyTest());
+        dispatch(setMode(0));
+
+
+        dispatch(getTests());
+    }
     console.log(response);
-    dispatch(setEmptyTest());
-    dispatch(setMode(0));
-    dispatch(getTests());
+
 };
 
 

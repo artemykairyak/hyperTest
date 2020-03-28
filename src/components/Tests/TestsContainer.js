@@ -3,12 +3,10 @@ import {connect} from "react-redux";
 import Tests from "./Tests";
 import {getTests, setTestMode} from "../../redux/reducers/mainReducer";
 import {setTestTC} from "../../redux/reducers/testReducer";
-import LoadingPopup from "../Common/LoadingPopup/LoadingPopup";
+import LoadingPopup from "../Common/Popups/LoadingPopup/LoadingPopup";
 
 const TestsContainer = ({tests, setTestTC, getTests, mode, isLoaded}) => {
-    const handleTestClick = (id) => {
-        setTestTC(id);
-    };
+
 
     useEffect(() => {
         console.log('gettests')
@@ -18,7 +16,8 @@ const TestsContainer = ({tests, setTestTC, getTests, mode, isLoaded}) => {
     if(isLoaded) {
         return  <Tests tests={tests}
                        activeTab={mode}
-                       handleTestClick={handleTestClick}/>
+                       setTestTC={setTestTC}
+        />
     } else {
         return <LoadingPopup topText='Тесты загружаются' bottomText='Пожалуйста, подождите.'/>
     }

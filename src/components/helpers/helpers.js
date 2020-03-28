@@ -17,14 +17,12 @@ export const compressFile = (file, callback) =>  {
         maxSizeMB: 0.3,
         maxWidthOrHeight: 700,
     }).then(compressedFile => {
-        console.log('compressedFile', compressedFile);
-        convertToBase64(file, callback)
+        convertToBase64(compressedFile, callback)
     })
 };
 
 export const generateNewIndex = (iteratedArr, idField) => {
     let sortedIds = [];
-    console.log('ITER', iteratedArr)
     if (iteratedArr.length === 0) {
         sortedIds.push(-1);
     } else {

@@ -6,7 +6,7 @@ import Button from "@material-ui/core/Button";
 import FormGroup from "@material-ui/core/FormGroup";
 import Radio from "@material-ui/core/Radio";
 import ResultPageContainer from "./ResultPageContainer";
-import ConfirmPopup from "../Common/ConfirmPopup/ConfirmPopup";
+import ConfirmPopup from "../Common/Popups/ConfirmPopup/ConfirmPopup";
 
 const Test = ({
                   test,
