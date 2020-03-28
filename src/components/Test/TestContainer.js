@@ -1,9 +1,17 @@
 import React from "react";
 import {connect} from "react-redux";
 import Test from "./Test";
-import {pushAnswer, setComplete, setCurrentQuestion, setIsAnswered} from "../../redux/reducers/testReducer";
+import {
+    pushAnswer,
+    setComplete,
+    setCurrentQuestion,
+    setEmptyTest,
+    setIsAnswered
+} from "../../redux/reducers/testReducer";
+import {setMode, setTestMode} from "../../redux/reducers/mainReducer";
 
-const TestContainer = ({test,
+const TestContainer = ({
+                           test,
                            currentQuestion,
                            setCurrentQuestion,
                            setIsAnswered,
@@ -11,7 +19,18 @@ const TestContainer = ({test,
                            pushAnswer,
                            answers,
                            complete,
-                           setComplete}) => {
+                           setComplete,
+                           setEmptyTest,
+                           setMode,
+                           setTestMode,
+                       }) => {
+
+    const closeTest = () => {
+        console.log('');
+        setEmptyTest();
+        setMode(0);
+        setTestMode(false);
+    };
 
     return (
         <Test test={test}
@@ -22,6 +41,7 @@ const TestContainer = ({test,
               pushAnswer={pushAnswer}
               answers={answers}
               complete={complete}
+              closeTest={closeTest}
               setComplete={setComplete}/>
     )
 };
@@ -36,4 +56,12 @@ const mapStateToProps = (state) => {
     }
 };
 
-export default connect(mapStateToProps, {setCurrentQuestion, setIsAnswered, pushAnswer, setComplete})(TestContainer);
+export default connect(mapStateToProps, {
+    setCurrentQuestion,
+    setIsAnswered,
+    pushAnswer,
+    setComplete,
+    setMode,
+    setEmptyTest,
+    setTestMode
+})(TestContainer);

@@ -6,6 +6,7 @@ import CardActionArea from "@material-ui/core/CardActionArea";
 import CardContent from "@material-ui/core/CardContent";
 import CreatingTestContainer from "../CreatingTest/CreatingTestContainer";
 import Container from "@material-ui/core/Container";
+import {cropText} from "../helpers/helpers";
 
 const Tests = ({tests, activeTab, handleTestClick}) => {
     if (activeTab === 0) {
@@ -20,12 +21,9 @@ const Tests = ({tests, activeTab, handleTestClick}) => {
                               >
                             <CardActionArea style={styles.testArea}>
                                 <img src={item.picture} alt="" style={styles.testPic}/>
-                                <CardContent>
-                                    <Typography gutterBottom variant="h5" component="h2">
+                                <CardContent style={styles.content}>
+                                    <Typography style={styles.title} gutterBottom variant="h5" component="h2">
                                         {item.title}
-                                    </Typography>
-                                    <Typography gutterBottom component="p">
-                                        {item.description}
                                     </Typography>
                                 </CardContent>
                             </CardActionArea>
@@ -57,18 +55,36 @@ const styles = {
         flexWrap: 'wrap'
     },
     testCard: {
-        width: '30%',
-        margin: 15
+        width: '25%',
+        margin: 15,
+        height: 'auto',
+        padding: 15
     },
     testArea: {
-        padding: 20,
         width: '100%',
-        height: '100%'
+        height: '100%',
+        padding: '0, 15px',
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'space-between'
     },
     testPic: {
         width: '100%',
-        height: '100%'
+        height: 'auto',
+        maxHeight: '75%',
+        objectFit: 'contain',
+        padding: 0,
+    },
+    content: {
+        height: '20%',
+        padding: '0, 15px',
+        width: '100%',
+        display: 'flex',
+        alignItems: 'flex-end'
+    },
+    title: {
+        padding: '0, 15px'
     }
-}
+};
 
 export default Tests;

@@ -3,6 +3,7 @@ import {connect} from 'react-redux';
 import CreatingTest from './CreatingTest';
 import {addGender, addTitle, addPicture} from './../../redux/reducers/testReducer';
 import {
+    addDescription,
     addQuestion,
     addResult, createTestTC,
     deleteQuestion, deleteResult, editQuestion, editResult, setEmptyTest,
@@ -23,7 +24,8 @@ const CreatingTestContainer = ({
                                    setPopupDisplayed,
                                    setQuestions,
                                    setEmptyTest,
-                                   createTestTC
+                                   createTestTC,
+                                   addDescription
                                }) => {
 
     let [questionsWithDeletedResults, setQuestionsWithDeletedResults] = useState(null);
@@ -42,7 +44,24 @@ const CreatingTestContainer = ({
     }, []);
 
     const validation = () => {
-            return (test.title && test.picture && test.results.length > 0 && test.questions.length > 0);
+        return (test.title && test.picture && test.results.length > 0 && test.questions.length > 0);
+    };
+
+    const isCorrect = () => {
+        let assignedResultsCount = 0;
+        let emptyResultsCount = 0;
+
+        for (let i = 0; i < test.questions.length; i++) {
+            for (let j = 0; j < test.questions[i].vars.length; j++) {
+                if(test.questions[i].vars[j].res !== null) {
+                    assignedResultsCount = assignedResultsCount + 1;
+                } else {
+                    emptyResultsCount = emptyResultsCount + 1;
+                }
+            }
+        }
+
+        return assignedResultsCount > emptyResultsCount;
     };
 
     const _deleteQuestion = (qIndex) => {
@@ -87,7 +106,9 @@ const CreatingTestContainer = ({
         setPopupDisplayed={setPopupDisplayed}
         addResult={addResult}
         createTest={createTestTC}
+        addDescription={addDescription}
         editResult={_editResult}
+        isCorrect={isCorrect}
         questionsWithDeletedResults={questionsWithDeletedResults}
         setQuestionsWithDeletedResults={setQuestionsWithDeletedResults}
     />
@@ -115,5 +136,6 @@ export default connect(mapStateToProps, {
     addResult,
     setQuestions,
     setEmptyTest,
-    createTestTC
+    createTestTC,
+    addDescription
 })(CreatingTestContainer);

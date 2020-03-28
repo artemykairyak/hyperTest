@@ -35,3 +35,10 @@ export const generateNewIndex = (iteratedArr, idField) => {
 
     return sortedIds.sort()[sortedIds.length - 1] + 1;
 };
+
+export const cropText = (text, length) => {
+    if (text.length > length) {
+        return text.slice(0, length) + '...';
+    }
+    return text;
+};

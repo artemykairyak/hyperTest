@@ -3,7 +3,7 @@ import {connect} from "react-redux";
 import Tests from "./Tests";
 import {getTests, setTestMode} from "../../redux/reducers/mainReducer";
 import {setTestTC} from "../../redux/reducers/testReducer";
-import Preloader from "../Common/Preloader";
+import LoadingPopup from "../Common/LoadingPopup/LoadingPopup";
 
 const TestsContainer = ({tests, setTestTC, getTests, mode, isLoaded}) => {
     const handleTestClick = (id) => {
@@ -16,9 +16,11 @@ const TestsContainer = ({tests, setTestTC, getTests, mode, isLoaded}) => {
     },[]);
 
     if(isLoaded) {
-        return  <Tests tests={tests} activeTab={mode} handleTestClick={handleTestClick}/>
+        return  <Tests tests={tests}
+                       activeTab={mode}
+                       handleTestClick={handleTestClick}/>
     } else {
-        return <Preloader/>
+        return <LoadingPopup topText='Тесты загружаются' bottomText='Пожалуйста, подождите.'/>
     }
 };
 

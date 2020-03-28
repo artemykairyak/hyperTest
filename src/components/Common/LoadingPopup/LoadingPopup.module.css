@@ -1,0 +1,59 @@
+.container {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 100;
+    animation: opacity 0.5s ease forwards;
+}
+
+@keyframes opacity {
+    from {opacity: 0}
+    to {opacity: 1}
+}
+
+@keyframes release {
+    from {
+        opacity: 0;
+        top: 60%;
+    }
+    to {
+        opacity: 1;
+        top: 50%
+    }
+}
+
+.popup {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    padding: 15px;
+    width: 50%;
+    height: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    animation: release 0.5s ease forwards;
+}
+
+.labelsContainer {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.preloader {
+    margin-bottom: 15px;
+    text-align: center;
+}
+
+.topLabel {
+    display: inline-block;
+    margin: 5px 0 !important;
+}

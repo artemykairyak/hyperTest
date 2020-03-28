@@ -6,6 +6,7 @@ import Button from "@material-ui/core/Button";
 import FormGroup from "@material-ui/core/FormGroup";
 import Radio from "@material-ui/core/Radio";
 import ResultPageContainer from "./ResultPageContainer";
+import ConfirmPopup from "../Common/ConfirmPopup/ConfirmPopup";
 
 const Test = ({
                   test,
@@ -16,12 +17,14 @@ const Test = ({
                   pushAnswer,
                   answers,
                   complete,
-                  setComplete
+                  setComplete,
+    closeTest
               }) => {
     console.log(test);
     console.log(answers);
     let [checkedIndex, setCheckedIndex] = useState(null);
     let [answer, setAnswer] = useState(null);
+    let [closeTestState, setCloseTestState] = useState(false);
     let totalQuestions = test.questions.length;
 
     const next = () => {
@@ -46,9 +49,9 @@ const Test = ({
 
 
     return (
-        <Box>
+        <Box >
             {!complete ?
-            <Box>
+            <Box style={styles.box}>
                 <Card style={styles.container} elevation={2}>
                     <Card style={styles.testCard} elevation={0}>
                         <img style={styles.questionImg} src={test.questions[currentQuestion - 1].qPic} alt=''/>
@@ -80,6 +83,15 @@ const Test = ({
                 <Typography align='center'
                             variant='h6'>
                     {currentQuestion}/{totalQuestions}</Typography>
+                <Button style={styles.endBtn} variant="contained" color="secondary" onClick={() => setCloseTestState(true)}>
+                    <Typography>Закончить тест</Typography>
+                </Button>
+                {closeTestState && <ConfirmPopup text='Вы хотите закончить тест?'
+                                                 onAgree={closeTest}
+                                                 onClose={() => setCloseTestState(false)}
+                                                 closeText='Закрыть'
+                                                 agreeText='Закончить'/>
+                }
             </Box>
                 : <ResultPageContainer />}
 
@@ -88,6 +100,11 @@ const Test = ({
 };
 
 const styles = {
+    box: {
+      display: 'flex',
+      flexDirection: 'column',
+        alignItems: 'center'
+    },
     container: {
         display: 'flex',
         justifyContent: 'center',
@@ -132,6 +149,10 @@ const styles = {
     nextBtn: {
         width: 150
     },
+    endBtn: {
+        marginTop: 15
+
+    }
 };
 
 export default Test;

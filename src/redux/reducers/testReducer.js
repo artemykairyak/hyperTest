@@ -1,5 +1,5 @@
 import {testsAPI} from "../../api/api";
-import {setMode, setTestMode} from "./mainReducer";
+import {getTests, setMode, setTestMode} from "./mainReducer";
 
 const SET_TEST = 'SET_TEST';
 const SET_EMPTY_TEST = 'SET_EMPTY_TEST';
@@ -19,6 +19,8 @@ const PUSH_ANSWER = 'PUSH_ANSWER';
 const SET_COMPLETE = 'SET_COMPLETE';
 const ADD_GENDER = 'SET_GENDER';
 const ADD_TITLE = 'SET_TITLE';
+const SET_ERRORS = 'SET_ERRORS';
+const ADD_DESCRIPTION = 'ADD_DESCRIPTION';
 const SET_POPUP_DISPLAYED = 'SET_POPUP_DISPLAYED';
 
 let template = {
@@ -40,6 +42,7 @@ let initialState = {
     complete: false,
     isAnswered: false,
     answers: [],
+    errors: [],
     test: {
         id: 0,
         isPublished: false,
@@ -148,7 +151,6 @@ const testReducer = (state = initialState, action) => {
                 }
             }
 
-            console.log('UPD', updatedQuestions);
             return {
                 ...state,
                 test: {
@@ -174,7 +176,6 @@ const testReducer = (state = initialState, action) => {
                 }
             }
 
-            console.log('UPDRES', updatedResults);
             return {
                 ...state,
                 test: {
@@ -187,12 +188,22 @@ const testReducer = (state = initialState, action) => {
                 ...state,
                 test: {...state.test, gender: action.gender},
             };
+        case ADD_DESCRIPTION:
+            return {
+                ...state,
+                test: {...state.test, description: action.description},
+            };
         case SET_CURRENT_QUESTION:
             return {
                 ...state,
                 currentQuestion: action.currentQuestion
             };
         case SET_ANSWERED:
+            return {
+                ...state,
+                isAnswered: action.isAnswered
+            };
+        case SET_ERRORS:
             return {
                 ...state,
                 isAnswered: action.isAnswered
@@ -208,7 +219,6 @@ const testReducer = (state = initialState, action) => {
                 complete: action.complete
             };
         case SET_QUESTIONS:
-            console.log(action.questions)
             return {
                 ...state,
                 test: {...state.test, questions: action.questions}
@@ -253,6 +263,7 @@ export const pushAnswer = (res) => ({type: PUSH_ANSWER, res});
 export const setComplete = (complete) => ({type: SET_COMPLETE, complete});
 export const addGender = (gender) => ({type: ADD_GENDER, gender});
 export const addTitle = (title) => ({type: ADD_TITLE, title});
+export const addDescription = (description) => ({type: ADD_DESCRIPTION, description});
 export const addPicture = (picture) => ({type: ADD_PICTURE, picture});
 export const setPopupDisplayed = (popupId) => ({type: SET_POPUP_DISPLAYED, popupId});
 export const setQuestions = (questions) => ({type: SET_QUESTIONS, questions});
@@ -271,8 +282,10 @@ export const createTestTC = (test) => async (dispatch) => {
 
     console.log(response);
     dispatch(setEmptyTest());
-
     dispatch(setMode(0));
+    dispatch(getTests());
 };
+
+
 
 export default testReducer;

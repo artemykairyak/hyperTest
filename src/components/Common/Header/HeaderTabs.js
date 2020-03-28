@@ -16,7 +16,7 @@ const HeaderTabs = ({activeTab, handleChange}) => {
                 aria-label="scrollable auto tabs example"
             >
                 <Tab label="Все тесты"/>
-                <Tab label="Моиbbbbb тесты"/>
+                <Tab label="Мои тесты"/>
                 <Tab label="Создать тест"/>
             </Tabs>
         </AppBar>

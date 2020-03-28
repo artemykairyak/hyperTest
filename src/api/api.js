@@ -21,5 +21,6 @@ export const testsAPI = {
     createTest(test) {
         return instance.post(`tests`, test)
             .then(response => response.data)
+            .catch((error) => {console.log(error.response); return error.response.data});
     },
 };

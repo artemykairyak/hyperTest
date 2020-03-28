@@ -15,7 +15,7 @@ import {
 } from '@material-ui/core';
 import DeleteIcon from '@material-ui/icons/Delete';
 import AddQuestion from "./AddQuestion";
-import {compressFile} from '../helpers/helpers';
+import {compressFile, cropText} from '../helpers/helpers';
 import AddResult from "./AddResult";
 import DeleteResultPopup from "./DeleteResultPopup";
 import EditIcon from '@material-ui/icons/Edit';
@@ -23,6 +23,9 @@ import ErrorIcon from '@material-ui/icons/Error';
 import Tooltip from "@material-ui/core/Tooltip";
 import makeStyles from "@material-ui/core/styles/makeStyles";
 import {maxQuestionsLength} from "../../constants";
+import TextField from "@material-ui/core/TextField";
+import PhotoCameraIcon from '@material-ui/icons/PhotoCamera';
+import LoadingPopup from "../Common/LoadingPopup/LoadingPopup";
 
 const CreatingTest = ({
                           addGender,
@@ -35,8 +38,10 @@ const CreatingTest = ({
                           addQuestion,
                           addResult,
                           validation,
+                          isCorrect,
                           editResult,
                           createTest,
+                          addDescription,
                           questionsWithDeletedResults,
                           setQuestionsWithDeletedResults
                       }) => {
@@ -47,10 +52,20 @@ const CreatingTest = ({
     let [selectedResult, setSelectedResult] = useState(null);
     let [editedQuestion, setEditedQuestion] = useState(null);
     let [editedResult, setEditedResult] = useState(null);
+    let [correct, setCorrect] = useState(true);
+    let [creating, setCreating] = useState(false);
 
     const setGender = (val) => {
         setLocalGender(val);
         addGender(gender)
+    };
+
+    const creatingTest = (test) => {
+        setCreating(true);
+        createTest(test)
+            .then(() => {
+                setCreating(false)
+            });
     };
 
     const getFile = (event, mode) => {
@@ -65,14 +80,6 @@ const CreatingTest = ({
                 addPicture(result);
             }
         })
-    };
-
-    const cropText = (text) => {
-        console.log('length', text.length);
-        if (text.length > 255) {
-            return text.slice(0, 255) + '...';
-        }
-        return text;
     };
 
     const setTestPic = event => {
@@ -91,6 +98,10 @@ const CreatingTest = ({
         console.log('editedRES', editedResult);
     }, [editedResult])
 
+    // useEffect(() => {
+    //     if()
+    //     setCreating(false);
+    // })
 
     const useStyles = makeStyles({
         tooltip: {
@@ -113,6 +124,16 @@ const CreatingTest = ({
             },
         },
     });
+
+    const checkCorrect = () => {
+        if (isCorrect()) {
+            setCorrect(true);
+            return true
+        } else {
+            setCorrect(false);
+            return false
+        }
+    };
 
     const toolTipClasses = useStyles();
     const buttonClasses = readyButton();
@@ -140,6 +161,7 @@ const CreatingTest = ({
             {deleteResultPopup && <DeleteResultPopup setDeleteResultPopup={setDeleteResultPopup}
                                                      deleteResult={deleteResult}
                                                      selectedResult={selectedResult}/>}
+            {creating && <LoadingPopup topText='Ваш тест создаётся.' bottomText='Пожалуйста, подождите.'/>}
 
             <Card style={styles.container} elevation={2}>
                 <Container style={styles.row}>
@@ -191,10 +213,26 @@ const CreatingTest = ({
                         <Typography>Название:</Typography>
                     </Container>
                     <Container style={styles.title}>
-                        <Input
+                        <TextField
+                            placeholder="Название теста"
                             onChange={(event) => addTitle(event.target.value)}
                             value={test.title}
                             style={styles.input}
+                        />
+                    </Container>
+                </Container>
+                <Container style={styles.row}>
+                    <Container style={styles.left}>
+                        <Typography>Описание:</Typography>
+                    </Container>
+                    <Container style={styles.title}>
+                        <TextField
+                            multiline={true}
+                            placeholder="Описание теста"
+                            onChange={(event) => addDescription(event.target.value)}
+                            value={test.description}
+                            style={styles.input}
+                            rows={5}
                         />
                     </Container>
                 </Container>
@@ -223,6 +261,7 @@ const CreatingTest = ({
                         <Typography> </Typography>
                     </Container>
                     <Container style={styles.coverImgContainer}>
+                        <PhotoCameraIcon fontSize='large' style={styles.photoIcon}/>
                         <img style={styles.coverImg} src={test.picture} alt=""/>
                     </Container>
                 </Container>
@@ -251,7 +290,7 @@ const CreatingTest = ({
                             </Container>
                             <Container style={styles.resInfo}>
                                 <Typography style={styles.resultText}>{item.resText}</Typography>
-                                <Typography>{cropText(item.resDesc)}</Typography>
+                                <Typography>{cropText(item.resDesc, 255)}</Typography>
                             </Container>
                         </Card>
                     })}
@@ -318,6 +357,8 @@ const CreatingTest = ({
                     </Button>
                 </Container>
                 <Container>
+                    {!correct &&
+                    <Typography style={styles.correctError}>Слишком много неназначенных результатов!</Typography>}
                     <Button variant="contained"
                             classes={buttonClasses}
                             size='large'
@@ -325,14 +366,14 @@ const CreatingTest = ({
                             disabled={!validation()}
                             style={styles.addQuestionBtn}
                             onClick={() => {
-                                if (validation()) {
-                                    createTest(test);
+                                if (checkCorrect() && validation()) {
+                                    setCreating(true);
+                                    creatingTest(test);
                                 }
                             }}>
                         Создать тест
                     </Button>
                 </Container>
-
             </Card>
         </Box>
     )
@@ -396,13 +437,24 @@ const styles = {
     coverImgContainer: {
         height: 200,
         width: '100%',
-        padding: 0
+        padding: 0,
+        position: 'relative'
     },
     coverImg: {
         display: 'inline-block',
         width: '100%',
         height: '100%',
         objectFit: 'contain',
+        position: 'relative',
+        zIndex: 2
+    },
+    photoIcon: {
+        color: 'gray',
+        position: 'absolute',
+        top: '50%',
+        left: '50%',
+        transform: 'translate(-50%, -50%)',
+        zIndex: 1
     },
     questionImgContainer: {
         height: 200,
@@ -486,6 +538,11 @@ const styles = {
         right: 0,
         color: 'red',
         fontWeight: 'bold'
+    },
+    correctError: {
+        color: '#d32f2f',
+        fontWeight: 'bold',
+        marginBottom: 15
     }
 
 };
