@@ -10,7 +10,9 @@ const instance = axios.create({
 export const testsAPI = {
     getTests() {
         return instance.get(`tests`)
-            .then(response => {return response.data})
+            .then(response => {
+                return response.data
+            })
     },
 
     getTest(testID) {
@@ -21,6 +23,21 @@ export const testsAPI = {
     createTest(test) {
         return instance.post(`tests`, test)
             .then(response => response.data)
-            .catch((error) => {console.log(error.response); return error.response.data});
+            .catch((error) => {
+                console.log(error.response);
+                return error.response.data
+            });
     },
 };
+
+export const authAPI = {
+    auth() {
+        let queryString = window.location.search;
+        return instance.post(`auth`, {
+            'query': queryString.slice(1)
+        }).then(response => {
+            console.log(response.data);
+            return response.data;
+        })
+    }
+}

@@ -8,11 +8,13 @@ import MainScreenContainer from "./components/MainScreen/MainScreenContainer";
 import {Box} from "@material-ui/core";
 import HeaderTabsContainer from "./components/Common/Header/HeaderTabsContainer";
 import {parseURL} from "./components/helpers/helpers";
+import {authAPI} from "./api/api";
+import {authUser} from "./redux/reducers/userReducer";
 
-const App = () => {
+const App = ({authUser}) => {
     useEffect(() => {
         //this.props.initializeApp();
-        console.log(parseURL())
+        authUser();
     }, []);
 
     return (
@@ -36,7 +38,7 @@ const mapStateToProps = state => ({
 });
 
 const AppContainer = compose(
-    connect(mapStateToProps, {}))(App);
+    connect(mapStateToProps, {authUser}))(App);
 
 const MainApp = () => {
     return (
