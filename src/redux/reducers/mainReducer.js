@@ -4,37 +4,14 @@ const SET_TESTS = 'SET_TESTS';
 const SET_IS_LOADED = 'SET_IS_LOADED';
 const SET_TEST_MODE = 'SET_TEST_MODE';
 const SET_MODE = 'SET_MODE';
+const SET_DISABLED_TABS = 'SET_DISABLED_TABS';
 
 let initialState = {
     isLoaded: false, // вернуть фолс
     mode: 0, // вернуть 0
     testMode: false, //вернуть фолс
-    tests: [
-        {
-            id: 0,
-            title: 'Тест1',
-            picture: 'пикча',
-            vip: false,
-            description: 'описание',
-            price: 0
-        },
-        {
-            id: 1,
-            title: 'Тест2',
-            picture: 'пикча2',
-            description: 'описание2',
-            vip: false,
-            price: 0
-        },
-        {
-            id: 2,
-            title: 'Тест3',
-            description: 'описание3',
-            picture: 'Пикча3',
-            vip: false,
-            price: 0
-        }
-    ]
+    disabledTabs: [],
+    tests: []
 };
 
 const mainReducer = (state = initialState, action) => {
@@ -61,6 +38,13 @@ const mainReducer = (state = initialState, action) => {
                 mode: action.mode
 
             };
+        case SET_DISABLED_TABS:
+            console.log('DIS', action.disabledTabs)
+            return {
+                ...state,
+                disabledTabs: action.disabledTabs
+
+            };
         default:
             return state;
     }
@@ -70,6 +54,7 @@ export const setTests = (tests) => ({type: SET_TESTS, tests});
 export const setTestMode = (testMode) => ({type: SET_TEST_MODE, testMode});
 export const setMode = (mode) => ({type: SET_MODE, mode});
 export const setIsLoaded = (isLoaded) => ({type: SET_IS_LOADED, isLoaded});
+export const setDisabledTabs = (disabledTabs) => ({type: SET_DISABLED_TABS, disabledTabs});
 
 export const getTests = () => async (dispatch) => {
     dispatch(setIsLoaded(false));

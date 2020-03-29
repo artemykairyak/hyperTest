@@ -68,7 +68,6 @@ const CreatingTestContainer = ({
         deleteQuestion(qIndex)
     };
 
-
     const _editQuestion = (newQuestion) => {
         editQuestion(newQuestion)
     };

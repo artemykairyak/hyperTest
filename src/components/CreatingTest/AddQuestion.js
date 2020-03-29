@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from "react";
 import {Button, Container, Input, Typography} from "@material-ui/core";
 import Card from "@material-ui/core/Card";
-import {compressFile, generateNewIndex} from "../helpers/helpers";
+import {compressFile, generateNewIndex, lengthValidation} from "../helpers/helpers";
 import {HighlightOff} from '@material-ui/icons';
 import {makeStyles} from "@material-ui/styles";
 import CloseIcon from '@material-ui/icons/Close';
@@ -14,7 +14,7 @@ import DialogTitle from "@material-ui/core/DialogTitle";
 import Dialog from "@material-ui/core/Dialog";
 import Radio from "@material-ui/core/Radio";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
-import {maxVarsLength} from "../../constants";
+import {allowedImageFormats, maxVarsLength, shortInputLength} from "../../constants";
 
 const AddQuestion = ({
                          test, setAddQuestionPopupState, editedQuestion, editQuestion, setEditedQuestion,
@@ -30,6 +30,19 @@ const AddQuestion = ({
     let [qVarsCount, setQVarsCount] = useState([]);
     let [open, setOpen] = React.useState(false);
     let [selectVar, setSelectVar] = React.useState(0);
+    let [errors, setErrors] = useState(new Set());
+
+    const validateLengthInput = (text, length, fieldName) => {
+        let newSet = new Set(errors);
+
+        if (lengthValidation(text, length)) {
+            newSet.add(fieldName);
+        } else {
+            newSet.delete(fieldName);
+
+        }
+        setErrors(newSet)
+    };
 
     const addRes = (qId, varId, resIndex) => {
         console.log('ID', qId, varId, resIndex)
@@ -59,10 +72,16 @@ const AddQuestion = ({
         getFile(event);
     };
 
+    console.log('asfasf', qObj.vars);
+
     const addVar = () => {
         if (qVarsCount.length < maxVarsLength) {
             setQVarsCount([...qVarsCount, qVarsCount.length + 1]);
-            setQObj({...qObj, vars: [...qObj.vars, {varId: qVarsCount.length, varText: '', res: null}]});
+            let newId = 0;
+            if (qObj.vars.length > 0) {
+                newId = qObj.vars[qObj.vars.length - 1].varId + 1
+            }
+            setQObj({...qObj, vars: [...qObj.vars, {varId: newId, varText: '', res: null}]});
         }
     };
 
@@ -105,14 +124,16 @@ const AddQuestion = ({
         }
     };
 
-    const deleteVar = (index) => {
+    const deleteVar = (index, varId) => {
         let qObjVarsCopy = [...qObj.vars];
         let qVarsCountCopy = [...qVarsCount]
         let newQbjVars = [];
         let newQbjVarsCount = [];
+        let newSet = new Set(errors);
 
         for (let i = 0; i < qObjVarsCopy.length; i++) {
-            if (i !== index) {
+            console.log('i', qObjVarsCopy[i].varId)
+            if (qObjVarsCopy[i].varId !== varId) {
                 newQbjVars.push(qObjVarsCopy[i]);
                 newQbjVarsCount.push(qVarsCountCopy[i]);
             }
@@ -120,6 +141,8 @@ const AddQuestion = ({
         setQVarsCount(newQbjVarsCount);
         setQObj({...qObj, vars: newQbjVars});
         setSelectVar(0);
+        newSet.delete(varId);
+        setErrors(newSet);
     };
 
     const validate = () => {
@@ -177,6 +200,10 @@ const AddQuestion = ({
         console.log('VARCOUNTS', qVarsCount)
     }, [qVarsCount]);
 
+    useEffect(() => {
+        console.log('errors', errors);
+    }, [errors]);
+
     const styles = useStyles();
 
     return (
@@ -190,7 +217,7 @@ const AddQuestion = ({
                 </Container>
                 <Container className={styles.rightBtn}>
                     <input
-                        accept="image/*"
+                        accept={allowedImageFormats}
                         className={styles.addCoverInput}
                         multiple
                         type="file"
@@ -220,10 +247,15 @@ const AddQuestion = ({
                 <Container className={styles.inputContainer}>
                     <TextField
                         placeholder="Текст вопроса"
-                        onChange={(event) => updateQObj('qText', event.target.value)}
+                        onChange={(event) => {
+                            updateQObj('qText', event.target.value);
+                            validateLengthInput(event.target.value, shortInputLength, 'qText');
+                        }}
+                        error={errors.has('qText')}
                         value={qObj.qText}
                         className={styles.input}
                     />
+                    {errors.has('qText') && <Typography className={styles.errorText}>Слишком длинный текст</Typography>}
                 </Container>
             </Container>
             <Container className={styles.row}>
@@ -246,12 +278,18 @@ const AddQuestion = ({
                     {qVarsCount.map((count, index) => {
                         return <Container className={[styles.inputContainer, styles.varInputContainer]} key={index}>
                             <Input
-                                onChange={(event) => updateVarToQObj(event.target.value, index)}
+                                onChange={(event) => {
+                                    updateVarToQObj(event.target.value, index);
+                                    validateLengthInput(event.target.value, shortInputLength, qObj.vars[index].varId);
+                                }}
+                                error={errors.has(qObj.vars[index].varId)}
                                 value={qObj.vars[index].varText}
                                 placeholder="Введите вариант ответа"
                                 className={[styles.input]}
                             /><HighlightOff className={styles.deleteIcon}
-                                            onClick={() => deleteVar(index)}/>
+                                            onClick={() => deleteVar(index, qObj.vars[index].varId)}/>
+                            {errors.has(qObj.vars[index].varId) &&
+                            <Typography className={styles.errorText}>Слишком длинный вопрос</Typography>}
                             <div className={styles.varResContainer}>
                                 <Button className={styles.addResBtn} onClick={() => {
                                     setSelectVar(qObj.vars[index].varId);
@@ -308,12 +346,12 @@ const AddQuestion = ({
                 </Container>
                 <Container className={[styles.rightBtn]}>
                     <Button variant="contained"
-                            disabled={qVarsCount.length === 0}
+                            disabled={!validate() || qVarsCount.length === 0 || errors.size > 0}
                             component="span"
                             color={validate() ? 'primary' : 'secondary'}
                             className={styles.btn}
                             onClick={() => {
-                                if (validate()) {
+                                if (validate() && errors.size === 0) {
                                     if (editedQuestion) {
                                         editQuestion(qObj);
                                         setEditedQuestion(null);
@@ -327,7 +365,7 @@ const AddQuestion = ({
                                 }
                             }
                             }>
-                        {validate() ? 'Готово' : 'Не все поля заполнены'}
+                        {validate() ? (errors.size === 0 ? 'Готово' : 'Присутствуют ошибки') : 'Не все поля заполнены'}
                     </Button>
                 </Container>
             </Container>
@@ -437,6 +475,12 @@ var useStyles = makeStyles({
     },
     dialogText: {
         marginTop: 15
+    },
+    errorText: {
+        color: '#d32f2f',
+        textAlign: 'left',
+        paddingLeft: 0,
+        paddingTop: 5
     }
 });
 

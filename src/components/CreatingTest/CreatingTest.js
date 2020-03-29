@@ -15,14 +15,14 @@ import {
 } from '@material-ui/core';
 import DeleteIcon from '@material-ui/icons/Delete';
 import AddQuestion from "./AddQuestion";
-import {compressFile, cropText} from '../helpers/helpers';
+import {compressFile, cropText, lengthValidation} from '../helpers/helpers';
 import AddResult from "./AddResult";
 import DeleteResultPopup from "./DeleteResultPopup";
 import EditIcon from '@material-ui/icons/Edit';
 import ErrorIcon from '@material-ui/icons/Error';
 import Tooltip from "@material-ui/core/Tooltip";
 import makeStyles from "@material-ui/core/styles/makeStyles";
-import {maxQuestionsLength} from "../../constants";
+import {allowedImageFormats, maxQuestionsLength, shortInputLength, standardInputLength} from "../../constants";
 import TextField from "@material-ui/core/TextField";
 import PhotoCameraIcon from '@material-ui/icons/PhotoCamera';
 import LoadingPopup from "../Common/Popups/LoadingPopup/LoadingPopup";
@@ -54,6 +54,7 @@ const CreatingTest = ({
     let [editedResult, setEditedResult] = useState(null);
     let [correct, setCorrect] = useState(true);
     let [creating, setCreating] = useState(false);
+    let [errors, setErrors] = useState(new Set());
 
     const setGender = (val) => {
         setLocalGender(val);
@@ -62,16 +63,17 @@ const CreatingTest = ({
 
     const creatingTest = (test) => {
         setCreating(true);
-        createTest(test)
-            .then(() => {
-                setCreating(false)
-            });
+        createTest(test);
     };
 
     const getFile = (event, mode) => {
         let fileList = event.target.files;
 
         compressFile(fileList[0], (result) => {
+            console.log(result)
+            let newSet = new Set(errors);
+            !result ? newSet.add('picture') : newSet.delete('picture');
+            setErrors(newSet);
             if (mode === 'testPic') {
                 addPicture(result);
             }
@@ -81,6 +83,7 @@ const CreatingTest = ({
             }
         })
     };
+
 
     const setTestPic = event => {
         getFile(event, 'testPic');
@@ -98,10 +101,9 @@ const CreatingTest = ({
         console.log('editedRES', editedResult);
     }, [editedResult])
 
-    // useEffect(() => {
-    //     if()
-    //     setCreating(false);
-    // })
+    useEffect(() => {
+        console.log('ERRORS', errors, errors.size);
+    }, [errors])
 
     const useStyles = makeStyles({
         tooltip: {
@@ -124,6 +126,19 @@ const CreatingTest = ({
             },
         },
     });
+
+    const validateLengthInput = (text, length, fieldName) => {
+        let newSet = new Set(errors);
+
+        if(lengthValidation(text, length)) {
+            newSet.add(fieldName);
+        }
+        else {
+            newSet.delete(fieldName);
+
+        }
+        setErrors(newSet)
+    };
 
     const checkCorrect = () => {
         if (isCorrect()) {
@@ -168,7 +183,6 @@ const CreatingTest = ({
                     <Container style={styles.left}>
                         <Typography>Кто может пройти тест:</Typography>
                     </Container>
-
                     <Container style={styles.gender}>
                         <Container style={styles.radioCardContainer}>
                             <Button style={styles.radioCard} onClick={() => {
@@ -215,10 +229,14 @@ const CreatingTest = ({
                     <Container style={styles.title}>
                         <TextField
                             placeholder="Название теста"
-                            onChange={(event) => addTitle(event.target.value)}
+                            onChange={(event) => {addTitle(event.target.value);
+                                validateLengthInput(event.target.value, shortInputLength, 'title')
+                            }}
                             value={test.title}
                             style={styles.input}
+                            error={errors.has('title')}
                         />
+                        {errors.has('title') && <Typography style={styles.errorText}>Слишком длинное название</Typography>}
                     </Container>
                 </Container>
                 <Container style={styles.row}>
@@ -229,11 +247,16 @@ const CreatingTest = ({
                         <TextField
                             multiline={true}
                             placeholder="Описание теста"
-                            onChange={(event) => addDescription(event.target.value)}
+                            onChange={(event) => {
+                                addDescription(event.target.value);
+                                validateLengthInput(event.target.value, standardInputLength, 'description');
+                            }}
                             value={test.description}
                             style={styles.input}
                             rows={5}
+                            error={errors.has('description')}
                         />
+                        {errors.has('description') && <Typography style={styles.errorText}>Слишком длинное описание</Typography>}
                     </Container>
                 </Container>
                 <Container style={styles.row}>
@@ -242,7 +265,7 @@ const CreatingTest = ({
                     </Container>
                     <Container style={styles.cover}>
                         <input
-                            accept="image/*"
+                            accept={allowedImageFormats}
                             style={styles.addCoverInput}
                             multiple
                             type="file"
@@ -263,6 +286,7 @@ const CreatingTest = ({
                     <Container style={styles.coverImgContainer}>
                         <PhotoCameraIcon fontSize='large' style={styles.photoIcon}/>
                         <img style={styles.coverImg} src={test.picture} alt=""/>
+                        {errors.has('picture') && <Typography style={styles.errorText}>Некорректное изображение</Typography>}
                     </Container>
                 </Container>
                 <Container>
@@ -363,10 +387,10 @@ const CreatingTest = ({
                             classes={buttonClasses}
                             size='large'
                             component="span"
-                            disabled={!validation()}
+                            disabled={!validation() || errors.size > 0}
                             style={styles.addQuestionBtn}
                             onClick={() => {
-                                if (checkCorrect() && validation()) {
+                                if (checkCorrect() && validation() && errors.size === 0) {
                                     setCreating(true);
                                     creatingTest(test);
                                 }
@@ -543,6 +567,12 @@ const styles = {
         color: '#d32f2f',
         fontWeight: 'bold',
         marginBottom: 15
+    },
+    errorText: {
+        color: '#d32f2f',
+        textAlign: 'left',
+        paddingLeft: 18,
+        paddingTop: 5
     }
 
 };

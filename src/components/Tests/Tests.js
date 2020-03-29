@@ -8,32 +8,35 @@ import CreatingTestContainer from "../CreatingTest/CreatingTestContainer";
 import Container from "@material-ui/core/Container";
 import BeginTestPopup from "../Common/Popups/BeginTestPopup/BeginTestPopup";
 
-const Tests = ({tests, activeTab, setTestTC}) => {
+const Tests = ({tests, activeTab, setTestTC, setDisabledTabs}) => {
     let [beginPopupState, setBeginPopupState] = useState(false);
     let [propsObj, setPropsObj] = useState(null);
 
     const handleTestClick = (id, picture, title, description, price, creator) => {
-        setPropsObj({picture, title, description, price, creator, beginTestFunc: () => {setTestTC(id)}, setBeginPopupState});
+        setPropsObj({
+            picture, title, description, price, creator, beginTestFunc: () => {
+                setTestTC(id)
+            }, setBeginPopupState
+        });
         setBeginPopupState(true);
-        // setTestTC(id);
     };
 
     if (activeTab === 0) {
         return (
             <>
-            <Container
-               style={styles.grid}
-            >
-                {tests.map((item, index) => {
-                    return <Card style={styles.testCard}
-                                 key={item.id}
-                                 onClick={() => handleTestClick(item.id,
-                                     item.picture,
-                                     item.title,
-                                     item.description,
-                                     item.price,
-                                     item.creator)}
-                              >
+                <Container
+                    style={styles.grid}
+                >
+                    {tests.map((item) => {
+                        return <Card style={styles.testCard}
+                                     key={item.id}
+                                     onClick={() => handleTestClick(item.id,
+                                         item.picture,
+                                         item.title,
+                                         item.description,
+                                         item.price,
+                                         item.creator)}
+                        >
                             <CardActionArea style={styles.testArea}>
                                 <img src={item.picture} alt="" style={styles.testPic}/>
                                 <CardContent style={styles.content}>
@@ -44,9 +47,9 @@ const Tests = ({tests, activeTab, setTestTC}) => {
                             </CardActionArea>
                         </Card>
 
-                })}
-            </Container>
-                {beginPopupState && <BeginTestPopup propsObj={propsObj}/>}
+                    })}
+                </Container>
+                {beginPopupState && <BeginTestPopup setDisabledTabs={setDisabledTabs} propsObj={propsObj}/>}
             </>
         )
     }
@@ -68,7 +71,7 @@ const Tests = ({tests, activeTab, setTestTC}) => {
 
 const styles = {
     grid: {
-      display: 'flex',
+        display: 'flex',
         flexWrap: 'wrap'
     },
     testCard: {

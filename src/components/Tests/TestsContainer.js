@@ -1,22 +1,22 @@
 import React, {useEffect} from "react";
 import {connect} from "react-redux";
 import Tests from "./Tests";
-import {getTests, setTestMode} from "../../redux/reducers/mainReducer";
+import {getTests, setDisabledTabs, setTestMode} from "../../redux/reducers/mainReducer";
 import {setTestTC} from "../../redux/reducers/testReducer";
 import LoadingPopup from "../Common/Popups/LoadingPopup/LoadingPopup";
 
-const TestsContainer = ({tests, setTestTC, getTests, mode, isLoaded}) => {
-
+const TestsContainer = ({tests, setTestTC, getTests, mode, isLoaded, setDisabledTabs}) => {
 
     useEffect(() => {
-        console.log('gettests')
-           getTests(); //ВКЛЮЧИТЬ
-    },[]);
+        setDisabledTabs([]);
+        getTests(); //ВКЛЮЧИТЬ
+    }, []);
 
-    if(isLoaded) {
-        return  <Tests tests={tests}
-                       activeTab={mode}
-                       setTestTC={setTestTC}
+    if (isLoaded) {
+        return <Tests tests={tests}
+                      activeTab={mode}
+                      setTestTC={setTestTC}
+                      setDisabledTabs={setDisabledTabs}
         />
     } else {
         return <LoadingPopup topText='Тесты загружаются' bottomText='Пожалуйста, подождите.'/>
@@ -32,4 +32,4 @@ const mapStateToProps = (state) => {
     }
 };
 
-export default connect(mapStateToProps, {setTestMode, getTests, setTestTC})(TestsContainer);
+export default connect(mapStateToProps, {setTestMode, getTests, setTestTC, setDisabledTabs})(TestsContainer);

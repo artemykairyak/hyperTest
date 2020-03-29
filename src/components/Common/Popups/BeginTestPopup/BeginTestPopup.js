@@ -1,4 +1,4 @@
-import React, {useEffect} from "react";
+import React from "react";
 import Container from "@material-ui/core/Container";
 import styles from './BeginTestPopup.module.css';
 import popupGeneralStyles from '../popupGeneralStyles.module.css'
@@ -7,7 +7,7 @@ import Typography from "@material-ui/core/Typography";
 import Button from "@material-ui/core/Button";
 import CloseIcon from '@material-ui/icons/Close';
 
-const BeginTestPopup = ({propsObj}) => {
+const BeginTestPopup = ({propsObj, setDisabledTabs}) => {
     let {picture, title, description, price, creator, beginTestFunc, setBeginPopupState} = propsObj;
     return <Container className={popupGeneralStyles.container} onClick={(e) => setBeginPopupState(false)}>
         <Card className={styles.popup} onClick={(e) => e.stopPropagation()}>
@@ -20,7 +20,7 @@ const BeginTestPopup = ({propsObj}) => {
                 <Typography className={styles.desc}>{description}</Typography>
             </Container>
             <Container className={styles.beginBtn}>
-                <Button variant="contained" color="primary" onClick={() => beginTestFunc()}>
+                <Button variant="contained" color="primary" onClick={() => {setDisabledTabs([0, 1, 2]); beginTestFunc()}}>
                     <Typography>Начать тест</Typography>
                 </Button>
             </Container>

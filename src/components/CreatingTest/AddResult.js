@@ -1,11 +1,12 @@
 import React, {useEffect, useState} from "react";
 import {Button, Container, Typography} from "@material-ui/core";
 import Card from "@material-ui/core/Card";
-import {compressFile, generateNewIndex} from "../helpers/helpers";
+import {compressFile, generateNewIndex, lengthValidation} from "../helpers/helpers";
 import {makeStyles} from "@material-ui/styles";
 import CloseIcon from '@material-ui/icons/Close';
 import PhotoCameraIcon from '@material-ui/icons/PhotoCamera';
 import TextField from "@material-ui/core/TextField";
+import {allowedImageFormats, shortInputLength, standardInputLength} from "../../constants";
 
 const AddResult = ({test, setAddResultPopupState, addResult, editedResult, editResult, setEditedResult}) => {
     let [resObj, setResObj] = useState({
@@ -14,9 +15,23 @@ const AddResult = ({test, setAddResultPopupState, addResult, editedResult, editR
         resDesc: '',
         resPic: null
     });
+    let [errors, setErrors] = useState(new Set());
 
     const setResPic = event => {
         getFile(event);
+    };
+
+    const validateLengthInput = (text, length, fieldName) => {
+        let newSet = new Set(errors);
+
+        if(lengthValidation(text, length)) {
+            newSet.add(fieldName);
+        }
+        else {
+            newSet.delete(fieldName);
+
+        }
+        setErrors(newSet)
     };
 
     useEffect(() => {
@@ -72,7 +87,7 @@ const AddResult = ({test, setAddResultPopupState, addResult, editedResult, editR
                 </Container>
                 <Container className={[styles.rightBtn, styles.cover]}>
                     <input
-                        accept="image/*"
+                        accept={allowedImageFormats}
                         className={styles.addCoverInput}
                         multiple
                         type="file"
@@ -102,10 +117,15 @@ const AddResult = ({test, setAddResultPopupState, addResult, editedResult, editR
                 <Container className={styles.inputContainer}>
                     <TextField
                         placeholder="Текст результата"
-                        onChange={(event) => updateResObj('resText', event.target.value)}
+                        onChange={(event) => {
+                            updateResObj('resText', event.target.value)
+                            validateLengthInput(event.target.value, shortInputLength, 'resText');
+                        }}
+                        error={errors.has('resText')}
                         value={resObj.resText}
                         className={styles.input}
                     />
+                    {errors.has('resText') && <Typography className={styles.errorText}>Слишком длинный текст</Typography>}
                 </Container>
             </Container>
             <Container className={styles.row}>
@@ -116,11 +136,16 @@ const AddResult = ({test, setAddResultPopupState, addResult, editedResult, editR
                     <TextField
                         multiline={true}
                         placeholder="Описание результата"
-                        onChange={(event) => updateResObj('resDesc', event.target.value)}
+                        onChange={(event) => {
+                            updateResObj('resDesc', event.target.value);
+                            validateLengthInput(event.target.value, standardInputLength, 'resDesc');
+                        }}
+                        error={errors.has('resDesc')}
                         value={resObj.resDesc}
                         className={styles.input}
                         rows={5}
                     />
+                    {errors.has('resDesc') && <Typography className={styles.errorText}>Слишком длинное описание</Typography>}
                 </Container>
             </Container>
             <Container className={styles.row}>
@@ -129,12 +154,12 @@ const AddResult = ({test, setAddResultPopupState, addResult, editedResult, editR
                 </Container>
                 <Container className={[styles.rightBtn]}>
                     <Button variant="contained"
-                            disabled={!validate()}
+                            disabled={!validate() || errors.size > 0}
                             component="span"
-                            color={validate() ? 'primary' : 'secondary'}
+                            color={validate() || errors.size === 0 ? 'primary' : 'secondary'}
                             className={styles.btn}
                             onClick={() => {
-                                if (validate()) {
+                                if (validate() && errors.size === 0) {
                                     if(editedResult) {
                                         editResult(resObj);
                                         setEditedResult(null);
@@ -145,7 +170,7 @@ const AddResult = ({test, setAddResultPopupState, addResult, editedResult, editR
                                 }
                             }
                             }>
-                        {validate() ? 'Готово' : 'Не все поля заполнены'}
+                        {validate() ? (errors.size > 0 ? 'Присутствуют ошибки' : 'Готово') : 'Не все поля заполнены'}
                     </Button>
                 </Container>
             </Container>
@@ -245,7 +270,12 @@ var useStyles = makeStyles({
         top: 10,
         right: 10,
         cursor: 'pointer',
-
+    },
+    errorText: {
+        color: '#d32f2f',
+        textAlign: 'left',
+        paddingLeft: 0,
+        paddingTop: 5
     }
 });
 

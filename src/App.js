@@ -7,10 +7,12 @@ import store from "./redux/store";
 import MainScreenContainer from "./components/MainScreen/MainScreenContainer";
 import {Box} from "@material-ui/core";
 import HeaderTabsContainer from "./components/Common/Header/HeaderTabsContainer";
+import {parseURL} from "./components/helpers/helpers";
 
 const App = () => {
     useEffect(() => {
         //this.props.initializeApp();
+        console.log(parseURL())
     }, []);
 
     return (
@@ -21,12 +23,6 @@ const App = () => {
                     <Route exact path="/">
                         <MainScreenContainer/>
                     </Route>
-                    {/*<Route path="/test/:testID?">*/}
-                    {/*    <TestContainer/>*/}
-                    {/*</Route>*/}
-                    {/* <Route exact path="/createTest">
-                        <CreatingTestContainer/>
-                    </Route> */}
                 </Switch>
             </Box>
 

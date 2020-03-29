@@ -8,7 +8,7 @@ import {
     setEmptyTest,
     setIsAnswered
 } from "../../redux/reducers/testReducer";
-import {setMode, setTestMode} from "../../redux/reducers/mainReducer";
+import {setDisabledTabs, setMode, setTestMode} from "../../redux/reducers/mainReducer";
 
 const TestContainer = ({
                            test,
@@ -23,13 +23,14 @@ const TestContainer = ({
                            setEmptyTest,
                            setMode,
                            setTestMode,
+                           setDisabledTabs
                        }) => {
 
     const closeTest = () => {
-        console.log('');
         setEmptyTest();
         setMode(0);
         setTestMode(false);
+        setDisabledTabs([]);
     };
 
     return (
@@ -42,7 +43,8 @@ const TestContainer = ({
               answers={answers}
               complete={complete}
               closeTest={closeTest}
-              setComplete={setComplete}/>
+              setComplete={setComplete}
+        />
     )
 };
 
@@ -63,5 +65,6 @@ export default connect(mapStateToProps, {
     setComplete,
     setMode,
     setEmptyTest,
-    setTestMode
+    setTestMode,
+    setDisabledTabs
 })(TestContainer);

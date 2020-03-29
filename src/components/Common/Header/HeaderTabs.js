@@ -3,7 +3,7 @@ import Tab from "@material-ui/core/Tab";
 import AppBar from "@material-ui/core/AppBar";
 import React from "react";
 
-const HeaderTabs = ({activeTab, handleChange}) => {
+const HeaderTabs = ({activeTab, handleChange, disabledTabs}) => {
     return (
         <AppBar position="static" color="default">
             <Tabs
@@ -15,9 +15,9 @@ const HeaderTabs = ({activeTab, handleChange}) => {
                 scrollButtons="auto"
                 aria-label="scrollable auto tabs example"
             >
-                <Tab label="Все тесты"/>
-                <Tab label="Мои тесты"/>
-                <Tab label="Создать тест"/>
+                <Tab disabled={disabledTabs.includes(0)} label="Все тесты"/>
+                <Tab disabled={disabledTabs.includes(1)} label="Мои тесты"/>
+                <Tab disabled={disabledTabs.includes(2)} label="Создать тест"/>
             </Tabs>
         </AppBar>
     )
