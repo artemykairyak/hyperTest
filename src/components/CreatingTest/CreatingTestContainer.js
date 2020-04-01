@@ -25,7 +25,8 @@ const CreatingTestContainer = ({
                                    setQuestions,
                                    setEmptyTest,
                                    createTestTC,
-                                   addDescription
+                                   addDescription,
+                                   token
                                }) => {
 
     let [questionsWithDeletedResults, setQuestionsWithDeletedResults] = useState(null);
@@ -110,6 +111,7 @@ const CreatingTestContainer = ({
         isCorrect={isCorrect}
         questionsWithDeletedResults={questionsWithDeletedResults}
         setQuestionsWithDeletedResults={setQuestionsWithDeletedResults}
+        token={token}
     />
 };
 
@@ -118,7 +120,8 @@ const CreatingTestContainer = ({
 const mapStateToProps = (state) => {
     return {
         popupDisplayed: state.testScreen.popupDisplayed,
-        test: state.testScreen.test
+        test: state.testScreen.test,
+        token: state.user.token
     }
 };
 

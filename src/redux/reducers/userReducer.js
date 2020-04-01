@@ -38,8 +38,9 @@ const getVKData = () => {
 }
 
 export const authUser = () => async (dispatch) => {
-    console.log('here')
-    dispatch(setIsLoaded(false));
+    // debugger
+    console.log('AUTHUSER')
+    // dispatch(setIsLoaded(false));
     let response = await authAPI.auth();
     console.log(response);
     dispatch(setToken(response.access_token));
@@ -51,7 +52,7 @@ export const authUser = () => async (dispatch) => {
 
     // dispatch(setTotalUsers(response.totalCount));
     // dispatch(setCurrentPage(page));
-    dispatch(setIsLoaded(true));
+    // dispatch(setIsLoaded(true));
 };
 
 

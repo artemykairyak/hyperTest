@@ -17,11 +17,13 @@ let initialState = {
 const mainReducer = (state = initialState, action) => {
     switch (action.type) {
         case SET_TESTS:
+            console.log('set')
             return {
                 ...state,
                 tests: action.tests
             };
         case SET_IS_LOADED:
+            // debugger
             return {
                 ...state,
                 isLoaded: action.isLoaded
@@ -56,14 +58,27 @@ export const setMode = (mode) => ({type: SET_MODE, mode});
 export const setIsLoaded = (isLoaded) => ({type: SET_IS_LOADED, isLoaded});
 export const setDisabledTabs = (disabledTabs) => ({type: SET_DISABLED_TABS, disabledTabs});
 
-export const getTests = () => async (dispatch) => {
+export const getAllTests = () => async (dispatch) => {
     dispatch(setIsLoaded(false));
-    let response = await testsAPI.getTests();
+    let response = await testsAPI.getAllTests();
     console.log(response);
     dispatch(setTests(response.items));
     // dispatch(setTotalUsers(response.totalCount));
     // dispatch(setCurrentPage(page));
     dispatch(setIsLoaded(true));
+};
+
+export const getMyTests = (token) => async (dispatch) => {
+    console.log('here')
+    dispatch(setIsLoaded(false));
+    let response = await testsAPI.getMyTests(token);
+    console.log(response)
+
+    dispatch(setTests(response.items));
+    // // dispatch(setTotalUsers(response.totalCount));
+    // // dispatch(setCurrentPage(page));
+    dispatch(setIsLoaded(true));
+
 };
 
 export default mainReducer;

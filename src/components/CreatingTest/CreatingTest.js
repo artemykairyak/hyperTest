@@ -43,7 +43,8 @@ const CreatingTest = ({
                           createTest,
                           addDescription,
                           questionsWithDeletedResults,
-                          setQuestionsWithDeletedResults
+                          setQuestionsWithDeletedResults,
+                          token
                       }) => {
     let [gender, setLocalGender] = useState(0);
     let [addQuestionPopupState, setAddQuestionPopupState] = useState(false);
@@ -63,7 +64,7 @@ const CreatingTest = ({
 
     const creatingTest = (test) => {
         setCreating(true);
-        createTest(test);
+        createTest(test, token);
     };
 
     const getFile = (event, mode) => {

@@ -1,5 +1,5 @@
 import {testsAPI} from "../../api/api";
-import {getTests, setMode, setTestMode} from "./mainReducer";
+import {setMode, setTestMode} from "./mainReducer";
 
 const SET_TEST = 'SET_TEST';
 const SET_EMPTY_TEST = 'SET_EMPTY_TEST';
@@ -313,22 +313,19 @@ const errorsObjConstructor = (errors) => {
     console.log('ERRORS', errorsObj);
 }
 
-export const createTestTC = (test) => async (dispatch) => {
-
-    let response = await testsAPI.createTest(test);
+export const createTestTC = (test, token) => async (dispatch) => {
+    console.log('CREATE', token)
+    let response = await testsAPI.createTest(test, token);
     if(response.errors) {
         // errorsObjConstructor(response.errors.fields)
     } else {
         dispatch(setEmptyTest());
-        dispatch(setMode(0));
+        dispatch(setMode(1));
 
-
-        dispatch(getTests());
+        // dispatch(getAllTests());
     }
     console.log(response);
 
 };
-
-
 
 export default testReducer;

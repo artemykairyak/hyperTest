@@ -1,14 +1,15 @@
 import * as axios from "axios";
 import {baseUrl} from "../constants";
 
+
 const instance = axios.create({
     baseURL: baseUrl,
     // withCredentials: true,
-    // headers: {"API-KEY": 'c5c7df60-607d-46ff-82fa-93b7998d3eff'}
+
 });
 
 export const testsAPI = {
-    getTests() {
+    getAllTests() {
         return instance.get(`tests`)
             .then(response => {
                 return response.data
@@ -20,19 +21,31 @@ export const testsAPI = {
             .then(response => response.data)
     },
 
-    createTest(test) {
-        return instance.post(`tests`, test)
+    createTest(test, token) {
+        return instance.post(`tests`, test, {headers: {'Authorization': `Bearer ${token}`}})
             .then(response => response.data)
             .catch((error) => {
                 console.log(error.response);
                 return error.response.data
             });
     },
+
+    getMyTests(token) {
+        console.log('TOKEN', token)
+        return instance.get(`tests/my`, {headers: {'Authorization': `Bearer ${token}`}})
+            .then(response => {
+                console.log('MYTESTS', response.data);
+                return response.data
+            })
+    },
 };
 
 export const authAPI = {
+
     auth() {
-        let queryString = window.location.search;
+        console.log('AUTH')
+        // let queryString = window.location.search;
+        let queryString = '?vk_access_token_settings=notify&vk_app_id=7339321&vk_are_notifications_enabled=0&vk_is_app_user=1&vk_is_favorite=0&vk_language=ru&vk_platform=desktop_web&vk_ref=other&vk_user_id=131120542&sign=lKAHqeSFV77Rp2D8E4K_g6K4x1dlKKh_McYnvHRTUkY'
         return instance.post(`auth`, {
             'query': queryString.slice(1)
         }).then(response => {
