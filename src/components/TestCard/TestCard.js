@@ -4,8 +4,14 @@ import Typography from "@material-ui/core/Typography";
 import Card from "@material-ui/core/Card";
 import React from "react";
 import styles from './TestCard.module.css';
+import CheckCircleIcon from '@material-ui/icons/CheckCircle';
+import EditIcon from '@material-ui/icons/Edit';
+import {IconButton} from "@material-ui/core";
+import Container from "@material-ui/core/Container";
+import DeleteIcon from '@material-ui/icons/Delete';
 
-const TestCard = ({test, handleTestClick}) => {
+const TestCard = ({test, handleTestClick, editIcon, publishIcon, deleteIcon, setPublishPopupState,
+                      setDeletePopupState, setPublishedTestId, setPublishedTest}) => {
     return (
         <Card className={styles.testCard}
               key={test.id}
@@ -25,6 +31,30 @@ const TestCard = ({test, handleTestClick}) => {
                     </Typography>
                 </CardContent>
             </CardActionArea>
+            <Container className={styles.icons}>
+                {editIcon &&  <IconButton aria-label="edit" onClick={() => {
+                    // setEditedResult(item);
+                    // setAddResultPopupState(true);
+                }} className={styles.icon}>
+                    <EditIcon className={styles.editIcon}/>
+                </IconButton>}
+                {publishIcon &&  <IconButton aria-label="edit" onClick={() => {
+                    // setEditedResult(item);
+                    setPublishedTestId(test.id);
+                    setPublishedTest(test);
+                    setPublishPopupState(true);
+
+                }} className={styles.icon}>
+                    <CheckCircleIcon className={styles.publishIcon}/>
+                </IconButton>}
+                {deleteIcon &&  <IconButton aria-label="edit" onClick={() => {
+                    // setEditedResult(item);
+                    setDeletePopupState(true);
+                }} className={styles.icon}>
+                    <DeleteIcon className={styles.deleteIcon}/>
+                </IconButton>}
+
+            </Container>
         </Card>
     )
 };

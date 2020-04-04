@@ -58,9 +58,10 @@ export const setMode = (mode) => ({type: SET_MODE, mode});
 export const setIsLoaded = (isLoaded) => ({type: SET_IS_LOADED, isLoaded});
 export const setDisabledTabs = (disabledTabs) => ({type: SET_DISABLED_TABS, disabledTabs});
 
-export const getAllTests = () => async (dispatch) => {
+export const getAllTests = (token) => async (dispatch) => {
     dispatch(setIsLoaded(false));
-    let response = await testsAPI.getAllTests();
+    console.log()
+    let response = await testsAPI.getAllTests(token);
     console.log(response);
     dispatch(setTests(response.items));
     // dispatch(setTotalUsers(response.totalCount));

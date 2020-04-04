@@ -1,32 +1,38 @@
 import React, {useEffect} from "react";
 import {connect} from "react-redux";
 import MyTests from "./MyTests";
-import {getMyTests} from "../../redux/reducers/mainReducer";
+import {getMyUnpublishedTests, publishMyTest} from "../../redux/reducers/myTestsReducer";
 
-const MyTestsContainer = ({token, tests, getMyTests, isLoaded}) => {
+const MyTestsContainer = ({publishMyTest, myUnpublishedTests, getMyUnpublishedTests, isLoaded}) => {
 
     useEffect(() => {
         console.log('GETMYTESTS')
-        getMyTests(token);
+        getMyUnpublishedTests();
     },[]);
+
+    useEffect(() => {
+        console.log('MUTAAATE', myUnpublishedTests);
+    },[myUnpublishedTests])
 
     const handleTestClick = () => {
         console.log(1);
     };
 
     return (
-        <MyTests tests={tests} isLoaded={isLoaded} handleTestClick={handleTestClick}/>
+        <MyTests myUnpublishedTests={myUnpublishedTests}
+                 isLoaded={isLoaded}
+                 publishMyTest={publishMyTest}
+                 handleTestClick={handleTestClick}/>
     )
 };
 
 const mapStateToProps = (state) => {
     return {
-        token: state.user.token,
-        tests: state.mainScreen.tests,
-        isLoaded: state.mainScreen.isLoaded
+        myUnpublishedTests: state.myTests.myUnpublishedTests,
+        isLoaded: state.myTests.isLoaded
     }
 };
 
 export default connect(mapStateToProps, {
-getMyTests
+    getMyUnpublishedTests, publishMyTest
 })(MyTestsContainer);

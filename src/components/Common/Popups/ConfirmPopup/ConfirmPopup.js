@@ -6,7 +6,7 @@ import Typography from "@material-ui/core/Typography";
 import Button from "@material-ui/core/Button";
 import popupGeneralStyles from "../popupGeneralStyles.module.css";
 
-const ConfirmPopup = ({text, onAgree, onClose, closeText, agreeText}) => {
+const ConfirmPopup = ({text, onAgree, onClose, closeText='Закрыть', agreeText}) => {
     return <Container className={popupGeneralStyles.container}>
         <Card className={styles.popup}>
             <Container className={styles.labelsContainer}>

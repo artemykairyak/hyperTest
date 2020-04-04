@@ -313,9 +313,9 @@ const errorsObjConstructor = (errors) => {
     console.log('ERRORS', errorsObj);
 }
 
-export const createTestTC = (test, token) => async (dispatch) => {
-    console.log('CREATE', token)
-    let response = await testsAPI.createTest(test, token);
+export const createTestTC = (test) => async (dispatch) => {
+
+    let response = await testsAPI.createTest(test);
     if(response.errors) {
         // errorsObjConstructor(response.errors.fields)
     } else {

@@ -4,15 +4,18 @@ import {getAllTests, setDisabledTabs} from "../../redux/reducers/mainReducer";
 import AllTests from "./AllTests";
 import {setTestTC} from "../../redux/reducers/testReducer";
 
-const AllTestsContainer = ({tests, setDisabledTabs, setTestTC, getAllTests, isLoaded}) => {
+const AllTestsContainer = ({tests, setDisabledTabs, setTestTC, getAllTests, isLoaded, token}) => {
     let [beginPopupState, setBeginPopupState] = useState(false);
     let [propsObj, setPropsObj] = useState(null);
 
     useEffect(() => {
-        console.log('GETTESTS')
+        console.log('GETTESTS', token)
         setDisabledTabs([]);
-        getAllTests(); //ВКЛЮЧИТЬ
-    }, []);
+        if(token) {
+            getAllTests(token); //ВКЛЮЧИТЬ
+        }
+
+    }, [token]);
 
     const handleTestClick = (id, picture, title, description, price, creator) => {
         setPropsObj({
@@ -36,6 +39,7 @@ const AllTestsContainer = ({tests, setDisabledTabs, setTestTC, getAllTests, isLo
 
 const mapStateToProps = (state) => {
     return {
+        token: state.user.token,
         tests: state.mainScreen.tests,
         mode: state.mainScreen.mode,
         isLoaded: state.mainScreen.isLoaded

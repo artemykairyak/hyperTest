@@ -47,6 +47,7 @@ export const authUser = () => async (dispatch) => {
     // Sends event to client
     await getVKData();
 
+
 // Subscribes to event, sended by client
 
 
