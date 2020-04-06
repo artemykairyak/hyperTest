@@ -4,7 +4,7 @@ import {getAllTests, setDisabledTabs} from "../../redux/reducers/mainReducer";
 import AllTests from "./AllTests";
 import {setTestTC} from "../../redux/reducers/testReducer";
 
-const AllTestsContainer = ({tests, setDisabledTabs, setTestTC, getAllTests, isLoaded, token}) => {
+const AllTestsContainer = ({tests, setDisabledTabs, setTestTC, getAllTests, isLoaded, token, totalTests, currentPage}) => {
     let [beginPopupState, setBeginPopupState] = useState(false);
     let [propsObj, setPropsObj] = useState(null);
 
@@ -12,10 +12,10 @@ const AllTestsContainer = ({tests, setDisabledTabs, setTestTC, getAllTests, isLo
         console.log('GETTESTS', token)
         setDisabledTabs([]);
         if(token) {
-            getAllTests(token); //ВКЛЮЧИТЬ
+            getAllTests(currentPage); //ВКЛЮЧИТЬ
         }
 
-    }, [token]);
+    }, [token, currentPage]);
 
     const handleTestClick = (id, picture, title, description, price, creator) => {
         setPropsObj({
@@ -33,6 +33,9 @@ const AllTestsContainer = ({tests, setDisabledTabs, setTestTC, getAllTests, isLo
                   setDisabledTabs={setDisabledTabs}
                   propsObj={propsObj}
                   isLoaded={isLoaded}
+                  totalTests={totalTests}
+                  getAllTests={getAllTests}
+                  currentPage={currentPage}
         />
     )
 };
@@ -42,7 +45,9 @@ const mapStateToProps = (state) => {
         token: state.user.token,
         tests: state.mainScreen.tests,
         mode: state.mainScreen.mode,
-        isLoaded: state.mainScreen.isLoaded
+        isLoaded: state.mainScreen.isLoaded,
+        totalTests: state.mainScreen.totalTests,
+        currentPage: state.mainScreen.currentPage
     }
 };
 

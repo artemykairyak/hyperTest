@@ -17,7 +17,7 @@ const Test = ({
                   pushAnswer,
                   answers,
                   complete,
-                  setComplete,
+                  testCompleted,
     closeTest
               }) => {
     console.log(test);
@@ -33,7 +33,8 @@ const Test = ({
         setIsAnswered(false);
         setCheckedIndex(null);
         if (currentQuestion === totalQuestions) {
-            setComplete(true);
+            console.log(test)
+            testCompleted(test.id);
         }
     };
 

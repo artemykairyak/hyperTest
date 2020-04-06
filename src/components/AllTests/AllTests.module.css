@@ -3,3 +3,13 @@
     flex-wrap: wrap;
     padding: 0 !important;
 }
+
+.container {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.loadBtn {
+    margin: 15px 0 !important;
+}

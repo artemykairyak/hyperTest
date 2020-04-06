@@ -9,9 +9,10 @@ import EditIcon from '@material-ui/icons/Edit';
 import {IconButton} from "@material-ui/core";
 import Container from "@material-ui/core/Container";
 import DeleteIcon from '@material-ui/icons/Delete';
+import DoneAllIcon from '@material-ui/icons/DoneAll';
 
 const TestCard = ({test, handleTestClick, editIcon, publishIcon, deleteIcon, setPublishPopupState,
-                      setDeletePopupState, setPublishedTestId, setPublishedTest}) => {
+                      setDeletePopupState, setPublishedTestId, setPublishedTest, passed}) => {
     return (
         <Card className={styles.testCard}
               key={test.id}
@@ -23,6 +24,7 @@ const TestCard = ({test, handleTestClick, editIcon, publishIcon, deleteIcon, set
                   test.creator)
               }
         >
+            {passed && <DoneAllIcon className={styles.doneIcon}/>}
             <CardActionArea className={styles.testArea}>
                 <img src={test.picture} alt="" className={styles.testPic}/>
                 <CardContent className={styles.content}>
@@ -53,7 +55,6 @@ const TestCard = ({test, handleTestClick, editIcon, publishIcon, deleteIcon, set
                 }} className={styles.icon}>
                     <DeleteIcon className={styles.deleteIcon}/>
                 </IconButton>}
-
             </Container>
         </Card>
     )

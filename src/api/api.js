@@ -9,9 +9,9 @@ const instance = axios.create({
 });
 
 export const testsAPI = {
-    getAllTests(token) {
-        console.log('GET TOKEN', token)
-        return instance.get(`tests`, {headers: {'Authorization': `Bearer ${token}`}})
+    getAllTests(page) {
+        console.log('PAGE', page)
+        return instance.get(`tests?page=${page}&page_size=21`, {headers: {'Authorization': `Bearer ${_token}`}})
             .then(response => {
                 console.log(response.data)
                 return response.data
@@ -31,8 +31,6 @@ export const testsAPI = {
                 return error.response.data
             });
     },
-
-
 };
 
 export const myTestsAPI = {
@@ -56,14 +54,26 @@ export const myTestsAPI = {
         return instance.get(`tests/my/${testID}`, {headers: {'Authorization': `Bearer ${_token}`}})
             .then(response => response.data)
     },
-}
+};
+
+export const testAPI = {
+    testPassed(id) {
+        return instance.post(`tests/${id}/pass`, {
+            'id': id
+        }, {headers: {'Authorization': `Bearer ${_token}`}})
+            .then(response => {
+            console.log(response.data);
+            return response.data;
+        })
+    }
+};
 
 export const authAPI = {
 
     auth() {
         console.log('AUTH')
-        let queryString = window.location.search;
-        // let queryString = '?vk_access_token_settings=notify&vk_app_id=7339321&vk_are_notifications_enabled=0&vk_is_app_user=1&vk_is_favorite=0&vk_language=ru&vk_platform=desktop_web&vk_ref=other&vk_user_id=131120542&sign=lKAHqeSFV77Rp2D8E4K_g6K4x1dlKKh_McYnvHRTUkY'
+        // let queryString = window.location.search;
+        let queryString = '?vk_access_token_settings=notify&vk_app_id=7339321&vk_are_notifications_enabled=0&vk_is_app_user=1&vk_is_favorite=0&vk_language=ru&vk_platform=desktop_web&vk_ref=other&vk_user_id=131120542&sign=lKAHqeSFV77Rp2D8E4K_g6K4x1dlKKh_McYnvHRTUkY'
         instance.defaults.headers.common['Authorization'] = 'Bearer ' + null;
         return instance.post(`auth`, {
             'query': queryString.slice(1)

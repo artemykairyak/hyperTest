@@ -3,10 +3,9 @@ import {connect} from "react-redux";
 import Test from "./Test";
 import {
     pushAnswer,
-    setComplete,
     setCurrentQuestion,
     setEmptyTest,
-    setIsAnswered
+    setIsAnswered, testCompleted
 } from "../../redux/reducers/testReducer";
 import {setDisabledTabs, setMode, setTestMode} from "../../redux/reducers/mainReducer";
 
@@ -23,7 +22,8 @@ const TestContainer = ({
                            setEmptyTest,
                            setMode,
                            setTestMode,
-                           setDisabledTabs
+                           setDisabledTabs,
+                           testCompleted
                        }) => {
 
     const closeTest = () => {
@@ -43,7 +43,7 @@ const TestContainer = ({
               answers={answers}
               complete={complete}
               closeTest={closeTest}
-              setComplete={setComplete}
+              testCompleted={testCompleted}
         />
     )
 };
@@ -62,9 +62,9 @@ export default connect(mapStateToProps, {
     setCurrentQuestion,
     setIsAnswered,
     pushAnswer,
-    setComplete,
     setMode,
     setEmptyTest,
     setTestMode,
-    setDisabledTabs
+    setDisabledTabs,
+    testCompleted
 })(TestContainer);

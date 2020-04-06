@@ -42,16 +42,15 @@ const myTestsReducer = (state = initialState, action) => {
                 myPublishedTests: []
             };
         case DELETE_PUBLISHED_TEST:
-            let newMyTestsArr = state.myPublishedTests.filter(item => {
-                // console.log(item);
+            let newMyTestsArr = state.myUnpublishedTests.filter(item => {
                 if(item.id !== action.id) {
-                    console.log('neitem', item);
                     return item;
                 }
+
             });
             return {
                 ...state,
-                myPublishedTests: newMyTestsArr
+                myUnpublishedTests: newMyTestsArr
             };
         default:
             return state;
@@ -65,7 +64,6 @@ export const deletePublishedTest = (id) => ({type: DELETE_PUBLISHED_TEST, id});
 export const clearMyTests = () => ({type: CLEAR_MY_TESTS});
 
 export const getMyUnpublishedTests = (page = 1) => async (dispatch) => {
-    console.log('herewwwwwwww')
     dispatch(setCurrentPage(page));
     dispatch(setIsLoaded(false));
     let response = await myTestsAPI.getMyUnpublishedTests(page);

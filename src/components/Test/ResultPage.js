@@ -8,7 +8,7 @@ const ResultPage = ({result, back}) => {
             <Card style={styles.testCard} elevation={0}>
                 <img style={styles.resImg} src={result.resPic} alt=''/>
             </Card>
-            <Typography>{result.resText}</Typography>
+            <Typography style={styles.resTitle}>{result.resText}</Typography>
             <Typography style={{marginTop: 15}}>{result.resDesc}</Typography>
             <Button style={styles.backBtn} onClick={() => back()} variant="contained" color="primary">Назад</Button>
         </Card>
@@ -40,6 +40,9 @@ const styles = {
         width: 150,
         marginTop: 40,
         marginBottom: 20
+    },
+    resTitle: {
+        fontWeight: 'bold'
     }
 };
 
