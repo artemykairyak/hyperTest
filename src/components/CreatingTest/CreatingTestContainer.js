@@ -6,7 +6,7 @@ import {
     addDescription,
     addQuestion,
     addResult, createTestTC,
-    deleteQuestion, deleteResult, editQuestion, editResult, setEmptyTest,
+    deleteQuestion, deleteResult, editQuestion, editResult, publishMyEditedTest, setEmptyTest,
     setPopupDisplayed, setQuestions
 } from "../../redux/reducers/testReducer";
 
@@ -26,7 +26,9 @@ const CreatingTestContainer = ({
                                    setEmptyTest,
                                    createTestTC,
                                    addDescription,
-                                   token
+                                   token,
+                                   testEditMode,
+                                   publishMyEditedTest
                                }) => {
 
     let [questionsWithDeletedResults, setQuestionsWithDeletedResults] = useState(null);
@@ -112,6 +114,8 @@ const CreatingTestContainer = ({
         questionsWithDeletedResults={questionsWithDeletedResults}
         setQuestionsWithDeletedResults={setQuestionsWithDeletedResults}
         token={token}
+        testEditMode={testEditMode}
+        publishMyEditedTest={publishMyEditedTest}
     />
 };
 
@@ -121,7 +125,8 @@ const mapStateToProps = (state) => {
     return {
         popupDisplayed: state.testScreen.popupDisplayed,
         test: state.testScreen.test,
-        token: state.user.token
+        token: state.user.token,
+        testEditMode: state.testScreen.testEditMode
     }
 };
 
@@ -139,5 +144,6 @@ export default connect(mapStateToProps, {
     setQuestions,
     setEmptyTest,
     createTestTC,
-    addDescription
+    addDescription,
+    publishMyEditedTest
 })(CreatingTestContainer);

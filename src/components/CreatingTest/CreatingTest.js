@@ -44,7 +44,9 @@ const CreatingTest = ({
                           addDescription,
                           questionsWithDeletedResults,
                           setQuestionsWithDeletedResults,
-                          token
+                          token,
+                          testEditMode,
+                          publishMyEditedTest
                       }) => {
     let [gender, setLocalGender] = useState(0);
     let [addQuestionPopupState, setAddQuestionPopupState] = useState(false);
@@ -70,19 +72,22 @@ const CreatingTest = ({
     const getFile = (event, mode) => {
         let fileList = event.target.files;
 
-        compressFile(fileList[0], (result) => {
-            console.log(result)
-            let newSet = new Set(errors);
-            !result ? newSet.add('picture') : newSet.delete('picture');
-            setErrors(newSet);
-            if (mode === 'testPic') {
-                addPicture(result);
-            }
+        if(fileList.length) {
+            compressFile(fileList[0], (result) => {
+                let newSet = new Set(errors);
+                !result ? newSet.add('picture') : newSet.delete('picture');
+                setErrors(newSet);
+                if (mode === 'testPic') {
+                    addPicture(result);
+                }
 
-            if (mode === 'questiontPic') {
-                addPicture(result);
-            }
-        })
+                if (mode === 'questiontPic') {
+                    addPicture(result);
+                }
+            })
+        }
+
+
     };
 
 
@@ -393,10 +398,14 @@ const CreatingTest = ({
                             onClick={() => {
                                 if (checkCorrect() && validation() && errors.size === 0) {
                                     setCreating(true);
-                                    creatingTest(test);
+                                    if(testEditMode) {
+                                        publishMyEditedTest(test.id, test);
+                                    } else {
+                                        creatingTest(test);
+                                    }
                                 }
                             }}>
-                        Создать тест
+                        {testEditMode ? 'Сохранить тест' : 'Создать тест'}
                     </Button>
                 </Container>
             </Card>

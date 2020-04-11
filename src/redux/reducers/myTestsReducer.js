@@ -81,7 +81,6 @@ export const publishMyTest = (id) => async (dispatch) => {
     // console.log('PUB', test);
     // dispatch(setIsLoaded(false));
     let test = await myTestsAPI.getMyTest(id);
-    console.log('FFFFFFFF', test)
     test.isPublished = true;
     let response = await myTestsAPI.publishMyTest(id, test);
     console.log(response)

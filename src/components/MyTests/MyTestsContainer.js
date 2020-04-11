@@ -2,8 +2,9 @@ import React, {useEffect} from "react";
 import {connect} from "react-redux";
 import MyTests from "./MyTests";
 import {getMyUnpublishedTests, publishMyTest} from "../../redux/reducers/myTestsReducer";
+import {editTestTC} from "../../redux/reducers/testReducer";
 
-const MyTestsContainer = ({publishMyTest, myUnpublishedTests, getMyUnpublishedTests, isLoaded}) => {
+const MyTestsContainer = ({publishMyTest, myUnpublishedTests, getMyUnpublishedTests, editTestTC, isLoaded}) => {
 
     useEffect(() => {
         console.log('GETMYTESTS')
@@ -22,6 +23,7 @@ const MyTestsContainer = ({publishMyTest, myUnpublishedTests, getMyUnpublishedTe
         <MyTests myUnpublishedTests={myUnpublishedTests}
                  isLoaded={isLoaded}
                  publishMyTest={publishMyTest}
+                 editTest={editTestTC}
                  handleTestClick={handleTestClick}/>
     )
 };
@@ -34,5 +36,5 @@ const mapStateToProps = (state) => {
 };
 
 export default connect(mapStateToProps, {
-    getMyUnpublishedTests, publishMyTest
+    getMyUnpublishedTests, publishMyTest, editTestTC
 })(MyTestsContainer);

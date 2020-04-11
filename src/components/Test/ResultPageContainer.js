@@ -20,10 +20,21 @@ const ResultPageContainer = ({test, answers, setTestMode, setEmptyTest, setCompl
             res.push([el, counts[el]]);
         });
 
-        if(res[0][0] === 'null') {
+        console.log('res', res);
+
+
+        if(res[0][0] === 'null' && res.length === 1) {
+            result = null;
+        }   else  if(res[0][0] === 'null' && res.length > 1) {
             result = test.results[res[1][0]];
         } else {
-            result = test.results[res[0][0]];
+            let resId = res[0][0];
+            for(let j in test.results) {
+                if(test.results[j].resId === +resId) {
+                    result = test.results[j];
+                    break;
+                }
+            }
         }
     };
 

@@ -54,6 +54,14 @@ export const myTestsAPI = {
         return instance.get(`tests/my/${testID}`, {headers: {'Authorization': `Bearer ${_token}`}})
             .then(response => response.data)
     },
+
+    editMyTest(id, test) {
+        return instance.put(`tests/my/${id}`, test, {headers: {'Authorization': `Bearer ${_token}`}})
+            .then(response => {
+                console.log('edited', response.data);
+                return response.data
+            })
+    },
 };
 
 export const testAPI = {

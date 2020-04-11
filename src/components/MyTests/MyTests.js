@@ -6,10 +6,8 @@ import styles from './MyTests.module.css'
 import Typography from "@material-ui/core/Typography";
 import Divider from "@material-ui/core/Divider";
 import ConfirmPopup from "../Common/Popups/ConfirmPopup/ConfirmPopup";
-import {publishMyTest} from "../../redux/reducers/myTestsReducer";
 
-
-const MyTests = ({publishMyTest, myUnpublishedTests, isLoaded, handleTestClick}) => {
+const MyTests = ({publishMyTest, myUnpublishedTests, isLoaded, handleTestClick, editTest}) => {
     let [deletePopupState, setDeletePopupState] = useState(false);
     let [publishPopupState, setPublishPopupState] = useState(false);
     let [publishedTestId, setPublishedTestId] = useState(null);
@@ -34,6 +32,7 @@ const MyTests = ({publishMyTest, myUnpublishedTests, isLoaded, handleTestClick})
                         console.log(item.id)
                         return <TestCard test={item}
                                          key={item.id}
+                                         editTest={editTest}
                                          handleTestClick={handleTestClick}
                                          deleteIcon={true}
                                          editIcon={true}

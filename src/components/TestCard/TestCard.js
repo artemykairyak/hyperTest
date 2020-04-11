@@ -12,7 +12,7 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import DoneAllIcon from '@material-ui/icons/DoneAll';
 
 const TestCard = ({test, handleTestClick, editIcon, publishIcon, deleteIcon, setPublishPopupState,
-                      setDeletePopupState, setPublishedTestId, setPublishedTest, passed}) => {
+                      setDeletePopupState, setPublishedTestId, setPublishedTest, editTest, passed}) => {
     return (
         <Card className={styles.testCard}
               key={test.id}
@@ -35,12 +35,13 @@ const TestCard = ({test, handleTestClick, editIcon, publishIcon, deleteIcon, set
             </CardActionArea>
             <Container className={styles.icons}>
                 {editIcon &&  <IconButton aria-label="edit" onClick={() => {
+                    editTest(test.id);
                     // setEditedResult(item);
                     // setAddResultPopupState(true);
                 }} className={styles.icon}>
                     <EditIcon className={styles.editIcon}/>
                 </IconButton>}
-                {publishIcon &&  <IconButton aria-label="edit" onClick={() => {
+                {publishIcon &&  <IconButton aria-label="publish" onClick={() => {
                     // setEditedResult(item);
                     setPublishedTestId(test.id);
                     setPublishedTest(test);
@@ -49,7 +50,7 @@ const TestCard = ({test, handleTestClick, editIcon, publishIcon, deleteIcon, set
                 }} className={styles.icon}>
                     <CheckCircleIcon className={styles.publishIcon}/>
                 </IconButton>}
-                {deleteIcon &&  <IconButton aria-label="edit" onClick={() => {
+                {deleteIcon &&  <IconButton aria-label="delete" onClick={() => {
                     // setEditedResult(item);
                     setDeletePopupState(true);
                 }} className={styles.icon}>

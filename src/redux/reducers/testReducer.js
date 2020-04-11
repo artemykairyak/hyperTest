@@ -1,5 +1,6 @@
-import {testAPI, testsAPI} from "../../api/api";
+import {myTestsAPI, testAPI, testsAPI} from "../../api/api";
 import {setMode, setTestMode} from "./mainReducer";
+import {deletePublishedTest} from "./myTestsReducer";
 
 const SET_TEST = 'SET_TEST';
 const SET_EMPTY_TEST = 'SET_EMPTY_TEST';
@@ -11,7 +12,7 @@ const EDIT_QUESTION = 'EDIT_QUESTION';
 const SET_QUESTIONS = 'SET_QUESTIONS';
 const DELETE_QUESTION = 'DELETE_QUESTION';
 const DELETE_RESULT = 'DELETE_RESULT';
-const ADD_ANSWER = 'ADD_ANSWER';
+const SET_EDIT_TEST_MODE = 'SET_EDIT_TEST_MODE';
 const ADD_PICTURE = 'ADD_PICTURE';
 const SET_CURRENT_QUESTION = 'SET_CURRENT_QUESTION';
 const SET_ANSWERED = 'SET_ANSWERED';
@@ -37,6 +38,7 @@ let template = {
 };
 
 let initialState = {
+    testEditMode: false,
     popupDisplayed: 0,
     currentQuestion: 1,
     complete: false,
@@ -57,6 +59,11 @@ const testReducer = (state = initialState, action) => {
             return {
                 ...state,
                 test: template
+            };
+        case SET_EDIT_TEST_MODE:
+            return {
+                ...state,
+                testEditMode: action.editTestMode
             };
         case ADD_RESULT:
             console.log('RERER', action.result)
@@ -79,8 +86,8 @@ const testReducer = (state = initialState, action) => {
             };
         case EDIT_QUESTION:
             let updatedQuestions = [];
-            for(let i = 0; i < state.test.questions.length; i++) {
-                if(state.test.questions[i].qId === action.newQuestion.qId) {
+            for (let i = 0; i < state.test.questions.length; i++) {
+                if (state.test.questions[i].qId === action.newQuestion.qId) {
                     updatedQuestions.push(action.newQuestion)
                 } else {
                     updatedQuestions.push(state.test.questions[i]);
@@ -104,8 +111,8 @@ const testReducer = (state = initialState, action) => {
             };
         case EDIT_RESULT:
             let updatedResults = [];
-            for(let i = 0; i < state.test.results.length; i++) {
-                if(state.test.results[i].resId === action.newResult.resId) {
+            for (let i = 0; i < state.test.results.length; i++) {
+                if (state.test.results[i].resId === action.newResult.resId) {
                     updatedResults.push(action.newResult)
                 } else {
                     updatedResults.push(state.test.results[i]);
@@ -202,6 +209,7 @@ export const addDescription = (description) => ({type: ADD_DESCRIPTION, descript
 export const addPicture = (picture) => ({type: ADD_PICTURE, picture});
 export const setPopupDisplayed = (popupId) => ({type: SET_POPUP_DISPLAYED, popupId});
 export const setQuestions = (questions) => ({type: SET_QUESTIONS, questions});
+export const setEditTestMode = (editTestMode) => ({type: SET_EDIT_TEST_MODE, editTestMode});
 export const clearAnswers = () => ({type: CLEAR_ANSWERS});
 
 export const setTestTC = (id) => async (dispatch) => {
@@ -225,7 +233,7 @@ const errorsObjConstructor = (errors) => {
 
     for (let key in errors) {
         console.log('key', key);
-        if(Array.isArray(key)) {
+        if (Array.isArray(key)) {
 
         } else {
             for (let innerKey in key) {
@@ -234,18 +242,18 @@ const errorsObjConstructor = (errors) => {
             }
         }
     }
-    if(errors.picture) {
+    if (errors.picture) {
         errorsObj['picture'] = errors.picture;
     }
 
-    if(errors.results) {
+    if (errors.results) {
         errorsObj['results'] = [];
         errors.results.forEach((item, index) => {
             errorsObj['results'].push({index: index, message: item});
         });
     }
 
-    if(errors.questions) {
+    if (errors.questions) {
         errorsObj['questions'] = [];
         errors.questions.forEach((item, index) => {
             errorsObj['questions'].push({index: index, message: item});
@@ -258,7 +266,7 @@ const errorsObjConstructor = (errors) => {
 export const createTestTC = (test) => async (dispatch) => {
 
     let response = await testsAPI.createTest(test);
-    if(response.errors) {
+    if (response.errors) {
         // errorsObjConstructor(response.errors.fields)
     } else {
         dispatch(setEmptyTest());
@@ -267,6 +275,28 @@ export const createTestTC = (test) => async (dispatch) => {
         // dispatch(getAllTests());
     }
     console.log(response);
+
+};
+
+export const editTestTC = (id) => async (dispatch) => {
+    let response = await myTestsAPI.getMyTest(id);
+    if (response.errors) {
+        // errorsObjConstructor(response.errors.fields)
+    } else {
+        dispatch(setMode(2));
+        dispatch(setEditTestMode(true));
+        dispatch(setTest(response));
+    }
+    console.log(response);
+
+};
+
+export const publishMyEditedTest = (id, test) => async (dispatch) => {
+    console.log('EDIT');
+    await myTestsAPI.publishMyTest(id, test);
+    dispatch(setMode(1));
+    dispatch(setEmptyTest());
+    dispatch(setEditTestMode(false));
 
 };
 

@@ -1,18 +1,28 @@
-import React from "react";
+import React, {useEffect} from "react";
 import {Card, Button} from "@material-ui/core";
 import Typography from "@material-ui/core/Typography";
 
 const ResultPage = ({result, back}) => {
-    return (
-        <Card style={styles.container} elevation={2}>
-            <Card style={styles.testCard} elevation={0}>
-                <img style={styles.resImg} src={result.resPic} alt=''/>
+
+    useEffect(() => {
+        console.log('RESULT', result)
+    }, [result])
+
+    if(!result) {
+        return <p>pizdec</p>
+    } else {
+        return (
+            <Card style={styles.container} elevation={2}>
+                <Card style={styles.testCard} elevation={0}>
+                    <img style={styles.resImg} src={result.resPic} alt=''/>
+                </Card>
+                <Typography style={styles.resTitle}>{result.resText}</Typography>
+                <Typography style={{marginTop: 15}}>{result.resDesc}</Typography>
+                <Button style={styles.backBtn} onClick={() => back()} variant="contained" color="primary">Назад</Button>
             </Card>
-            <Typography style={styles.resTitle}>{result.resText}</Typography>
-            <Typography style={{marginTop: 15}}>{result.resDesc}</Typography>
-            <Button style={styles.backBtn} onClick={() => back()} variant="contained" color="primary">Назад</Button>
-        </Card>
-    )
+        )
+    }
+
 };
 
 const styles = {
