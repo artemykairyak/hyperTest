@@ -12,7 +12,7 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import DoneAllIcon from '@material-ui/icons/DoneAll';
 
 const TestCard = ({test, handleTestClick, editIcon, publishIcon, deleteIcon, setPublishPopupState,
-                      setDeletePopupState, setPublishedTestId, setPublishedTest, editTest, passed}) => {
+                      setDeletePopupState, setPublishedTestId, setPublishedTest, editTest, deleteMyTest, passed}) => {
     return (
         <Card className={styles.testCard}
               key={test.id}
@@ -51,7 +51,7 @@ const TestCard = ({test, handleTestClick, editIcon, publishIcon, deleteIcon, set
                     <CheckCircleIcon className={styles.publishIcon}/>
                 </IconButton>}
                 {deleteIcon &&  <IconButton aria-label="delete" onClick={() => {
-                    // setEditedResult(item);
+                    setPublishedTestId(test.id);
                     setDeletePopupState(true);
                 }} className={styles.icon}>
                     <DeleteIcon className={styles.deleteIcon}/>

@@ -1,19 +1,28 @@
 import React, {useEffect} from "react";
 import {connect} from "react-redux";
 import MyTests from "./MyTests";
-import {getMyUnpublishedTests, publishMyTest} from "../../redux/reducers/myTestsReducer";
+import {
+    deleteMyTest,
+    getMyPublishedTests,
+    getMyUnpublishedTests,
+    publishMyTest
+} from "../../redux/reducers/myTestsReducer";
 import {editTestTC} from "../../redux/reducers/testReducer";
 
-const MyTestsContainer = ({publishMyTest, myUnpublishedTests, getMyUnpublishedTests, editTestTC, isLoaded}) => {
+const MyTestsContainer = ({publishMyTest,
+                              myUnpublishedTests,
+                              myPublishedTests,
+                              getMyUnpublishedTests,
+                              getMyPublishedTests,
+                              editTestTC,
+                              deleteMyTest,
+                              isLoaded}) => {
 
     useEffect(() => {
         console.log('GETMYTESTS')
         getMyUnpublishedTests();
+        getMyPublishedTests();
     },[]);
-
-    useEffect(() => {
-        console.log('MUTAAATE', myUnpublishedTests);
-    },[myUnpublishedTests])
 
     const handleTestClick = () => {
         console.log(1);
@@ -21,9 +30,11 @@ const MyTestsContainer = ({publishMyTest, myUnpublishedTests, getMyUnpublishedTe
 
     return (
         <MyTests myUnpublishedTests={myUnpublishedTests}
+                 myPublishedTests={myPublishedTests}
                  isLoaded={isLoaded}
                  publishMyTest={publishMyTest}
                  editTest={editTestTC}
+                 deleteMyTest={deleteMyTest}
                  handleTestClick={handleTestClick}/>
     )
 };
@@ -31,10 +42,11 @@ const MyTestsContainer = ({publishMyTest, myUnpublishedTests, getMyUnpublishedTe
 const mapStateToProps = (state) => {
     return {
         myUnpublishedTests: state.myTests.myUnpublishedTests,
+        myPublishedTests: state.myTests.myPublishedTests,
         isLoaded: state.myTests.isLoaded
     }
 };
 
 export default connect(mapStateToProps, {
-    getMyUnpublishedTests, publishMyTest, editTestTC
+    getMyUnpublishedTests, getMyPublishedTests, publishMyTest, editTestTC, deleteMyTest
 })(MyTestsContainer);

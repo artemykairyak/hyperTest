@@ -42,6 +42,13 @@ export const myTestsAPI = {
             })
     },
 
+    getMyPublishedTests(page) {
+        return instance.get(`tests/my?isPublished=1&page=${page}&page_size=6`, {headers: {'Authorization': `Bearer ${_token}`}})
+            .then(response => {
+                return response.data
+            })
+    },
+
     publishMyTest(id, test) {
         return instance.put(`tests/my/${id}`, test, {headers: {'Authorization': `Bearer ${_token}`}})
             .then(response => {
@@ -55,10 +62,10 @@ export const myTestsAPI = {
             .then(response => response.data)
     },
 
-    editMyTest(id, test) {
-        return instance.put(`tests/my/${id}`, test, {headers: {'Authorization': `Bearer ${_token}`}})
+    deleteMyTest(id) {
+        return instance.delete(`tests/my/${id}`, {headers: {'Authorization': `Bearer ${_token}`}})
             .then(response => {
-                console.log('edited', response.data);
+                console.log('deleted', response.data);
                 return response.data
             })
     },

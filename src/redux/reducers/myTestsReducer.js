@@ -4,14 +4,16 @@ const SET_MY_UNPUBLISHED_TESTS = 'SET_MY_UNPUBLISHED_TESTS';
 const SET_MY_PUBLISHED_TESTS = 'SET_MY_PUBLISHED_TESTS';
 const SET_IS_LOADED = 'SET_IS_LOADED';
 const PUBLISH_TEST = 'PUBLISH_TEST';
-const SET_CURRENT_PAGE = 'SET_CURRENT_PAGE';
+const SET_CURRENT_PUBLISHED_PAGE = 'SET_CURRENT_PUBLISHED_PAGE';
+const SET_CURRENT_UNPUBLISHED_PAGE = 'SET_CURRENT_UNPUBLISHED_PAGE';
 const SET_TOTAL_PAGES = 'SET_TOTAL_PAGES';
 const CLEAR_MY_TESTS = 'CLEAR_MY_TESTS';
 const DELETE_PUBLISHED_TEST = 'DELETE_PUBLISHED_TEST';
 
 let initialState = {
     isLoaded: false, // вернуть фолс
-    currentPage: 1,
+    currentUnpublishedPage: 1,
+    currentPublishedPage: 1,
     publishedTest: null,
     myUnpublishedTests: [],
     myPublishedTests: [],
@@ -25,16 +27,25 @@ const myTestsReducer = (state = initialState, action) => {
                     ...state,
                     myUnpublishedTests: [...action.myUnpublishedTests]
                 };
-
+        case SET_MY_PUBLISHED_TESTS:
+            return {
+                ...state,
+                myPublishedTests: [...action.myPublishedTests]
+            };
         case SET_IS_LOADED:
             return {
                 ...state,
                 isLoaded: action.isLoaded
             };
-        case SET_CURRENT_PAGE:
+        case SET_CURRENT_UNPUBLISHED_PAGE:
             return {
                 ...state,
-                currentPage: action.currentPage
+                currentUnpublishedPage: action.currentPage
+            };
+        case SET_CURRENT_PUBLISHED_PAGE:
+            return {
+                ...state,
+                currentPublishedPage: action.currentPage
             };
         case CLEAR_MY_TESTS:
             return {
@@ -58,18 +69,34 @@ const myTestsReducer = (state = initialState, action) => {
 };
 
 export const setMyUnpublishedTests = (myUnpublishedTests) => ({type: SET_MY_UNPUBLISHED_TESTS, myUnpublishedTests});
+export const setMyPublishedTests = (myPublishedTests) => ({type: SET_MY_PUBLISHED_TESTS, myPublishedTests});
 export const setIsLoaded = (isLoaded) => ({type: SET_IS_LOADED, isLoaded});
-export const setCurrentPage = (currentPage) => ({type: SET_CURRENT_PAGE, currentPage});
+export const setCurrentUnpublishedPage = (currentPage) => ({type: SET_CURRENT_UNPUBLISHED_PAGE, currentPage});
+export const setCurrentPublishedPage = (currentPage) => ({type: SET_CURRENT_PUBLISHED_PAGE, currentPage});
 export const deletePublishedTest = (id) => ({type: DELETE_PUBLISHED_TEST, id});
 export const clearMyTests = () => ({type: CLEAR_MY_TESTS});
 
 export const getMyUnpublishedTests = (page = 1) => async (dispatch) => {
-    dispatch(setCurrentPage(page));
+    dispatch(setCurrentUnpublishedPage(page));
     dispatch(setIsLoaded(false));
     let response = await myTestsAPI.getMyUnpublishedTests(page);
     console.log(response)
 
     dispatch(setMyUnpublishedTests(response.items));
+    // // dispatch(setTotalUsers(response.totalCount));
+    // // dispatch(setCurrentPage(page));
+
+    dispatch(setIsLoaded(true));
+
+};
+
+export const getMyPublishedTests = (page = 1) => async (dispatch) => {
+    dispatch(setCurrentPublishedPage(page));
+    dispatch(setIsLoaded(false));
+    let response = await myTestsAPI.getMyPublishedTests(page);
+    console.log(response)
+
+    dispatch(setMyPublishedTests(response.items));
     // // dispatch(setTotalUsers(response.totalCount));
     // // dispatch(setCurrentPage(page));
 
@@ -86,6 +113,16 @@ export const publishMyTest = (id) => async (dispatch) => {
     console.log(response)
     dispatch(deletePublishedTest(id));
      // dispatch(setMyUnpublishedTests(response.items));
+
+    // dispatch(setIsLoaded(true));
+
+};
+
+export const deleteMyTest = (id) => async (dispatch) => {
+    await myTestsAPI.deleteMyTest(id);
+    dispatch(deletePublishedTest(id));
+    dispatch(deletePublishedTest(id));
+   // dispatch(setMyUnpublishedTests(response.items));
 
     // dispatch(setIsLoaded(true));
 
