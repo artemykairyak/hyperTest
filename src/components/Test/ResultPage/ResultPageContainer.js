@@ -49,7 +49,7 @@ const ResultPageContainer = ({test, answers, setTestMode, setEmptyTest, setCompl
     };
 
     return (
-        <ResultPage result={result} back={back}/>
+        <ResultPage result={result} back={back} title={test.title}/>
     )
 };
 

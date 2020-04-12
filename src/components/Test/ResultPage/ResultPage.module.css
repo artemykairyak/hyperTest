@@ -35,6 +35,10 @@
     font-weight: bold;
 }
 
+.shareBtn {
+    margin-top: 15px !important;
+}
+
 @media screen and (max-width: 1010px) {
     .container {
         width: 80%;

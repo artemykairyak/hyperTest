@@ -2,8 +2,9 @@ import React, {useEffect} from "react";
 import {Card, Button} from "@material-ui/core";
 import Typography from "@material-ui/core/Typography";
 import styles from './ResultPage.module.css';
+import {VKAPI} from "../../../api/api";
 
-const ResultPage = ({result, back}) => {
+const ResultPage = ({result, back, title}) => {
 
     useEffect(() => {
         console.log('RESULT', result)
@@ -19,6 +20,9 @@ const ResultPage = ({result, back}) => {
                 </Card>
                 <Typography className={styles.resTitle}>{result.resText}</Typography>
                 <Typography className={{marginTop: 15}}>{result.resDesc}</Typography>
+                <Button className={styles.shareBtn} onClick={() => VKAPI.wallPost(`Я только что прошёл тест "${title}"
+                Мой результат: ${result}!`)} variant="contained"
+                        >Поделиться</Button>
                 <Button className={styles.backBtn} onClick={() => back()} variant="contained"
                         color="primary">Назад</Button>
             </Card>

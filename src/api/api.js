@@ -121,5 +121,10 @@ export const VKAPI = {
     buyCoins() {
         console.log('BUYCOUNS');
         bridge.send("VKWebAppOpenPayForm", {"app_id": appId, "action": "transfer-to-user", "params": {}});
+    },
+
+    wallPost(message, photo) {
+        console.log('WALLPOST');
+        bridge.send("VKWebAppShowWallPostBox", {"message": message});
     }
 };
