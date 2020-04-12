@@ -29,7 +29,7 @@ const AllTests = ({tests, handleTestClick, setDisabledTabs, propsObj, beginPopup
                     className={generalStyles.grid}
                 >
                     {tests.map((item) => {
-                        return <TestCard passed={item.passed} test={item} handleTestClick={handleTestClick}/>
+                        return <TestCard key={item.id} passed={item.passed} test={item} handleTestClick={handleTestClick}/>
                     })}
                 </Container>
                 {beginPopupState && <BeginTestPopup setDisabledTabs={setDisabledTabs} propsObj={propsObj}/>}

@@ -1,0 +1,16 @@
+.bar {
+    justify-content: space-between;
+    flex-direction: row !important;
+}
+
+.coins {
+    margin-right: 15px;
+    background: transparent;
+    border: none;
+    outline: none;
+    cursor: pointer;
+}
+
+.coins:hover {
+    color: #3F51B5;
+}

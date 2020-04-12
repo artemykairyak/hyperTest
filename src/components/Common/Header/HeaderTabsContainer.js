@@ -3,7 +3,7 @@ import {connect} from "react-redux";
 import HeaderTabs from "./HeaderTabs";
 import {setMode} from "../../../redux/reducers/mainReducer";
 
-const HeaderTabsContainer = ({mode, setMode, disabledTabs}) => {
+const HeaderTabsContainer = ({mode, setMode, disabledTabs, coins}) => {
     const handleChange = (event, newValue) => {
         setMode(newValue);
     };
@@ -11,6 +11,7 @@ const HeaderTabsContainer = ({mode, setMode, disabledTabs}) => {
     return (
         <HeaderTabs activeTab={mode}
                     handleChange={handleChange}
+                    coins={coins}
                     disabledTabs={disabledTabs}/>
     )
 };
@@ -18,7 +19,8 @@ const HeaderTabsContainer = ({mode, setMode, disabledTabs}) => {
 const mapStateToProps = (state) => {
     return {
         mode: state.mainScreen.mode,
-        disabledTabs: state.mainScreen.disabledTabs
+        disabledTabs: state.mainScreen.disabledTabs,
+        coins: state.user.coins
     }
 };
 

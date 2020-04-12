@@ -1,5 +1,6 @@
 import * as axios from "axios";
-import {allTestsPageSize, baseUrl, pageSize} from "../constants";
+import {allTestsPageSize, appId, baseUrl, pageSize} from "../constants";
+import bridge from '@vkontakte/vk-bridge';
 
 let _token = null;
 
@@ -86,14 +87,13 @@ export const testAPI = {
             'id': id
         }, {headers: {'Authorization': `Bearer ${_token}`}})
             .then(response => {
-            console.log(response.data);
-            return response.data;
-        })
+                console.log(response.data);
+                return response.data;
+            })
     }
 };
 
 export const authAPI = {
-
     auth() {
         console.log('AUTH')
         // let queryString = window.location.search;
@@ -106,5 +106,20 @@ export const authAPI = {
             _token = response.data.access_token;
             return response.data;
         })
+    },
+
+    getUserData() {
+        return instance.get(`profile`, {headers: {'Authorization': `Bearer ${_token}`}})
+            .then(response => {
+                console.log(response.data);
+                return response.data;
+            })
     }
-}
+};
+
+export const VKAPI = {
+    buyCoins() {
+        console.log('BUYCOUNS');
+        bridge.send("VKWebAppOpenPayForm", {"app_id": appId, "action": "transfer-to-user", "params": {}});
+    }
+};
