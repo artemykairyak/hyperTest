@@ -1,9 +1,10 @@
 import React, {useEffect, useState} from "react";
 import {Button, Container, Input, Typography} from "@material-ui/core";
 import Card from "@material-ui/core/Card";
-import {compressFile, generateNewIndex, lengthValidation} from "../helpers/helpers";
+import {compressFile, generateNewIndex, lengthValidation} from "../../helpers/helpers";
 import {HighlightOff} from '@material-ui/icons';
-import {makeStyles} from "@material-ui/styles";
+import  styles from './AddQuestion.module.css';
+import generalPopupStyles from '../../Common/Popups/popupGeneralStyles.module.css';
 import CloseIcon from '@material-ui/icons/Close';
 import PhotoCameraIcon from '@material-ui/icons/PhotoCamera';
 import TextField from "@material-ui/core/TextField";
@@ -14,7 +15,7 @@ import DialogTitle from "@material-ui/core/DialogTitle";
 import Dialog from "@material-ui/core/Dialog";
 import Radio from "@material-ui/core/Radio";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
-import {allowedImageFormats, maxVarsLength, shortInputLength} from "../../constants";
+import {allowedImageFormats, maxVarsLength, shortInputLength} from "../../../constants";
 
 const AddQuestion = ({
                          test, setAddQuestionPopupState, editedQuestion, editQuestion, setEditedQuestion,
@@ -71,8 +72,6 @@ const AddQuestion = ({
     const setQPic = event => {
         getFile(event);
     };
-
-    console.log('asfasf', qObj.vars);
 
     const addVar = () => {
         if (qVarsCount.length < maxVarsLength) {
@@ -204,10 +203,8 @@ const AddQuestion = ({
         console.log('errors', errors);
     }, [errors]);
 
-    const styles = useStyles();
-
     return (
-        <Card className={styles.popup} raised>
+        <Card className={[generalPopupStyles.popup, styles.popup]} raised>
             <CloseIcon className={styles.close}
                        fontSize="large"
                        onClick={() => setAddQuestionPopupState(false)}/>
@@ -263,7 +260,7 @@ const AddQuestion = ({
                     <Typography>Варианты ответа:</Typography>
                 </Container>
                 <Container className={[styles.rightBtn, styles.cover]}>
-                    <Button variant="contained" disabled={qVarsCount.length === maxVarsLength} component="span"
+                    <Button variant="contained" color="primary" disabled={qVarsCount.length === maxVarsLength} component="span"
                             className={styles.btn}
                             onClick={() => addVar()}>
                         Добавить
@@ -291,7 +288,7 @@ const AddQuestion = ({
                             {errors.has(qObj.vars[index].varId) &&
                             <Typography className={styles.errorText}>Слишком длинный вопрос</Typography>}
                             <div className={styles.varResContainer}>
-                                <Button className={styles.addResBtn} onClick={() => {
+                                <Button className={[styles.addResBtn, qObj.vars[index].res !== null && styles.addResBtnWithVar]} onClick={() => {
                                     setSelectVar(qObj.vars[index].varId);
                                     handleClickOpen();
                                 }}>
@@ -344,7 +341,7 @@ const AddQuestion = ({
                 <Container className={styles.left}>
                     <Typography> </Typography>
                 </Container>
-                <Container className={[styles.rightBtn]}>
+                <Container className={[styles.rightBtn, styles.goBtn]}>
                     <Button variant="contained"
                             disabled={!validate() || qVarsCount.length === 0 || errors.size > 0}
                             component="span"
@@ -371,117 +368,6 @@ const AddQuestion = ({
             </Container>
         </Card>
     )
-}
-
-var useStyles = makeStyles({
-    popup: {
-        position: 'fixed',
-        top: '50%',
-        left: '50%',
-        transform: 'translate(-50%, -50%)',
-        width: '60%',
-        margin: '30px auto 15px',
-        padding: 15,
-        textAlign: 'center',
-        zIndex: 10
-    },
-    row: {
-        display: 'flex',
-        margin: '20px auto',
-        position: 'relative',
-        overflow: 'visible'
-    },
-    left: {
-        display: 'flex',
-        width: 350,
-        justifyContent: 'flex-end',
-        padding: 0
-    },
-    rightBtn: {
-        padding: 0,
-        display: 'flex',
-        marginLeft: 15
-    },
-    addCoverInput: {
-        display: 'none'
-    },
-    btn: {
-        width: 300
-    },
-    cover: {
-        padding: 0,
-    },
-    inputContainer: {
-        padding: 0,
-        marginLeft: 15,
-        position: 'relative'
-    },
-    coverImgContainer: {
-        height: 200,
-        width: '100%',
-        padding: 0,
-        marginLeft: 15,
-        position: 'relative'
-    },
-    photoIcon: {
-        color: 'gray',
-        position: 'absolute',
-        top: '50%',
-        left: '50%',
-        transform: 'translate(-50%, -50%)',
-        zIndex: -1
-    },
-    coverImg: {
-        display: 'inline-block',
-        width: '100%',
-        height: '100%',
-        objectFit: 'cover',
-        objectPosition: 'center',
-    },
-    vars: {
-        display: 'flex',
-        flexDirection: 'column',
-        padding: 0
-    },
-    input: {
-        width: '100%',
-        padding: 0,
-        paddingRight: 25,
-    },
-    deleteIcon: {
-        position: 'absolute',
-        right: 0,
-        top: 5,
-        color: '#c62828',
-        cursor: 'pointer'
-    },
-    varInputContainer: {
-        marginTop: 15
-    },
-    close: {
-        position: 'absolute',
-        top: 10,
-        right: 10,
-        cursor: 'pointer',
-    },
-    varResContainer: {
-        textAlign: 'left'
-    },
-    addResBtn: {
-        padding: 0,
-        marginTop: 5,
-        textAlign: 'left',
-        justifyContent: 'flex-start'
-    },
-    dialogText: {
-        marginTop: 15
-    },
-    errorText: {
-        color: '#d32f2f',
-        textAlign: 'left',
-        paddingLeft: 0,
-        paddingTop: 5
-    }
-});
+};
 
 export default AddQuestion;

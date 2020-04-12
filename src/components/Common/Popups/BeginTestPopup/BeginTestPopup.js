@@ -10,7 +10,7 @@ import CloseIcon from '@material-ui/icons/Close';
 const BeginTestPopup = ({propsObj, setDisabledTabs}) => {
     let {picture, title, description, price, creator, beginTestFunc, setBeginPopupState} = propsObj;
     return <Container className={popupGeneralStyles.container} onClick={(e) => setBeginPopupState(false)}>
-        <Card className={styles.popup} onClick={(e) => e.stopPropagation()}>
+        <Card className={popupGeneralStyles.popup} onClick={(e) => e.stopPropagation()}>
             <CloseIcon className={styles.close} onClick={() => setBeginPopupState(false)}/>
             <Container className={styles.testPicContainer}>
                 <img className={styles.testPic} src={picture} alt={title}/>

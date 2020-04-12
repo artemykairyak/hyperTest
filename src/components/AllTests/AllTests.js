@@ -4,6 +4,7 @@ import React, {useEffect} from "react";
 import LoadingPopup from "../Common/Popups/LoadingPopup/LoadingPopup";
 import TestCard from "../TestCard/TestCard";
 import styles from './AllTests.module.css'
+import generalStyles from '../Common/generalStyles.module.css';
 import {Button} from "@material-ui/core";
 
 const AllTests = ({tests, handleTestClick, setDisabledTabs, propsObj, beginPopupState, isLoaded, totalTests, getAllTests, currentPage}) => {
@@ -25,7 +26,7 @@ const AllTests = ({tests, handleTestClick, setDisabledTabs, propsObj, beginPopup
         return (
             <Container className={styles.container}>
                 <Container
-                    className={styles.grid}
+                    className={generalStyles.grid}
                 >
                     {tests.map((item) => {
                         return <TestCard passed={item.passed} test={item} handleTestClick={handleTestClick}/>

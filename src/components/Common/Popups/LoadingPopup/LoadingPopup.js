@@ -8,7 +8,7 @@ import popupGeneralStyles from "../popupGeneralStyles.module.css";
 
 const LoadingPopup = ({topText, bottomText}) => {
     return <Container className={popupGeneralStyles.container}>
-        <Card className={styles.popup}>
+        <Card className={[popupGeneralStyles.popup, styles.popup]}>
             <Container className={styles.labelsContainer}>
                 <Container className={styles.preloader}>
                     <Preloader  />
@@ -16,7 +16,6 @@ const LoadingPopup = ({topText, bottomText}) => {
                 <Typography className={[styles.text, styles.topLabel]}>{topText}</Typography>
                 <Typography className={[styles.text, styles.bottomLabel]}>{bottomText}</Typography>
             </Container>
-
         </Card>
     </Container>
 };

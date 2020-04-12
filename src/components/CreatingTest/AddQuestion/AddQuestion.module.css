@@ -1,0 +1,186 @@
+.popup {
+    position: fixed !important;
+}
+
+.row {
+    display: flex;
+    margin: 20px auto;
+    padding: 0 !important;
+    position: relative;
+    overflow: visible;
+}
+
+.left {
+    display: flex;
+    width: 350px !important;
+    justify-content: flex-end;
+    padding: 0 !important;
+    text-align: right;
+}
+
+.rightBtn {
+    padding: 0;
+    display: flex;
+    margin-left: 15px;
+}
+
+.addCoverInput {
+    display: none
+}
+
+.btn {
+    width: 300px;
+}
+
+.cover {
+    padding: 0;
+}
+
+.inputContainer {
+    padding: 0;
+    margin-left: 15px;
+    position: relative;
+}
+
+.coverImgContainer {
+    height: 200px;
+    width: 100%;
+    padding: 0;
+    margin-left: 15px;
+    position: relative;
+}
+
+.photoIcon {
+    color: gray;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: -1;
+}
+
+.coverImg {
+    display: inline-block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+}
+
+.vars {
+    display: flex;
+    flex-direction: column;
+    padding: 0;
+}
+
+.input {
+    width: 100%;
+    padding: 0 25px 0 0;
+}
+
+.deleteIcon {
+    position: absolute;
+    right: 0;
+    top: 5px;
+    color: #c62828;
+    cursor: pointer;
+}
+
+.varInputContainer {
+    margin-top: 15px;
+    padding: 0 !important;
+}
+
+.close {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    cursor: pointer;
+}
+
+.varResContainer {
+    text-align: left;
+}
+
+.addResBtn {
+    width: 100%;
+    padding: 0 !important;
+    margin-top: 5px !important;
+    background: #e57373 !important;
+    color: #fff !important;
+    justify-content: flex-start;
+}
+
+.addResBtnWithVar {
+    background: #81C784 !important;
+}
+
+.dialogText {
+    margin-top: 15px;
+}
+
+.errorText {
+    color: #d32f2f;
+    text-align: left;
+    padding-left: 0;
+    padding-top: 5px;
+}
+
+@media screen and (max-width: 1010px) {
+    .popup {
+        width: 77% !important;
+    }
+}
+
+@media screen and (max-width: 780px) {
+    .popup {
+        width: 91% !important;
+    }
+
+    .left {
+        width: 200px !important;
+    }
+}
+
+@media screen and (max-width: 668px) {
+    .row {
+        flex-direction: column;
+
+    }
+
+    .left {
+        text-align: left;
+        width: 100% !important;
+        margin-bottom: 10px;
+    }
+
+    .left p {
+        width: 100%;
+    }
+
+    .inputContainer, .rightBtn, .coverImgContainer {
+        padding: 0 !important;
+    }
+
+    .goBtn {
+        justify-content: center;
+    }
+
+    .vars {
+        padding: 0 !important;
+    }
+
+    .popup {
+        overflow: auto !important;
+    }
+}
+
+@media screen and (max-width: 380px) {
+    .rightBtn {
+        width: 100% !important;
+    }
+
+    .btn {
+        width: 100%;
+    }
+}

@@ -12,7 +12,46 @@
     max-width: 100% !important;
 }
 
+.popup {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    padding: 30px 15px;
+    width: 60%;
+    height: auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 100;
+    animation: release 0.3s ease forwards;
+    transition: all .3s ease;
+    max-height: 90vh;
+}
+
+@keyframes release {
+    from {
+        opacity: 0;
+        top: 60%;
+    }
+    to {
+        opacity: 1;
+        top: 50%
+    }
+}
+
 @keyframes opacity {
-    from {opacity: 0}
-    to {opacity: 1}
+    from {
+        opacity: 0
+    }
+    to {
+        opacity: 1
+    }
+}
+
+@media screen and (max-width: 668px) {
+    .popup {
+        width: 90%;
+    }
 }

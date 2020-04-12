@@ -1,0 +1,29 @@
+.grid {
+    display: flex;
+    flex-wrap: wrap;
+    padding: 0 !important;
+    box-sizing: border-box;
+}
+
+body {
+    overflow-x: hidden;
+}
+
+@media screen and (max-width: 668px) {
+    .grid {
+        justify-content: space-between;
+    }
+
+    div[role='tablist'] {
+        width: 70%;
+        justify-content: space-between;
+    }
+}
+
+
+@media screen and (max-width: 460px) {
+    div[role='tablist'] {
+        width: 100%;
+        justify-content: space-between;
+    }
+}

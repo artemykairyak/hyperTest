@@ -1,0 +1,238 @@
+.container {
+    width: 60%;
+    margin: 30px auto 15px;
+    padding: 15px;
+    text-align: center;
+}
+
+.row {
+    display: flex;
+    margin: 20px auto;
+    position: relative;
+    overflow: visible !important;
+    padding-top: 15px;
+    padding-bottom: 15px;
+    align-items: center;
+}
+
+.left {
+    display: flex;
+    width: 350px !important;
+    justify-content: flex-end;
+    padding: 0 !important;
+    text-align: right;
+}
+
+.resLeft {
+    display: flex;
+    justify-content: flex-end;
+    padding: 0;
+}
+
+.gender {
+    justify-content: space-between;
+    display: flex;
+    padding: 0 !important;
+}
+
+.title {
+    padding: 0;
+}
+
+.radioCardContainer {
+    padding: 0 !important;
+    width: auto !important;
+    display: flex;
+
+}
+
+.radioCard {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    height: 100%;
+    border-radius: 0;
+    padding: 0 !important;
+}
+
+.input {
+    width: 100%;
+    margin-left: 20px;
+}
+
+.addCoverInput {
+    display: none;
+}
+
+.cover {
+    padding: 0;
+}
+
+.coverImgContainer {
+    height: 200px;
+    width: 100%;
+    padding: 0;
+    position: relative;
+}
+
+.coverImg {
+    display: inline-block;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    position: relative;
+    z-index: 2;
+}
+
+.photoIcon {
+    color: gray;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1;
+}
+
+.questionImgContainer {
+    height: 200px;
+    width: 100%;
+}
+
+.resultImgContainer {
+    height: 200px;
+    width: 100%;
+}
+
+.resultsTitle, .questionsText, .resultText {
+    font-weight: bold !important;
+    margin-bottom: 15px !important;
+    font-size: 18px !important;
+}
+
+.questionImg {
+    display: inline-block;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+.resultImg {
+    display: inline-block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.varInfo {
+    text-align: left;
+    padding: 0;
+}
+
+.addQuestionBtn {
+    margin-bottom: 20px !important;
+}
+
+.resInfo {
+    text-align: left;
+    padding: 0;
+}
+
+.qTitle {
+    border-bottom: 1px solid gray;
+    padding-bottom: 5px;
+    margin-bottom: 10px;
+    font-weight: bold;
+    padding-left: 15px;
+}
+
+.vars {
+    padding: 0;
+}
+
+.editIcon {
+    position: absolute !important;
+    right: 40px;
+    top: 0;
+    transform: translate(50%, -40%);
+    z-index: 5;
+}
+
+.deleteIcon {
+    position: absolute !important;
+    right: 0;
+    top: 0;
+    transform: translate(50%, -40%);
+    z-index: 5;
+}
+
+.isDeletedIcon {
+    color: #d32f2f;
+    position: absolute;
+    bottom: 5px;
+    right: 5px;
+}
+
+.isDeletedMessage {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    color: #c62828;
+    font-weight: bold;
+}
+
+.correctError {
+    color: #d32f2f;
+    font-weight: bold;
+    margin-bottom: 15px;
+}
+
+.errorText {
+    color: #d32f2f;
+    text-align: left;
+    padding-left: 18px;
+    padding-top: 5px;
+}
+
+@media screen and (max-width: 1010px) {
+    .container {
+        width: 80%;
+    }
+}
+
+@media screen and (max-width: 780px) {
+    .container {
+        width: 95%;
+    }
+
+    .left {
+        width: 180px !important;
+    }
+}
+
+@media screen and (max-width: 668px) {
+    .row {
+        flex-direction: column;
+
+    }
+    .left {
+        text-align: left;
+        width: 100% !important;
+    }
+
+    .left p {
+        width: 100%;
+    }
+
+    .title {
+        padding: 0 !important;
+    }
+
+}
+
+@media screen and (max-width: 460px) {
+    .container {
+        width: 100%;
+        margin: 0 !important;
+        padding: 0;
+    }
+}

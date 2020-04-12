@@ -1,0 +1,89 @@
+.box {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    max-height: 100vh;
+}
+
+.container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 60%;
+    margin: 30px auto 15px;
+    padding: 15px;
+    text-align: center;
+    flex-direction: column;
+}
+
+.testCard {
+    height: 370px;
+    margin: 15px auto 15px;
+}
+
+.questionImg {
+    display: inline-block;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+.question {
+    margin: 10px 0 25px !important;
+    width: 90%;
+    padding-bottom: 5px;
+    border-bottom: 1px solid gray;
+}
+
+.variants {
+    width: 100%;
+    text-align: left;
+    margin-bottom: 20px;
+}
+
+.varCard {
+    text-align: left !important;
+    border-radius: 0 !important;
+}
+
+.variant {
+    display: flex !important;
+    justify-content: flex-start !important;
+    text-align: left !important;
+    width: 100% !important;
+    text-transform: none !important;
+    border-radius: 0 !important;
+}
+
+.variant span {
+    text-align: left;
+
+}
+
+.nextBtn {
+    width: 150px;
+}
+
+.endBtn {
+    margin-top: 15px !important;
+}
+
+@media screen and (max-width: 1010px) {
+    .container {
+        width: 80%;
+    }
+}
+
+@media screen and (max-width: 780px) {
+    .container {
+        width: 95%;
+    }
+}
+
+@media screen and (max-width: 460px) {
+    .container {
+        width: 100%;
+        margin: 0 0 15px !important;
+        padding: 15px 0;
+    }
+}

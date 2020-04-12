@@ -1,0 +1,13 @@
+.pagination {
+    margin: 15px 0 0;
+}
+
+.page, .selectedPage {
+    font-size: 16px;
+    padding-right: 15px;
+    cursor: pointer;
+}
+
+.selectedPage {
+    font-weight: bold;
+}

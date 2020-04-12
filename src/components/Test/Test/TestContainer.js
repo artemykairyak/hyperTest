@@ -6,8 +6,8 @@ import {
     setCurrentQuestion,
     setEmptyTest,
     setIsAnswered, testCompleted
-} from "../../redux/reducers/testReducer";
-import {setDisabledTabs, setMode, setTestMode} from "../../redux/reducers/mainReducer";
+} from "../../../redux/reducers/testReducer";
+import {setDisabledTabs, setMode, setTestMode} from "../../../redux/reducers/mainReducer";
 
 const TestContainer = ({
                            test,

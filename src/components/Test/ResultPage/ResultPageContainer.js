@@ -1,9 +1,9 @@
 import React from "react";
 import {connect} from "react-redux";
 import ResultPage from "./ResultPage";
-import {setTestMode} from "./../../redux/reducers/mainReducer";
-import {setComplete} from "./../../redux/reducers/testReducer";
-import {clearAnswers, setCurrentQuestion, setEmptyTest} from "../../redux/reducers/testReducer";
+import {setTestMode} from "../../../redux/reducers/mainReducer";
+import {setComplete} from "../../../redux/reducers/testReducer";
+import {clearAnswers, setCurrentQuestion, setEmptyTest} from "../../../redux/reducers/testReducer";
 
 const ResultPageContainer = ({test, answers, setTestMode, setEmptyTest, setComplete, clearAnswers, setCurrentQuestion}) => {
     let result = null;

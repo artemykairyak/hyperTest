@@ -1,5 +1,5 @@
 import * as axios from "axios";
-import {baseUrl} from "../constants";
+import {allTestsPageSize, baseUrl, pageSize} from "../constants";
 
 let _token = null;
 
@@ -11,7 +11,7 @@ const instance = axios.create({
 export const testsAPI = {
     getAllTests(page) {
         console.log('PAGE', page)
-        return instance.get(`tests?page=${page}&page_size=21`, {headers: {'Authorization': `Bearer ${_token}`}})
+        return instance.get(`tests?page=${page}&page_size=${allTestsPageSize}`, {headers: {'Authorization': `Bearer ${_token}`}})
             .then(response => {
                 console.log(response.data)
                 return response.data
@@ -35,7 +35,7 @@ export const testsAPI = {
 
 export const myTestsAPI = {
     getMyUnpublishedTests(page) {
-        return instance.get(`tests/my?isPublished=0&page=${page}&page_size=6`, {headers: {'Authorization': `Bearer ${_token}`}})
+        return instance.get(`tests/my?isPublished=0&page=${page}&page_size=${pageSize}`, {headers: {'Authorization': `Bearer ${_token}`}})
             .then(response => {
                 console.log('MYTESTS', response.data);
                 return response.data
@@ -43,8 +43,17 @@ export const myTestsAPI = {
     },
 
     getMyPublishedTests(page) {
-        return instance.get(`tests/my?isPublished=1&page=${page}&page_size=6`, {headers: {'Authorization': `Bearer ${_token}`}})
+        return instance.get(`tests/my?isPublished=1&page=${page}&page_size=${pageSize}`, {headers: {'Authorization': `Bearer ${_token}`}})
             .then(response => {
+                console.log('PUBLISHED', response.data);
+                return response.data
+            })
+    },
+
+    getMyPassedTests(page) {
+        return instance.get(`tests/passed`, {headers: {'Authorization': `Bearer ${_token}`}})
+            .then(response => {
+                console.log('PASSED', response.data);
                 return response.data
             })
     },

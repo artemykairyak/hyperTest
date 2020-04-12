@@ -6,7 +6,6 @@ import {
     Typography,
     Radio,
     Button,
-    Input,
     IconButton,
     Divider,
     ListItemText,
@@ -14,9 +13,9 @@ import {
     List
 } from '@material-ui/core';
 import DeleteIcon from '@material-ui/icons/Delete';
-import AddQuestion from "./AddQuestion";
+import AddQuestion from "./AddQuestion/AddQuestion";
 import {compressFile, cropText, lengthValidation} from '../helpers/helpers';
-import AddResult from "./AddResult";
+import AddResult from "./AddResult/AddResult";
 import DeleteResultPopup from "./DeleteResultPopup";
 import EditIcon from '@material-ui/icons/Edit';
 import ErrorIcon from '@material-ui/icons/Error';
@@ -26,6 +25,7 @@ import {allowedImageFormats, maxQuestionsLength, shortInputLength, standardInput
 import TextField from "@material-ui/core/TextField";
 import PhotoCameraIcon from '@material-ui/icons/PhotoCamera';
 import LoadingPopup from "../Common/Popups/LoadingPopup/LoadingPopup";
+import styles from './CreatingTest.module.css';
 
 const CreatingTest = ({
                           addGender,
@@ -72,7 +72,7 @@ const CreatingTest = ({
     const getFile = (event, mode) => {
         let fileList = event.target.files;
 
-        if(fileList.length) {
+        if (fileList.length) {
             compressFile(fileList[0], (result) => {
                 let newSet = new Set(errors);
                 !result ? newSet.add('picture') : newSet.delete('picture');
@@ -136,10 +136,9 @@ const CreatingTest = ({
     const validateLengthInput = (text, length, fieldName) => {
         let newSet = new Set(errors);
 
-        if(lengthValidation(text, length)) {
+        if (lengthValidation(text, length)) {
             newSet.add(fieldName);
-        }
-        else {
+        } else {
             newSet.delete(fieldName);
 
         }
@@ -160,7 +159,7 @@ const CreatingTest = ({
     const buttonClasses = readyButton();
 
     return (
-        <Box>
+        <>
             {addQuestionPopupState && <AddQuestion setAddQuestionPopupState={setAddQuestionPopupState}
                                                    addQuestion={addQuestion}
                                                    editedQuestion={editedQuestion}
@@ -184,14 +183,14 @@ const CreatingTest = ({
                                                      selectedResult={selectedResult}/>}
             {creating && <LoadingPopup topText='Ваш тест создаётся.' bottomText='Пожалуйста, подождите.'/>}
 
-            <Card style={styles.container} elevation={2}>
-                <Container style={styles.row}>
-                    <Container style={styles.left}>
+            <Card className={styles.container} elevation={2}>
+                <Container className={styles.row}>
+                    <Container className={styles.left}>
                         <Typography>Кто может пройти тест:</Typography>
                     </Container>
-                    <Container style={styles.gender}>
-                        <Container style={styles.radioCardContainer}>
-                            <Button style={styles.radioCard} onClick={() => {
+                    <Container className={styles.gender}>
+                        <Container className={styles.radioCardContainer}>
+                            <Button className={styles.radioCard} onClick={() => {
                                 setGender(0)
                             }}>
                                 <Radio
@@ -202,8 +201,8 @@ const CreatingTest = ({
                                 <Typography>Все</Typography>
                             </Button>
                         </Container>
-                        <Container style={styles.radioCardContainer}>
-                            <Button style={styles.radioCard} onClick={() => {
+                        <Container className={styles.radioCardContainer}>
+                            <Button className={styles.radioCard} onClick={() => {
                                 setGender(1)
                             }}>
                                 <Radio
@@ -214,10 +213,11 @@ const CreatingTest = ({
                                 <Typography>Мужчины</Typography>
                             </Button>
                         </Container>
-                        <Container style={styles.radioCardContainer}>
-                            <Button style={styles.radioCard} onClick={() => {
-                                setGender(2)
-                            }}>
+                        <Container className={styles.radioCardContainer}>
+                            <Button className={styles.radioCard}
+                                    onClick={() => {
+                                        setGender(2)
+                                    }}>
                                 <Radio
                                     checked={gender === 2}
                                     value={2}
@@ -228,28 +228,30 @@ const CreatingTest = ({
                         </Container>
                     </Container>
                 </Container>
-                <Container style={styles.row}>
-                    <Container style={styles.left}>
+                <Container className={styles.row}>
+                    <Container className={styles.left}>
                         <Typography>Название:</Typography>
                     </Container>
-                    <Container style={styles.title}>
+                    <Container className={styles.title}>
                         <TextField
                             placeholder="Название теста"
-                            onChange={(event) => {addTitle(event.target.value);
+                            onChange={(event) => {
+                                addTitle(event.target.value);
                                 validateLengthInput(event.target.value, shortInputLength, 'title')
                             }}
                             value={test.title}
-                            style={styles.input}
+                            className={styles.input}
                             error={errors.has('title')}
                         />
-                        {errors.has('title') && <Typography style={styles.errorText}>Слишком длинное название</Typography>}
+                        {errors.has('title') &&
+                        <Typography className={styles.errorText}>Слишком длинное название</Typography>}
                     </Container>
                 </Container>
-                <Container style={styles.row}>
-                    <Container style={styles.left}>
+                <Container className={styles.row}>
+                    <Container className={styles.left}>
                         <Typography>Описание:</Typography>
                     </Container>
-                    <Container style={styles.title}>
+                    <Container className={styles.title}>
                         <TextField
                             multiline={true}
                             placeholder="Описание теста"
@@ -258,108 +260,119 @@ const CreatingTest = ({
                                 validateLengthInput(event.target.value, standardInputLength, 'description');
                             }}
                             value={test.description}
-                            style={styles.input}
+                            className={styles.input}
                             rows={5}
                             error={errors.has('description')}
                         />
-                        {errors.has('description') && <Typography style={styles.errorText}>Слишком длинное описание</Typography>}
+                        {errors.has('description') &&
+                        <Typography className={styles.errorText}>Слишком длинное описание</Typography>}
                     </Container>
                 </Container>
-                <Container style={styles.row}>
-                    <Container style={styles.left}>
+                <Container className={styles.row}>
+                    <Container className={styles.left}>
                         <Typography>Обложка:</Typography>
                     </Container>
-                    <Container style={styles.cover}>
+                    <Container className={styles.cover}>
                         <input
                             accept={allowedImageFormats}
-                            style={styles.addCoverInput}
+                            className={styles.addCoverInput}
                             multiple
                             type="file"
                             id="testCover"
                             onChange={setTestPic}
                         />
                         <label htmlFor="testCover">
-                            <Button variant="contained" component="span" style={styles.addCoverBtn}>
+                            <Button variant="contained" component="span" className={styles.addCoverBtn}>
                                 Загрузить
                             </Button>
                         </label>
                     </Container>
                 </Container>
-                <Container style={styles.row}>
-                    <Container style={styles.left}>
+                <Container className={styles.row}>
+                    <Container className={styles.left}>
                         <Typography> </Typography>
                     </Container>
-                    <Container style={styles.coverImgContainer}>
-                        <PhotoCameraIcon fontSize='large' style={styles.photoIcon}/>
-                        <img style={styles.coverImg} src={test.picture} alt=""/>
-                        {errors.has('picture') && <Typography style={styles.errorText}>Некорректное изображение</Typography>}
+                    <Container className={styles.coverImgContainer}>
+                        <PhotoCameraIcon fontSize='large'
+                                         className={styles.photoIcon}/>
+                        <img className={styles.coverImg}
+                             src={test.picture}
+                             alt=""/>
+                        {errors.has('picture') &&
+                        <Typography className={styles.errorText}>Некорректное изображение</Typography>}
                     </Container>
                 </Container>
                 <Container>
-                    <Typography style={styles.resultsTitle}>Список результатов</Typography>
+                    <Typography className={styles.resultsTitle}>Список результатов</Typography>
                 </Container>
-                <Container style={styles.results}>
+                <Container className={styles.results}>
                     {test.results.map((item, index) => {
-                        return <Card key={index} style={styles.row}>
-                            <IconButton aria-label="edit" onClick={() => {
-                                setEditedResult(item);
-                                setAddResultPopupState(true);
-                            }} style={styles.editIcon}>
+                        return <Card key={index}
+                                     className={styles.row}>
+                            <IconButton aria-label="edit"
+                                        onClick={() => {
+                                            setEditedResult(item);
+                                            setAddResultPopupState(true);
+                                        }} className={styles.editIcon}>
                                 <EditIcon/>
                             </IconButton>
-                            <IconButton aria-label="delete" onClick={() => {
-                                setSelectedResult(item.resId);
-                                setDeleteResultPopup(true);
-                            }} style={styles.deleteIcon}>
+                            <IconButton aria-label="delete"
+                                        onClick={() => {
+                                            setSelectedResult(item.resId);
+                                            setDeleteResultPopup(true);
+                                        }} className={styles.deleteIcon}>
                                 <DeleteIcon/>
                             </IconButton>
-                            <Container style={styles.resLeft}>
-                                <Container style={styles.resultImgContainer}>
-                                    <img style={styles.resultImg} src={item.resPic} alt=''/>
+                            <Container className={styles.resLeft}>
+                                <Container className={styles.resultImgContainer}>
+                                    <img className={styles.resultImg}
+                                         src={item.resPic}
+                                         alt=''/>
                                 </Container>
                             </Container>
-                            <Container style={styles.resInfo}>
-                                <Typography style={styles.resultText}>{item.resText}</Typography>
+                            <Container className={styles.resInfo}>
+                                <Typography className={styles.resultText}>{item.resText}</Typography>
                                 <Typography>{cropText(item.resDesc, 255)}</Typography>
                             </Container>
                         </Card>
                     })}
                 </Container>
                 <Container>
-                    <Button variant="contained" color="primary" component="span" style={styles.addQuestionBtn}
+                    <Button variant="contained" color="primary" component="span" className={styles.addQuestionBtn}
                             onClick={() => setAddResultPopupState(true)}>
                         Добавить результат
                     </Button>
                 </Container>
-                <Container style={styles.questionsTitle}>
-                    <Typography style={styles.questionsText}>Список вопросов</Typography>
+                <Container className={styles.questionsTitle}>
+                    <Typography className={styles.questionsText}>Список вопросов</Typography>
                 </Container>
-                <Container style={styles.questions}>
+                <Container className={styles.questions}>
                     {test.questions.map((item, index) => {
-                        return <Card key={index} style={styles.row}>
+                        return <Card key={index} className={styles.row}>
                             <IconButton aria-label="edit" onClick={() => {
                                 setEditedQuestion(item);
                                 setAddQuestionPopupState(true);
-                            }} style={styles.editIcon}>
+                            }} className={styles.editIcon}>
                                 <EditIcon/>
                             </IconButton>
                             <IconButton aria-label="delete" onClick={() => {
                                 deleteQuestion(index)
-                            }} style={styles.deleteIcon}>
+                            }} className={styles.deleteIcon}>
                                 <DeleteIcon/>
                             </IconButton>
-                            <Container style={styles.left}>
-                                <Container style={styles.questionImgContainer}>
-                                    <img style={styles.questionImg} src={item.qPic} alt=''/>
+                            <Container className={styles.left}>
+                                <Container className={styles.questionImgContainer}>
+                                    <img className={styles.questionImg} src={item.qPic} alt=''/>
                                 </Container>
                             </Container>
-                            <Container style={styles.varInfo}>
-                                <Typography style={styles.qTitle}>{item.qText}</Typography>
-                                <List style={styles.vars}>
+                            <Container className={styles.varInfo}>
+                                <Typography className={styles.qTitle}>{item.qText}</Typography>
+                                <List className={styles.vars}>
                                     {item.vars.map((variant, index) => {
-                                        return <React.Fragment key={index}><ListItem>
-                                            <ListItemText primary={variant.varText}/>
-                                        </ListItem>{index !== (item.vars.length - 1) && <Divider/>}
+                                        return <React.Fragment key={index}>
+                                            <ListItem>
+                                                <ListItemText primary={variant.varText}/>
+                                            </ListItem>{index !== (item.vars.length - 1) && <Divider/>}
                                         </React.Fragment>
                                     })}
                                 </List>
@@ -367,7 +380,7 @@ const CreatingTest = ({
                             {questionsWithDeletedResults && questionsWithDeletedResults.has(item.qId) &&
                             <Tooltip title="Есть обнулённые результаты"
                                      classes={toolTipClasses}
-                                     style={styles.isDeletedIcon}>
+                                     className={styles.isDeletedIcon}>
                                 <ErrorIcon aria-label="error">
                                     <DeleteIcon/>
                                 </ErrorIcon>
@@ -380,7 +393,7 @@ const CreatingTest = ({
                     <Button variant="contained"
                             color="primary"
                             component="span"
-                            style={styles.addQuestionBtn}
+                            className={styles.addQuestionBtn}
                             disabled={test.questions.length >= maxQuestionsLength}
                             onClick={() => setAddQuestionPopupState(true)}>
                         {test.questions.length >= maxQuestionsLength ? 'Вы добавили максимальное количество вопросов' : 'Добавить вопрос'}
@@ -388,17 +401,17 @@ const CreatingTest = ({
                 </Container>
                 <Container>
                     {!correct &&
-                    <Typography style={styles.correctError}>Слишком много неназначенных результатов!</Typography>}
+                    <Typography className={styles.correctError}>Слишком много неназначенных результатов!</Typography>}
                     <Button variant="contained"
                             classes={buttonClasses}
                             size='large'
                             component="span"
                             disabled={!validation() || errors.size > 0}
-                            style={styles.addQuestionBtn}
+                            className={styles.addQuestionBtn}
                             onClick={() => {
                                 if (checkCorrect() && validation() && errors.size === 0) {
                                     setCreating(true);
-                                    if(testEditMode) {
+                                    if (testEditMode) {
                                         publishMyEditedTest(test.id, test);
                                     } else {
                                         creatingTest(test);
@@ -409,182 +422,8 @@ const CreatingTest = ({
                     </Button>
                 </Container>
             </Card>
-        </Box>
+        </>
     )
-};
-
-const styles = {
-    container: {
-        width: '60%',
-        margin: '30px auto 15px',
-        padding: 15,
-        textAlign: 'center',
-    },
-    row: {
-        display: 'flex',
-        margin: '20px auto',
-        position: 'relative',
-        overflow: 'visible',
-        paddingTop: 15,
-        paddingBottom: 15,
-    },
-    left: {
-        display: 'flex',
-        width: 350,
-        justifyContent: 'flex-end',
-        padding: 0
-    },
-    resLeft: {
-        display: 'flex',
-        justifyContent: 'flex-end',
-        padding: 0
-    },
-    gender: {
-        display: 'flex',
-        padding: 0
-    },
-    title: {
-        padding: 0
-    },
-    radioCardContainer: {
-        padding: 0,
-        width: '60%',
-        display: 'flex',
-        justifyContent: 'center'
-    },
-    radioCard: {
-        display: 'flex',
-        alignItems: 'center',
-        height: '100%',
-        borderRadius: 0
-    },
-    input: {
-        width: '100%',
-        marginLeft: 20
-    },
-    addCoverInput: {
-        display: 'none'
-    },
-    cover: {
-        padding: 0
-    },
-    coverImgContainer: {
-        height: 200,
-        width: '100%',
-        padding: 0,
-        position: 'relative'
-    },
-    coverImg: {
-        display: 'inline-block',
-        width: '100%',
-        height: '100%',
-        objectFit: 'contain',
-        position: 'relative',
-        zIndex: 2
-    },
-    photoIcon: {
-        color: 'gray',
-        position: 'absolute',
-        top: '50%',
-        left: '50%',
-        transform: 'translate(-50%, -50%)',
-        zIndex: 1
-    },
-    questionImgContainer: {
-        height: 200,
-        width: '100%',
-    },
-    resultImgContainer: {
-        height: 200,
-        width: '100%',
-    },
-    resultsTitle: {
-        fontWeight: 'bold',
-        marginBottom: 15,
-        fontSize: 18
-    },
-    questionsText: {
-        fontWeight: 'bold',
-        marginBottom: 15,
-        fontSize: 18
-    },
-    questionImg: {
-        display: 'inline-block',
-        width: '100%',
-        height: '100%',
-        objectFit: 'contain',
-    },
-    resultImg: {
-        display: 'inline-block',
-        width: '100%',
-        height: '100%',
-        objectFit: 'cover',
-    },
-    resultText: {
-        fontWeight: 'bold',
-        marginBottom: 15,
-        fontSize: 18
-    },
-    varInfo: {
-        textAlign: 'left',
-        padding: 0
-    },
-    addQuestionBtn: {
-        marginBottom: 20
-    },
-    resInfo: {
-        textAlign: 'left',
-        padding: 0
-    },
-    qTitle: {
-        borderBottom: '1px solid gray',
-        paddingBottom: 5,
-        marginBottom: 10,
-        fontWeight: 'bold',
-        paddingLeft: 15
-    },
-    vars: {
-        padding: 0
-    },
-    editIcon: {
-        position: 'absolute',
-        right: 40,
-        top: 0,
-        transform: 'translate(50%, -40%)',
-        zIndex: 5
-    },
-    deleteIcon: {
-        position: 'absolute',
-        right: 0,
-        top: 0,
-        transform: 'translate(50%, -40%)',
-        zIndex: 5
-    },
-    isDeletedIcon: {
-        color: '#d32f2f',
-        position: 'absolute',
-        bottom: 5,
-        right: 5,
-    },
-    isDeletedMessage: {
-        position: 'absolute',
-        bottom: 0,
-        right: 0,
-        color: 'red',
-        fontWeight: 'bold'
-    },
-    correctError: {
-        color: '#d32f2f',
-        fontWeight: 'bold',
-        marginBottom: 15
-    },
-    errorText: {
-        color: '#d32f2f',
-        textAlign: 'left',
-        paddingLeft: 18,
-        paddingTop: 5
-    }
-
 };
 
 export default CreatingTest;

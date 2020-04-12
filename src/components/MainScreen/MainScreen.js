@@ -1,7 +1,7 @@
 import React from "react";
 import Box from "@material-ui/core/Box";
 import TestsContainer from "../Tests/TestsContainer";
-import TestContainer from "../Test/TestContainer";
+import TestContainer from "../Test/Test/TestContainer";
 
 const MainScreen = ({testMode}) => {
     return (
